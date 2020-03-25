@@ -10,30 +10,97 @@
         android:id="@+id/headerTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:layout_marginTop="50dp"
+        android:fontFamily="@font/black_chancery"
+        android:text="@string/header"
+        android:textSize="90sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+        <!--android:textColor="@color/goldHeader"-->
+
 
     <Button
         android:id="@+id/startBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="60dp"
+        android:paddingStart="40dp"
+        android:text="@string/startBtn"
+        android:textAllCaps="false"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerTv" />
 
     <Button
-        android:id="@+id/helpBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="272dp"
-        android:text="Button"
+        android:id="@+id/helpBtnn"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="60dp"
+        android:paddingStart="40dp"
+        android:text="@string/helpBtn"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/startBtn" />
+
+    <ImageView
+        android:id="@+id/kingIv"
+        android:layout_width="241dp"
+        android:layout_height="383dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/helpBtnn"
+        app:srcCompat="@drawable/drawing" />
+
+    <ImageView
+        android:id="@+id/dtuLogoIv"
+        android:layout_width="37dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/dtulogo" />
+
+    <TextView
+        android:id="@+id/groupNameTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="@string/group"
+        app:layout_constraintBottom_toBottomOf="@+id/dtuLogoIv"
+        app:layout_constraintStart_toEndOf="@+id/dtuLogoIv"
+        app:layout_constraintTop_toTopOf="@+id/dtuLogoIv" />
+
+    <ImageView
+        android:id="@+id/playIv"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:elevation="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/startBtn"
+        app:layout_constraintStart_toStartOf="@+id/startBtn"
+        app:layout_constraintTop_toTopOf="@+id/startBtn"
+        app:srcCompat="@drawable/cardsicon" />
+
+    <ImageView
+        android:id="@+id/helpIv"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:elevation="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/helpBtnn"
+        app:layout_constraintStart_toStartOf="@+id/helpBtnn"
+        app:layout_constraintTop_toTopOf="@+id/helpBtnn"
+        app:srcCompat="@drawable/helpicon" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

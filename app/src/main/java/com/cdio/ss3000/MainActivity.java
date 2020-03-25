@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button start, help;
-    TextView header;
+    TextView header, group;
+    ImageView king, play, questionMark, dtu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,10 +22,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         start = findViewById(R.id.startBtn);
         start.setOnClickListener(this);
 
-        help.findViewById(R.id.helpBtn);
+        help = findViewById(R.id.helpBtnn);
         help.setOnClickListener(this);
 
-        header.findViewById(R.id.headerTv);
+        header = findViewById(R.id.headerTv);
+        group = findViewById(R.id.groupNameTv);
+
+        king = findViewById(R.id.kingIv);
+        play = findViewById(R.id.playIv);
+        questionMark = findViewById(R.id.helpIv);
+        dtu =findViewById(R.id.dtuLogoIv);
+
 
 
 
@@ -36,7 +45,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent i = new Intent(this,CameraActivity.class);
             this.startActivity(i);
         }else if (v == help){
-            //Intent i = new Intent(this,)
+            Intent i = new Intent(this, HelpActivity.class);
+            this.startActivity(i);
         }
     }
 }

@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">ss3000</string>
-    <string name="header">7 - Kabale</string>
+    <string name="header">Solitaire</string>
+    <string name="helpBtn">Help</string>
+    <string name="startBtn">Play</string>
+    <string name="group">CDIO - Gruppe 3</string>
 </resources>
