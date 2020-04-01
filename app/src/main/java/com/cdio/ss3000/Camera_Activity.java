@@ -3,38 +3,27 @@ package com.cdio.ss3000;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.pm.PackageManager;
-import android.graphics.Camera;
+import android.hardware.Camera;
 import android.os.Bundle;
+import android.widget.FrameLayout;
 
 
 public class Camera_Activity extends AppCompatActivity {
+
+  Camera camera;
+  FrameLayout framelayout;
+  ShowCamera showCamera;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_camera_);
+    framelayout = (FrameLayout)findViewById(R.id.frameLayout);
 
-    /** Check if this device has a camera */
-    private boolean checkCameraHardware(Context context) {
-      if (this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
-        // this device has a camera
-        return true;
-      } else {
-        // no camera on this device
-        return false;
-      }
-    }
+    //opens the camera
+    camera = Camera.open();
 
-    /** A safe way to get an instance of the Camera object. */
-    public static Camera getCameraInstance(){
-      Camera c = null;
-      try {
-        c = Camera.open(); // attempt to get a Camera instance
-      }
-      catch (Exception e){
-        // Camera is not available (in use or does not exist)
-      }
-      return c; // returns null if camera is unavailable
-    }
+    showCamera = new ShowCamera(this, camera);
+    framelayout.addView(showCamera);
   }
 }
