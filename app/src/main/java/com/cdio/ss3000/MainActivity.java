@@ -2,8 +2,6 @@ package com.cdio.ss3000;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Intent;
@@ -66,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 
         if(v == start){
-            Intent i = new Intent(this,Camera_Activity.class);
+            Intent i = new Intent(this, CameraActivity.class);
             this.startActivity(i);
         }else if (v == help){
             Intent i = new Intent(this, HelpActivity.class);
