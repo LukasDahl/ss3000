@@ -3,7 +3,7 @@ package com.cdio.ss3000.DataLayer;
 import androidx.annotation.NonNull;
 
 public class Card {
-    int value; // From 1 to (0 is unknown)
+    int value; // From 1 (ace) to 13 (king) (0 is unknown)
     Suit suit;
     boolean movable;
 
