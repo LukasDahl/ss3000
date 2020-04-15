@@ -44,6 +44,9 @@ public class GameControl {
                 return true;
             }else return false;
         }
+        else if(movingCard.value == 13 && receivingCard == null){
+            return true;
+        }
         return false;
     }
 
