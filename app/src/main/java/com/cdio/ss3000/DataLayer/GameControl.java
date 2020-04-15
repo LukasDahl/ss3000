@@ -6,10 +6,7 @@ import com.cdio.ss3000.DataLayer.State;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.cdio.ss3000.DataLayer.Suit.CLUBS;
-import static com.cdio.ss3000.DataLayer.Suit.DIAMONDS;
-import static com.cdio.ss3000.DataLayer.Suit.HEARTS;
-import static com.cdio.ss3000.DataLayer.Suit.SPADES;
+import static com.cdio.ss3000.DataLayer.Suit.*;
 
 public class GameControl {
 

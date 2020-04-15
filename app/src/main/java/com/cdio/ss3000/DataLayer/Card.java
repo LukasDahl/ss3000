@@ -9,6 +9,8 @@ public class Card {
     Suit suit;
     boolean movable;
     LinkedList<Card> moves;
+    private boolean isPlacedInFoundation;
+    private Card topCard, bottomCard;
 
     public Card(int value, Suit suit, boolean movable) {
         this.value = value;
@@ -49,6 +51,19 @@ public class Card {
     public void addMove(Card possibleMoveTo){moves.push(possibleMoveTo);}
 
     public LinkedList<Card> getMoves(){return moves;}
+
+    public boolean getPlacedInFoundation(){return isPlacedInFoundation;}
+
+    public void setPlacedInFoundation(boolean isPlacedInFoundation){this.isPlacedInFoundation = isPlacedInFoundation;}
+
+    public void setTopCard(Card topCard){this.topCard = topCard;}
+
+    public Card getTopCard() {return topCard;}
+
+    public void setBottomCard(Card bottomCard){this.bottomCard = bottomCard;}
+
+    public Card getBottomCard(){return bottomCard;}
+
 
     @NonNull
     @Override
