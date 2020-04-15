@@ -2,10 +2,13 @@ package com.cdio.ss3000.DataLayer;
 
 import androidx.annotation.NonNull;
 
+import java.util.LinkedList;
+
 public class Card {
     int value; // From 1 (ace) to 13 (king) (0 is unknown)
     Suit suit;
     boolean movable;
+    LinkedList<Card> moves;
 
     public Card(int value, Suit suit, boolean movable) {
         this.value = value;
@@ -42,6 +45,10 @@ public class Card {
     public void setMovable(boolean movable) {
         this.movable = movable;
     }
+
+    public void addMove(Card possibleMoveTo){moves.push(possibleMoveTo);}
+
+    public LinkedList<Card> getMoves(){return moves;}
 
     @NonNull
     @Override

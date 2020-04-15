@@ -13,9 +13,9 @@ import static com.cdio.ss3000.DataLayer.Suit.SPADES;
 
 public class GameControl {
 
-    LinkedList<Card>[] foundations = new LinkedList[4], tableau = new LinkedList[7];
-    LinkedList<Card> stock, waste;
-    State state;
+    private LinkedList<Card>[] foundations = new LinkedList[4], tableau = new LinkedList[7];
+    private LinkedList<Card> stock, waste;
+    private State state;
 
     public GameControl(){
     }
@@ -33,24 +33,60 @@ public class GameControl {
         this.state = state;
     }
 
-    public boolean movePossible(Card movingCard, Card receivingCard){
+    public boolean movePossibleTableau(Card movingCard, Card receivingCardTableau){
         if(movingCard.getSuit() == HEARTS || movingCard.getSuit() == DIAMONDS){
-            if(receivingCard.getSuit() == SPADES || receivingCard.getSuit() == CLUBS){
-                return true;
-            }else return false;
+            if(receivingCardTableau.getSuit() == SPADES || receivingCardTableau.getSuit() == CLUBS){
+               movingCard.setMovable(true);
+               return true;
+            }else{
+                movingCard.setMovable(false);
+                return false;
+            }
+            //return(receivingCardTableau.getSuit() == SPADES || receivingCardTableau.getSuit() == CLUBS);
 
         }else if(movingCard.getSuit() == SPADES || movingCard.getSuit() == CLUBS){
-            if(receivingCard.getSuit() == HEARTS || movingCard.getSuit() == DIAMONDS){
+            if(receivingCardTableau.getSuit() == HEARTS || receivingCardTableau.getSuit() == DIAMONDS){
+                movingCard.setMovable(true);
                 return true;
-            }else return false;
+            }else{
+                movingCard.setMovable(false);
+                return false;
+            }
+            //return (receivingCardTableau.getSuit() == HEARTS || movingCard.getSuit() == DIAMONDS);
         }
         return false;
+    }
+
+    public boolean movePossibleFoundations(Card movingCard, Card receivingCardFoundations){
+        if(movingCard.getSuit() == receivingCardFoundations.getSuit()){
+            movingCard.setMovable(true);
+            return true;
+        }else{
+            movingCard.setMovable(false);
+            return false;
+        }
+
+        //return (movingCard.getSuit() == receivingCardFoundations.getSuit());
     }
 
     public void suggestMove(){}
 
     public void checkPossibleMoves(){
+        for(LinkedList<Card> cardList : tableau){
+            if(!cardList.isEmpty()){
+                for(LinkedList<Card> otherCardListTableau : tableau){
+                       if(movePossibleTableau(cardList.peek(), otherCardListTableau.peek())){
+                           cardList.peek().addMove(otherCardListTableau.peek());
+                       }
+                    }
+                for(LinkedList<Card> otherCardListFoundations : foundations){
+                    if(movePossibleFoundations(cardList.peek(), otherCardListFoundations.peek())){
+                        cardList.peek().addMove(otherCardListFoundations.peek());
+                    }
+                }
 
+            }
+        }
     }
 
 
