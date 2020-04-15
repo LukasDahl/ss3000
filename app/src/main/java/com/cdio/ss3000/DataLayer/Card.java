@@ -9,6 +9,8 @@ public class Card {
     Suit suit;
     boolean movable;
     LinkedList<Card> moves;
+    LinkedList<LinkedList> emptySpace;
+
     private boolean isPlacedInFoundation;
     private Card topCard, bottomCard;
 
@@ -50,7 +52,15 @@ public class Card {
 
     public void addMove(Card possibleMoveTo){moves.push(possibleMoveTo);}
 
+    public void clearMoves(){moves.clear();}
+
     public LinkedList<Card> getMoves(){return moves;}
+
+    public void addMoveToEmptySpace(LinkedList<Card> space){emptySpace.add(space);}
+
+    public LinkedList<LinkedList> getMovesToEmptySpace(){return emptySpace;}
+
+    public void clearMovesToEmptySpace(){emptySpace.clear();}
 
     public boolean getPlacedInFoundation(){return isPlacedInFoundation;}
 
