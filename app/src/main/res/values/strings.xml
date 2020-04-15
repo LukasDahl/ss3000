@@ -3,5 +3,6 @@
     <string name="header">Solitaire</string>
     <string name="helpBtn">Help</string>
     <string name="startBtn">Play</string>
-    <string name="group">CDIO - Gruppe 3</string>
+    <string name="highscoreBtn">High score</string>
+    <string name="group">CDIO - Gruppe 2</string>
 </resources>

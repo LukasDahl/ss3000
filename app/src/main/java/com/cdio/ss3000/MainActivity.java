@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    Button start, help;
+    Button start, help, highscore;
     TextView header, group;
     ImageView king, play, questionMark, dtu;
 
@@ -35,6 +35,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         help = findViewById(R.id.helpBtnn);
         help.setOnClickListener(this);
 
+        highscore = findViewById(R.id.highscoreBtn);
+        highscore.setOnClickListener(this);
+
         header = findViewById(R.id.headerTv);
         group = findViewById(R.id.groupNameTv);
 
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    // Checks if app has camera permission, and asks for it, if it doesn't.
     @Override   //Gotten from: https://stackoverflow.com/questions/38552144/how-get-permission-for-camera-in-android-specifically-marshmallow
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -68,6 +72,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             this.startActivity(i);
         }else if (v == help){
             Intent i = new Intent(this, HelpActivity.class);
+            this.startActivity(i);
+        }
+        else if (v == highscore){
+            Intent i = new Intent(this, HighscoreActivity.class);
             this.startActivity(i);
         }
     }
