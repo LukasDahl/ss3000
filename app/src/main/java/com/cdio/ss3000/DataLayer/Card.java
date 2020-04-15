@@ -3,9 +3,10 @@ package com.cdio.ss3000.DataLayer;
 import androidx.annotation.NonNull;
 
 public class Card {
-    int value; // From 1 (ace) to 13 (king) (0 is unknown)
-    Suit suit;
-    boolean movable;
+    private int value; // From 1 (ace) to 13 (king) (0 is unknown)
+    private Suit suit;
+    private boolean movable;
+    private boolean isPlacedInFoundation;
 
     public Card(int value, Suit suit, boolean movable) {
         this.value = value;
@@ -42,6 +43,10 @@ public class Card {
     public void setMovable(boolean movable) {
         this.movable = movable;
     }
+
+    public boolean getPlacedInFoundation(){return isPlacedInFoundation;}
+
+    public void setPlacedInFoundation(boolean isPlacedInFoundation){this.isPlacedInFoundation = isPlacedInFoundation;}
 
     @NonNull
     @Override
