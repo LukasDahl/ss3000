@@ -34,6 +34,9 @@ public class GameControl {
     }
 
     public boolean movePossible(Card movingCard, Card receivingCard){
+        if(movingCard.value == 13 && receivingCard == null){
+            return true;
+        }
         if(movingCard.getSuit() == HEARTS || movingCard.getSuit() == DIAMONDS){
             if((receivingCard.getSuit() == SPADES || receivingCard.getSuit() == CLUBS) && movingCard.value+1 == receivingCard.value){
                 return true;
@@ -43,10 +46,7 @@ public class GameControl {
             if((receivingCard.getSuit() == HEARTS || movingCard.getSuit() == DIAMONDS) && movingCard.value+1 == receivingCard.value){
                 return true;
             }else return false;
-        }
-        else if(movingCard.value == 13 && receivingCard == null){
-            return true;
-        }
+        }else
         return false;
     }
 
