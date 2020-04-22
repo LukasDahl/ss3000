@@ -5,4 +5,5 @@
     <string name="startBtn">Play</string>
     <string name="highscoreBtn">High score</string>
     <string name="group">CDIO - Gruppe 2</string>
+    <string name="highscore">High score!</string>
 </resources>
