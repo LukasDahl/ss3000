@@ -23,6 +23,7 @@ public class HighscoreActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_highscore);
 
     recyclerView = findViewById(R.id.recyclerView);
 
@@ -37,10 +38,23 @@ public class HighscoreActivity extends AppCompatActivity {
     SharedPreferences.Editor nameEditor = prefName.edit();
     SharedPreferences.Editor scoreEditor = prefScore.edit();
 
+    nameEditor.putString("1", "Egon Olsen");
+    nameEditor.putString("2", "Benny");
+    nameEditor.putString("3", "Kaj");
+    nameEditor.putString("4", "Andrea");
+    nameEditor.commit();
+    scoreEditor.putInt("1", 2);
+    scoreEditor.putInt("2", 15);
+    scoreEditor.putInt("3", 500);
+    scoreEditor.putInt("4", 123);
+    scoreEditor.commit();
+
     recyclerView.setAdapter(adapter);
-
-    setContentView(R.layout.activity_highscore);
-
+    System.out.println("" + hsNameList[0]);
+    System.out.println("" + hsNameList[1]);
+    System.out.println("" + hsNameList[2]);
+    System.out.println("" + hsNameList[3]);
+    System.out.println("" + hsNameList[4]);
   }
 
   RecyclerView.Adapter adapter = new RecyclerView.Adapter() {
@@ -57,9 +71,9 @@ public class HighscoreActivity extends AppCompatActivity {
       TextView hsName = holder.itemView.findViewById(R.id.hsName);
       TextView hsScore = holder.itemView.findViewById(R.id.hsScore);
 
-      hsNumber.setText("" + position + ".");
-      hsName.setText("" + hsNameList[position]);
-      hsScore.setText("" + hsScoreList[position]);
+      hsNumber.setText("" + (position+1) + ".");
+      hsName.setText(" " + hsNameList[position]);
+      hsScore.setText(" " + hsScoreList[position]);
     }
 
     @Override
