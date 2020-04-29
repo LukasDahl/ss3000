@@ -52,12 +52,16 @@ public class Card {
 
     public void addMove(Card possibleMoveTo){moves.push(possibleMoveTo);}
 
-    public void clearMoves(){moves.clear();}
+    public void clearMoves(){
+        moves.clear();
+        emptySpace.clear();
+    }
 
     public LinkedList<Card> getMoves(){return moves;}
 
     public void addMoveToEmptySpace(LinkedList<Card> space){emptySpace.add(space);}
 
+    //TODO: getMovesToEmptySpace needs to be parted between empty space in tableau and empty space in foundations
     public LinkedList<LinkedList> getMovesToEmptySpace(){return emptySpace;}
 
     public void clearMovesToEmptySpace(){emptySpace.clear();}

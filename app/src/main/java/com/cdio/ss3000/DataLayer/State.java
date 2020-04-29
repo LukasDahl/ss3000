@@ -7,14 +7,38 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class State {
-    LinkedList<Card>[] foundations = new LinkedList[4], tableau = new LinkedList[7];
-    LinkedList<Card> stock, waste;
+    public LinkedList<Card>[] foundations = new LinkedList[4], tableau = new LinkedList[7];
+    public LinkedList<Card> stock, waste;
 
     public State(LinkedList<Card>[] foundations, LinkedList<Card>[] tableau, LinkedList<Card> stock, LinkedList<Card> waste) {
         this.foundations = foundations;
         this.tableau = tableau;
         this.stock = stock;
         this.waste = waste;
+    }
+
+    public LinkedList<Card> getMovableCardsTableau(){
+            LinkedList<Card> movableCardsTableau = null;
+
+        for(LinkedList<Card> tab : tableau){
+            movableCardsTableau.add(tab.peek());
+        }
+
+       return movableCardsTableau;
+    }
+
+    public Card getMovableCardWaste(){
+        return waste.peek();
+    }
+
+    public LinkedList<Card> getMovableCardsFoundations(){
+        LinkedList<Card> movableCardsFoundations = null;
+
+        for(LinkedList<Card> found : foundations){
+            movableCardsFoundations.add(found.peek());
+        }
+
+        return movableCardsFoundations;
     }
 
     @NonNull
