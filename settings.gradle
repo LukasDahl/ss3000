@@ -1,2 +1,3 @@
 include ':app'
 rootProject.name='ss3000'
+include ':openCVLibrary343'
