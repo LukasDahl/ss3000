@@ -59,7 +59,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         System.out.println("Array er: "+bmArray.isEmpty());
 
       }
-      image.setImageBitmap(bmArray.get(2)); //
+      image.setImageBitmap(bmArray.get(2));
     }
   }
 }
