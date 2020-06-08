@@ -11,6 +11,7 @@ public class Card {
     LinkedList<Card> moves;
     LinkedList<LinkedList> emptySpaceTableau;
     LinkedList<LinkedList> emptySpaceFoundation;
+    private int points = 0;
 
     private boolean isPlacedInFoundation;
     private Card topCard, bottomCard;
@@ -25,6 +26,13 @@ public class Card {
         this.value = 0;
         this.suit = Suit.UNKNOWN;
         this.movable = false;
+    }
+    public int getPoints(){
+        return points;
+    }
+
+    public void setPoints(int p){
+        points = p;
     }
 
     public int getValue() {
