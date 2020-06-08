@@ -9,7 +9,8 @@ public class Card {
     Suit suit;
     boolean movable;
     LinkedList<Card> moves;
-    LinkedList<LinkedList> emptySpace;
+    LinkedList<LinkedList> emptySpaceTableau;
+    LinkedList<LinkedList> emptySpaceFoundation;
 
     private boolean isPlacedInFoundation;
     private Card topCard, bottomCard;
@@ -54,17 +55,20 @@ public class Card {
 
     public void clearMoves(){
         moves.clear();
-        emptySpace.clear();
+        emptySpaceTableau.clear();
     }
 
     public LinkedList<Card> getMoves(){return moves;}
 
-    public void addMoveToEmptySpace(LinkedList<Card> space){emptySpace.add(space);}
+    public void addMoveToEmptySpaceTableau(LinkedList<Card> space){emptySpaceTableau.add(space);}
 
-    //TODO: getMovesToEmptySpace needs to be parted between empty space in tableau and empty space in foundations
-    public LinkedList<LinkedList> getMovesToEmptySpace(){return emptySpace;}
+    public void addMoveToEmptySpaceFoundation(LinkedList<Card> space){emptySpaceFoundation.add(space);}
 
-    public void clearMovesToEmptySpace(){emptySpace.clear();}
+    public LinkedList<LinkedList> getMovesToEmptySpaceTableau(){return emptySpaceTableau;}
+
+    public LinkedList<LinkedList> getMovesToEmptySpaceFoundation(){return emptySpaceFoundation;}
+
+    public void clearMovesToEmptySpace(){emptySpaceTableau.clear();}
 
     public boolean getPlacedInFoundation(){return isPlacedInFoundation;}
 
