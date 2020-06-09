@@ -18,7 +18,7 @@ public class Strategy {
 
     public Object calculateBestMoveCard(Card card){
         Object bestMove = null;
-
+/*
         if(!card.getMovesToEmptySpaceFoundation().isEmpty() && card.getValue() == 1){
             bestMove = card.getMovesToEmptySpaceFoundation().peek();
         }
@@ -52,7 +52,6 @@ public class Strategy {
                 bestMove = card.getMovesToEmptySpace().peek();
             }
         }*/
-
         return bestMove;
     }
 

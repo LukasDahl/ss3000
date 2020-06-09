@@ -1,5 +1,7 @@
 package com.cdio.ss3000.DataLayer;
 
+import android.graphics.Point;
+
 import java.util.LinkedList;
 
 import static com.cdio.ss3000.DataLayer.Suit.*;
@@ -11,6 +13,9 @@ public class GameControl {
     private LinkedList<Card> stock, waste;
      */
     private State state;
+    private PointCalculator pointCalculator;
+    private Card emptyStackTableau = new Card(-1, UNKNOWN, false);
+    private Card emptyStackFoundation = new Card(-2, UNKNOWN, false);
 
     public GameControl(){
     }
@@ -84,7 +89,6 @@ public class GameControl {
         }else return false;
     }
 
-    public void suggestMove(){}
 
     /*
     This finds all possible moves
@@ -113,7 +117,7 @@ public class GameControl {
                 for(LinkedList<Card> otherCardlistTableau : state.tableau){
                     if(otherCardlistTableau.isEmpty()){
                         if(moveToEmptySpaceTableauPossible(cardList.peek())){
-                            cardList.peek().addMoveToEmptySpaceTableau(otherCardlistTableau);
+                            cardList.peek().addMove(emptyStackTableau);
                         }
                     }
 
@@ -122,7 +126,7 @@ public class GameControl {
                 for(LinkedList<Card> cardListFoundations : state.foundations){
                     if(cardListFoundations.isEmpty()){
                         if(moveToEmptyFoundationPossible(cardList.peek())){
-                            cardList.peek().addMoveToEmptySpaceFoundation(cardListFoundations);
+                            cardList.peek().addMove(emptyStackFoundation);
                         }
                     }
                 }
@@ -133,7 +137,7 @@ public class GameControl {
                 }
 
                 if(moveToEmptySpaceTableauPossible(state.waste.peek())){
-                    state.waste.peek().addMoveToEmptySpaceTableau(cardList);
+                    state.waste.peek().addMove(emptyStackTableau);
                 }
 
             }
@@ -146,7 +150,7 @@ public class GameControl {
                 state.waste.peek().addMove(cardListFoundations.peek());
             }
             if(moveToEmptyFoundationPossible(state.waste.peek())){
-                state.waste.peek().addMoveToEmptySpaceFoundation(cardListFoundations);
+                state.waste.peek().addMove(emptyStackFoundation);
             }
 
         }
@@ -160,12 +164,16 @@ public class GameControl {
                 }
 
                 if(moveToEmptySpaceTableauPossible(cardList.peek())){
-                    cardList.peek().addMoveToEmptySpaceTableau(cardListTableau);
+                    cardList.peek().addMove(emptyStackTableau);
                 }
             }
         }
     }
 
-
-
+/*
+    public void suggestMove(){
+        LinkedList<Card> bestMoveCards;
+        for()
+    }
+*/
 }
