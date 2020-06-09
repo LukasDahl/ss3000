@@ -2,13 +2,14 @@ package com.cdio.ss3000.DataLayer;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Card {
     private int value; // From 1 (ace) to 13 (king) (0 is unknown)
     private Suit suit;
     private boolean movable;
-    private LinkedList<Card> moves;
+    private ArrayList<Card> moves;
     //LinkedList<LinkedList> emptySpaceTableau;
     //LinkedList<LinkedList> emptySpaceFoundation;
     private int points = 0;
@@ -59,14 +60,14 @@ public class Card {
         this.movable = movable;
     }
 
-    public void addMove(Card possibleMoveTo){moves.push(possibleMoveTo);}
+    public void addMove(Card possibleMoveTo){moves.add(possibleMoveTo);}
 
     public void clearMoves(){
         moves.clear();
     //    emptySpaceTableau.clear();
     }
 
-    public LinkedList<Card> getMoves(){return moves;}
+    public ArrayList<Card> getMoves(){return moves;}
 
     //public void addMoveToEmptySpaceTableau(LinkedList<Card> space){emptySpaceTableau.add(space);}
 

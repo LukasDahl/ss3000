@@ -2,15 +2,15 @@ package com.cdio.ss3000.DataLayer;
 
 import android.graphics.Point;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 import static com.cdio.ss3000.DataLayer.Suit.*;
 
 public class GameControl {
 
     /*
-    private LinkedList<Card>[] foundations = new LinkedList[4], tableau = new LinkedList[7];
-    private LinkedList<Card> stock, waste;
+    private ArrayList<Card>[] foundations = new ArrayList[4], tableau = new ArrayList[7];
+    private ArrayList<Card> stock, waste;
      */
     private State state;
     private PointCalculator pointCalculator;
@@ -101,43 +101,43 @@ public class GameControl {
 
 
         //Possible moves from tableau
-        for(LinkedList<Card> cardList : state.tableau){
+        for(ArrayList<Card> cardList : state.tableau){
             if(!cardList.isEmpty()){
-                for(LinkedList<Card> otherCardListTableau : state.tableau){
-                       if(moveToTableauPossible(cardList.peek(), otherCardListTableau.peek())){
-                           cardList.peek().addMove(otherCardListTableau.peek());
+                for(ArrayList<Card> otherCardListTableau : state.tableau){
+                       if(moveToTableauPossible(cardList.get(cardList.size()-1), otherCardListTableau.get(cardList.size()-1))){
+                           cardList.get(cardList.size()-1).addMove(otherCardListTableau.get(otherCardListTableau.size()-1));
                        }
                     }
-                for(LinkedList<Card> cardListFoundations : state.foundations){
-                    if(moveToFoundationPossible(cardList.peek(), cardListFoundations.peek())){
-                        cardList.peek().addMove(cardListFoundations.peek());
+                for(ArrayList<Card> cardListFoundations : state.foundations){
+                    if(moveToFoundationPossible(cardList.get(cardList.size()-1), cardListFoundations.get(cardListFoundations.size()-1))){
+                        cardList.get(cardList.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
                     }
                 }
 
-                for(LinkedList<Card> otherCardlistTableau : state.tableau){
+                for(ArrayList<Card> otherCardlistTableau : state.tableau){
                     if(otherCardlistTableau.isEmpty()){
-                        if(moveToEmptySpaceTableauPossible(cardList.peek())){
-                            cardList.peek().addMove(emptyStackTableau);
+                        if(moveToEmptySpaceTableauPossible(cardList.get(cardList.size()-1))){
+                            cardList.get(cardList.size()-1).addMove(emptyStackTableau);
                         }
                     }
 
                 }
 
-                for(LinkedList<Card> cardListFoundations : state.foundations){
+                for(ArrayList<Card> cardListFoundations : state.foundations){
                     if(cardListFoundations.isEmpty()){
-                        if(moveToEmptyFoundationPossible(cardList.peek())){
-                            cardList.peek().addMove(emptyStackFoundation);
+                        if(moveToEmptyFoundationPossible(cardList.get(cardList.size()-1))){
+                            cardList.get(cardList.size()-1).addMove(emptyStackFoundation);
                         }
                     }
                 }
 
                 //possible moves from waste pile
-                if(moveToTableauPossible(state.waste.peek(), cardList.peek())){
-                    state.waste.peek().addMove(cardList.peek());
+                if(moveToTableauPossible(state.waste.get(state.waste.size()-1), cardList.get(cardList.size()-1))){
+                    state.waste.get(state.waste.size()-1).addMove(cardList.get(cardList.size()-1));
                 }
 
-                if(moveToEmptySpaceTableauPossible(state.waste.peek())){
-                    state.waste.peek().addMove(emptyStackTableau);
+                if(moveToEmptySpaceTableauPossible(state.waste.get(state.waste.size()-1))){
+                    state.waste.get(state.waste.size()-1).addMove(emptyStackTableau);
                 }
 
             }
@@ -145,26 +145,26 @@ public class GameControl {
 
 
         //possible moves from waste pile
-        for(LinkedList<Card> cardListFoundations: state.foundations){
-            if(moveToFoundationPossible(state.waste.peek(), cardListFoundations.peek())){
-                state.waste.peek().addMove(cardListFoundations.peek());
+        for(ArrayList<Card> cardListFoundations: state.foundations){
+            if(moveToFoundationPossible(state.waste.get(state.waste.size()-1), cardListFoundations.get(cardListFoundations.size()-1))){
+                state.waste.get(state.waste.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
             }
-            if(moveToEmptyFoundationPossible(state.waste.peek())){
-                state.waste.peek().addMove(emptyStackFoundation);
+            if(moveToEmptyFoundationPossible(state.waste.get(state.waste.size()-1))){
+                state.waste.get(state.waste.size()-1).addMove(emptyStackFoundation);
             }
 
         }
 
 
         //Possible moves from foundations
-        for(LinkedList<Card> cardList : state.foundations){
-            for(LinkedList<Card> cardListTableau : state.tableau){
-                if(moveToTableauPossible(cardList.peek(), cardListTableau.peek())){
-                    cardList.peek().addMove(cardListTableau.peek());
+        for(ArrayList<Card> cardList : state.foundations){
+            for(ArrayList<Card> cardListTableau : state.tableau){
+                if(moveToTableauPossible(cardList.get(cardList.size()-1), cardListTableau.get(cardListTableau.size()-1))){
+                    cardList.get(cardList.size()-1).addMove(cardListTableau.get(cardListTableau.size()-1));
                 }
 
-                if(moveToEmptySpaceTableauPossible(cardList.peek())){
-                    cardList.peek().addMove(emptyStackTableau);
+                if(moveToEmptySpaceTableauPossible(cardList.get(cardList.size()-1))){
+                    cardList.get(cardList.size()-1).addMove(emptyStackTableau);
                 }
             }
         }
@@ -172,7 +172,7 @@ public class GameControl {
 
 /*
     public void suggestMove(){
-        LinkedList<Card> bestMoveCards;
+        ArrayList<Card> bestMoveCards;
         for()
     }
 */
