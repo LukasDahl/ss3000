@@ -2,7 +2,6 @@ package com.cdio.ss3000.DataLayer;
 
 import org.junit.Test;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
