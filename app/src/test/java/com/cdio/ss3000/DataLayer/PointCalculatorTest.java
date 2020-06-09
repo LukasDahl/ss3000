@@ -17,7 +17,7 @@ public class PointCalculatorTest {
         Card returnCard = PC.getBestMove(card);
         assertEquals(card.getValue(), returnCard.getValue());
         assertEquals(card.getSuit(), returnCard.getSuit());
-        assertEquals(10, returnCard.getPoints());
+        assertEquals(100, returnCard.getPoints());
     }
 
 }
