@@ -9,7 +9,7 @@ public class Card {
     private int value; // From 1 (ace) to 13 (king) (0 is unknown)
     private Suit suit;
     private boolean movable;
-    private ArrayList<ArrayList> moves;
+    private ArrayList<ArrayList> moves = new ArrayList<>();
     //LinkedList<LinkedList> emptySpaceTableau;
     //LinkedList<LinkedList> emptySpaceFoundation;
     private int points = 0;
@@ -60,7 +60,9 @@ public class Card {
         this.movable = movable;
     }
 
-    public void addMove(ArrayList<Card> possibleMoveTo){moves.add(possibleMoveTo);}
+    public void addMove(ArrayList<Card> possibleMoveTo){
+        moves.add(possibleMoveTo);
+    }
 
     public void clearMoves(){
         moves.clear();

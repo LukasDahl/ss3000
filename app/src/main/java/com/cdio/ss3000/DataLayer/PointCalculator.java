@@ -12,8 +12,9 @@ public class PointCalculator {
         int temp_points = 0;
         //If card is an ace
         if(card.getValue() == 1 && !card.getPlacedInFoundation()){
-            temp_points += 10;
+            temp_points += 100;
             card.setPoints(temp_points);
+            return card;
         }
         //Do all other moves
         for(ArrayList<Card> move : card.getMoves()){
@@ -22,7 +23,7 @@ public class PointCalculator {
                 temp_points += 3;
             }
             //This will be a move to foundation
-            if(move.get(move.size()-1).getSuit() == card.getSuit()){
+            if(move.get(move.size()).getSuit() == card.getSuit()){
                 temp_points += 10;
             }
 
