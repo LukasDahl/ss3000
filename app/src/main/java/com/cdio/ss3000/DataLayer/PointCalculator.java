@@ -36,9 +36,11 @@ public class PointCalculator {
             //Empty spot in Tableau
             if(move.isEmpty() && card.getValue() == KING){
                 temp_points += TABLEAU_EMPTY_POINTS;
+                card.setPoints(temp_points);
+                return card;
             }
             //This will be a move to foundation
-            if(move.get(move.size()).getSuit() == card.getSuit()){
+            if(move.get(move.size()-1).getSuit() == card.getSuit()){
                 temp_points += FOUNDATION_POINTS;
             }
 
