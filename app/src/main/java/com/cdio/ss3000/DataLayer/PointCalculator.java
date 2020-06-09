@@ -39,7 +39,7 @@ public class PointCalculator {
         return newCard;
     }
 
-    public Card getMoveWithMostPoint(Card card){
-        return new Card();
+    public Card getBestMove(Card card){
+        return checkMoves(card);
     }
 }
