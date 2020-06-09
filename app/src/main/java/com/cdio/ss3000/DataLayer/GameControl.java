@@ -105,19 +105,22 @@ public class GameControl {
             if(!cardList.isEmpty()){
                 for(ArrayList<Card> otherCardListTableau : state.tableau){
                        if(moveToTableauPossible(cardList.get(cardList.size()-1), otherCardListTableau.get(cardList.size()-1))){
-                           cardList.get(cardList.size()-1).addMove(otherCardListTableau.get(otherCardListTableau.size()-1));
+                           //cardList.get(cardList.size()-1).addMove(otherCardListTableau.get(otherCardListTableau.size()-1));
+                           cardList.get(cardList.size()-1).addMove(otherCardListTableau);
                        }
                     }
                 for(ArrayList<Card> cardListFoundations : state.foundations){
                     if(moveToFoundationPossible(cardList.get(cardList.size()-1), cardListFoundations.get(cardListFoundations.size()-1))){
-                        cardList.get(cardList.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
+                        //cardList.get(cardList.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
+                        cardList.get(cardList.size()-1).addMove(cardListFoundations);
                     }
                 }
 
                 for(ArrayList<Card> otherCardlistTableau : state.tableau){
                     if(otherCardlistTableau.isEmpty()){
                         if(moveToEmptySpaceTableauPossible(cardList.get(cardList.size()-1))){
-                            cardList.get(cardList.size()-1).addMove(emptyStackTableau);
+                           // cardList.get(cardList.size()-1).addMove(emptyStackTableau);
+                            cardList.get(cardList.size()-1).addMove(otherCardlistTableau);
                         }
                     }
 
@@ -126,18 +129,20 @@ public class GameControl {
                 for(ArrayList<Card> cardListFoundations : state.foundations){
                     if(cardListFoundations.isEmpty()){
                         if(moveToEmptyFoundationPossible(cardList.get(cardList.size()-1))){
-                            cardList.get(cardList.size()-1).addMove(emptyStackFoundation);
+                            //cardList.get(cardList.size()-1).addMove(emptyStackFoundation);
+                            cardList.get(cardList.size()-1).addMove(cardListFoundations);
                         }
                     }
                 }
 
                 //possible moves from waste pile
                 if(moveToTableauPossible(state.waste.get(state.waste.size()-1), cardList.get(cardList.size()-1))){
-                    state.waste.get(state.waste.size()-1).addMove(cardList.get(cardList.size()-1));
+                    //state.waste.get(state.waste.size()-1).addMove(cardList.get(cardList.size()-1));
+                    state.waste.get(state.waste.size()-1).addMove(cardList);
                 }
 
                 if(moveToEmptySpaceTableauPossible(state.waste.get(state.waste.size()-1))){
-                    state.waste.get(state.waste.size()-1).addMove(emptyStackTableau);
+                    state.waste.get(state.waste.size()-1).addMove(cardList);
                 }
 
             }
@@ -147,10 +152,12 @@ public class GameControl {
         //possible moves from waste pile
         for(ArrayList<Card> cardListFoundations: state.foundations){
             if(moveToFoundationPossible(state.waste.get(state.waste.size()-1), cardListFoundations.get(cardListFoundations.size()-1))){
-                state.waste.get(state.waste.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
+                //state.waste.get(state.waste.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
+                state.waste.get(state.waste.size()-1).addMove(cardListFoundations);
             }
             if(moveToEmptyFoundationPossible(state.waste.get(state.waste.size()-1))){
-                state.waste.get(state.waste.size()-1).addMove(emptyStackFoundation);
+                //state.waste.get(state.waste.size()-1).addMove(emptyStackFoundation);
+                state.waste.get(state.waste.size()-1).addMove(cardListFoundations);
             }
 
         }
@@ -160,11 +167,13 @@ public class GameControl {
         for(ArrayList<Card> cardList : state.foundations){
             for(ArrayList<Card> cardListTableau : state.tableau){
                 if(moveToTableauPossible(cardList.get(cardList.size()-1), cardListTableau.get(cardListTableau.size()-1))){
-                    cardList.get(cardList.size()-1).addMove(cardListTableau.get(cardListTableau.size()-1));
+                    //cardList.get(cardList.size()-1).addMove(cardListTableau.get(cardListTableau.size()-1));
+                    cardList.get(cardList.size()-1).addMove(cardListTableau);
                 }
 
                 if(moveToEmptySpaceTableauPossible(cardList.get(cardList.size()-1))){
-                    cardList.get(cardList.size()-1).addMove(emptyStackTableau);
+                    //cardList.get(cardList.size()-1).addMove(emptyStackTableau);
+                    cardList.get(cardList.size()-1).addMove(cardListTableau);
                 }
             }
         }
