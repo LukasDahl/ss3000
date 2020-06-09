@@ -55,6 +55,7 @@ public class PointCalculatorTest {
         assertEquals(card.getSuit(), returnCard.getSuit());
         System.out.println("Card points: " + 3 + "\t\t Returned points: " + returnCard.getPoints());
         assertEquals(3, returnCard.getPoints());
+        System.out.println(returnCard.toString());
     }
 
 }

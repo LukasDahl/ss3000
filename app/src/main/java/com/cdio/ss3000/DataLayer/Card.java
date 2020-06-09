@@ -100,4 +100,20 @@ public class Card {
         Card newCard = new Card(this.value, this.suit, this.movable);
         return newCard;
     }
+
+    public String toString(){
+        String str = "";
+        switch (getValue()){
+            case 1: str += "Value: Ace\t"; break;
+            case 11: str += "Value: Jack\t"; break;
+            case 12: str += "Value: Queen\t"; break;
+            case 13: str += "Value: King\t"; break;
+
+            default: str += "Value: " + getValue() + "\t";
+        }
+        str += "Suit: " + getSuit() + "\t";
+        str += "Points: " + getPoints() + "\t";
+        str += "Movable: " + isMovable();
+        return str;
+    }
 }
