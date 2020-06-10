@@ -3,14 +3,15 @@
     <string name="header">Solitaire</string>
     <string name="helpBtn">Help</string>
     <string name="startBtn">Play</string>
+    <string name="blackJackBtn">BlackJack</string>
     <string name="highscoreBtn">High score</string>
     <string name="group">CDIO - Gruppe 2</string>
-    <string name="highscore">High score!</string>
+    <string name="highscore">High score</string>
     <string name="help">How to Play</string>
     <string name="howtoplay">To play solitaire, try to get all of the cards into 4 foundation piles, 1 pile per suit, in ascending order from ace to king. Once you finish all 4 foundation piles, you win!
         \nTo set up the game, first place 1 card face up and 6 cards face down to the right. Repeat until every column has a face-up card at the bottom. Your final set up should look like this.
     </string>
-    <string name = "howtoplaylast">Put the remaining cards in a separate pile and set it either above or below the piles. This pile is where you will go to get more cards if you run out of moves. Look at the cards on the table that are face up. If there are any aces, place them above the seven piles. If there are no aces, rearrange the cards you have, moving only the face up cards. When you place a card on top (slightly lower so that you can still see both cards), it must be a different color than the card you are placing it on top of and have a value of one less. Thus, if you have a six of hearts, you can either place a five of spades or a five of clubs on top.[2]
+    <string name="howtoplaylast">Put the remaining cards in a separate pile and set it either above or below the piles. This pile is where you will go to get more cards if you run out of moves. Look at the cards on the table that are face up. If there are any aces, place them above the seven piles. If there are no aces, rearrange the cards you have, moving only the face up cards. When you place a card on top (slightly lower so that you can still see both cards), it must be a different color than the card you are placing it on top of and have a value of one less. Thus, if you have a six of hearts, you can either place a five of spades or a five of clubs on top.[2]
 \nKeep placing the cards on top of each other until you cannot move anymore.
 \nEach pile should be alternating in color and move in descending order.
 \n\n

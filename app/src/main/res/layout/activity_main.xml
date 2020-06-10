@@ -20,8 +20,19 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-        <!--android:textColor="@color/goldHeader"-->
+    <!--android:textColor="@color/goldHeader"-->
 
+
+    <ImageView
+        android:id="@+id/blackJIV"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="5dp"
+        android:elevation="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/blackJBtn"
+        app:layout_constraintStart_toStartOf="@+id/blackJBtn"
+        app:layout_constraintTop_toTopOf="@+id/blackJBtn"
+        app:srcCompat="@drawable/chipicon" />
 
     <Button
         android:id="@+id/startBtn"
@@ -60,9 +71,9 @@
         android:layout_marginTop="5dp"
         android:paddingStart="40dp"
         android:text="@string/helpBtn"
+        android:textAllCaps="false"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -129,5 +140,31 @@
         app:layout_constraintStart_toStartOf="@+id/highscoreBtn"
         app:layout_constraintTop_toTopOf="@+id/highscoreBtn"
         app:srcCompat="@drawable/podium" />
+
+    <Button
+        android:id="@+id/blackJBtn"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingStart="39dp"
+        android:text="@string/blackJackBtn"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/kingIv"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/orTV" />
+
+    <TextView
+        android:id="@+id/orTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Or try..."
+        android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@+id/kingIv"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/kingIv" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
