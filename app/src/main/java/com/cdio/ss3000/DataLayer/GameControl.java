@@ -17,7 +17,8 @@ public class GameControl {
     private Card emptyStackTableau = new Card(-1, UNKNOWN, false);
     private Card emptyStackFoundation = new Card(-2, UNKNOWN, false);
 
-    public GameControl(){
+    public GameControl(State state){
+        this.state = state;
     }
 
     public Object getState() {
@@ -104,7 +105,7 @@ public class GameControl {
         for(ArrayList<Card> cardList : state.tableau){
             if(!cardList.isEmpty()){
                 for(ArrayList<Card> otherCardListTableau : state.tableau){
-                       if(moveToTableauPossible(cardList.get(cardList.size()-1), otherCardListTableau.get(cardList.size()-1))){
+                       if(moveToTableauPossible(cardList.get(cardList.size()-1), otherCardListTableau.get(otherCardListTableau.size()-1))){
                            //cardList.get(cardList.size()-1).addMove(otherCardListTableau.get(otherCardListTableau.size()-1));
                            cardList.get(cardList.size()-1).addMove(otherCardListTableau);
                        }
