@@ -67,5 +67,28 @@ public class PointCalculatorTest {
     /*
     TODO: Implement test for King is needed in foundation, but empty spot in tableau.
      */
+    @Test
+    public void CardIsKingToFoundationWithEmptySlotTableau(){
+        System.out.println("\n");
+        System.out.println("TEST: CardIsKingToFoundationWithEmptySlotTableau");
+        //Setup of hand
+        Card king = new Card(13, Suit.HEARTS, true);
+        //prepare possible moves
+        ArrayList<Card> foundation = new ArrayList<>();
+        Card queen = new Card(12, Suit.HEARTS, true);
+        queen.setPlacedInFoundation(true);
+        foundation.add(queen);
+        ArrayList<Card> tableauSpace = new ArrayList<>();
+        //Add moves to king
+        king.addMove(foundation);
+        king.addMove(tableauSpace);
+        //Check the move
+        Card bestmove = PC.getBestMove(king);
+        System.out.println("Expected result: " + queen.toString());
+        System.out.println("Actual result:   " + ((Card)bestmove.getMoves().get(0).get(0)).toString());
+        assertEquals(queen.getValue(), ((Card)bestmove.getMoves().get(0).get(0)).getValue());
+        assertEquals(queen.getSuit(), ((Card)bestmove.getMoves().get(0).get(0)).getSuit());
+        assertEquals(10, ((Card)bestmove.getMoves().get(0).get(0)).getPoints());
 
+    }
 }
