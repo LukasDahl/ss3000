@@ -1,8 +1,12 @@
 package com.cdio.ss3000;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.view.View;
@@ -10,27 +14,33 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.pranavpandey.android.dynamic.utils.DynamicUnitUtils;
+
 import java.util.ArrayList;
 
 
 public class CameraActivity extends AppCompatActivity implements View.OnClickListener {
 
+  boolean tester;
   ImageView image;
   Button capture;
   Camera camera;
   FrameLayout framelayout;
   ShowCamera showCamera;
-  ArrayList<Bitmap> bmArray = new ArrayList<Bitmap>();
+  public Bitmap[] bmArray = new Bitmap[21];
+  //ArrayList<Bitmap> bmArray = new ArrayList<Bitmap>();
   Bitmap bm = null;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_camera);
-    framelayout = (FrameLayout) findViewById(R.id.frameLayout);
+    framelayout = (FrameLayout)findViewById(R.id.frameLayout);
 
 
     //FrameLayout framelayout;
+
+    tester = false;
 
     capture = findViewById(R.id.captureBtn);
     capture.setOnClickListener(this);
@@ -43,35 +53,46 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
     showCamera = new ShowCamera(this, camera);
     framelayout.addView(showCamera);
+
+    capture.bringToFront();
+  }
+
+  public @NonNull static Bitmap createBitmapFromView(@NonNull View view, int width, int height) {
+    if (width > 0 && height > 0) {
+      view.measure(View.MeasureSpec.makeMeasureSpec(DynamicUnitUtils
+                      .convertDpToPixels(width), View.MeasureSpec.EXACTLY),
+              View.MeasureSpec.makeMeasureSpec(DynamicUnitUtils
+                      .convertDpToPixels(height), View.MeasureSpec.EXACTLY));
+    }
+    view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+
+    Bitmap bitmap = Bitmap.createBitmap(view.getMeasuredWidth(),
+            view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+    Canvas canvas = new Canvas(bitmap);
+    Drawable background = view.getBackground();
+
+    if (background != null) {
+      background.draw(canvas);
+    }
+    view.draw(canvas);
+
+    return bitmap;
   }
 
   @Override
   public void onClick(View v) {
-    if (v == capture) {
-
-      for (int i = 0; i < 10; i++) {
+    if(v == capture){
         framelayout = (FrameLayout) findViewById(R.id.frameLayout);
-        framelayout.setDrawingCacheEnabled(true);
-        framelayout.buildDrawingCache();
-        bm = framelayout.getDrawingCache();
-        Bitmap rbm = resizeBm(bm);
-        bmArray.add(rbm);
-        framelayout.destroyDrawingCache();
-        System.out.println("Array er: " + bmArray.isEmpty());
 
-      }
-      image.setImageBitmap(bmArray.get(2));
+        for(int i=0; i<10; i++){
+        Bitmap bitmap = createBitmapFromView(framelayout, 0, 0);
+        bmArray[i] = bitmap;
+        image.setImageBitmap(bitmap);
+        image.bringToFront();
+        }
+
+        //image.setImageBitmap(bm);
+      System.out.println(bmArray[0]);
     }
   }
-
-
-  public Bitmap resizeBm(Bitmap bitmap) {
-    if (bitmap.getHeight() < bitmap.getWidth()) {
-      Bitmap.createScaledBitmap(bitmap, 500, (int) ((double) bitmap.getHeight() / (double) bitmap.getWidth() * (double) 1500), true);
-    } else {
-      Bitmap.createScaledBitmap(bitmap, (int) ((double) bitmap.getWidth() / (double) bitmap.getHeight() * (double) 500), 1500, true);
-    }
-    return bitmap;
-  }
-
 }
