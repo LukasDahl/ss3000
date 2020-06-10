@@ -84,8 +84,10 @@ public class PointCalculatorTest {
         king.addMove(tableauSpace);
         //Check the move
         Card bestmove = PC.getBestMove(king);
+        //Best move should be to move to the queen in the foundation
         System.out.println("Expected result: " + queen.toString());
         System.out.println("Actual result:   " + ((Card)bestmove.getMoves().get(0).get(0)).toString());
+        //Check to see if we have received the correct card
         assertEquals(queen.getValue(), ((Card)bestmove.getMoves().get(0).get(0)).getValue());
         assertEquals(queen.getSuit(), ((Card)bestmove.getMoves().get(0).get(0)).getSuit());
         assertEquals(10, ((Card)bestmove.getMoves().get(0).get(0)).getPoints());
