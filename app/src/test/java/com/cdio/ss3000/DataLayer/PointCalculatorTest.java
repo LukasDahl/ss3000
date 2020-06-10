@@ -2,6 +2,7 @@ package com.cdio.ss3000.DataLayer;
 
 import org.junit.Test;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
@@ -89,6 +90,50 @@ public class PointCalculatorTest {
         assertEquals(queen.getValue(), ((Card)bestmove.getMoves().get(0).get(0)).getValue());
         assertEquals(queen.getSuit(), ((Card)bestmove.getMoves().get(0).get(0)).getSuit());
         assertEquals(10, ((Card)bestmove.getMoves().get(0).get(0)).getPoints());
+
+    }
+
+    @Test
+    public void BaseLinePointTest(){
+        System.out.println("\n");
+        System.out.println("TEST: BaseLinePointTest");
+        //Setup hand
+        Card card1 = new Card(6, Suit.HEARTS, true);
+        ArrayList<Card> deck = new ArrayList<>();
+        //If deck only has a single card
+        deck.add(card1);
+        int bonus = PC.addBaseLinePoints(deck, card1);//Calculate bonus if card1 is the only card in the stack
+        System.out.println("Expected (Actual): 0 (" + bonus + ")");
+        assertEquals(0, bonus);//test -> should be 0
+
+        //Remove single card from deck
+        deck.clear();
+
+
+        //Fill column (deck) with cards
+        for(int i = 0; i < 7; i++){
+            deck.add(new Card());
+        }
+        //Add hand to deck
+        deck.add(card1);
+        //Check value of bonus points
+        bonus = PC.addBaseLinePoints(deck, card1);
+        System.out.println("Expected (Actual): 14 (" + bonus + ")");
+        assertEquals(14, bonus);//test it
+
+        //Add a new card to the deck (so two face up cards exist)
+        Card card2 = new Card(5, Suit.CLUBS, true);
+        deck.add(card2);
+        bonus = PC.addBaseLinePoints(deck, card2);//Calc bonus points with the top face-up card
+        System.out.println("Expected (Actual): 0 (" + bonus + ")");
+        assertEquals(0, bonus);
+
+        //Add a new card to the deck (so three face up cards exist, one of which is an illegal move)
+        Card card3 = new Card(4, Suit.CLUBS, true);
+        deck.add(card3);//This is an illegal move
+        bonus = PC.addBaseLinePoints(deck, card3);//Calc bonus points with the top face-up card
+        System.out.println("Expected (Actual): 0 (" + bonus + ")");
+        assertEquals(0, bonus);
 
     }
 }

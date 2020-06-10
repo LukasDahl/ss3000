@@ -1,6 +1,7 @@
 package com.cdio.ss3000.DataLayer;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PointCalculator {
     private final int ACE_POINTS = 100;
@@ -82,19 +83,22 @@ public class PointCalculator {
     TODO: Add points for the amount of face-down cards
      */
 
-    private int addBaseLinePoints(ArrayList<Card> column, Card card){
+    int addBaseLinePoints(ArrayList<Card> column, Card card){
+        if(column.size() == 1) return 0;
         //Save points and index of card
         int bl_points;
         int index = column.indexOf(card);
         //Create a sublist from the column
-        ArrayList<Card> sublist = (ArrayList<Card>)column.subList(0, index);
+        ArrayList<Card> sublist = new ArrayList<>();
+        for(int i = 0; i < index; i++){
+            sublist.add(column.get(i));
+        }
         //Determine points based on size of sublist
-        if(sublist.size() == 1) return 0;
-
         if(column.get(index-1).getSuit() != Suit.UNKNOWN) return 0;
         bl_points = sublist.size()*BASELINE;
         return bl_points;
     }
+
 
     public Card getBestMove(Card card){
         return checkMoves(card);
