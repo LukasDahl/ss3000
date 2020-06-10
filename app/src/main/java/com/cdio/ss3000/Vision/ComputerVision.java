@@ -1,9 +1,10 @@
 package com.cdio.ss3000.Vision;
 
 import org.opencv.android.Utils;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -13,33 +14,107 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.widget.ImageView;
 
 import com.cdio.ss3000.R;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ComputerVision {
 
+    List<MatOfPoint> contours;
+    Mat hierarchy;
+    ArrayList<Integer> contourIsCard;
+
+    double SCALEFACTOR = 0;
+
+    int TEXTR = 138;
+    int TEXTG = 43;
+    int TEXTB = 226;
+
+    boolean CENTER = true;
+
+    double CONFIDENCE = 0.2;
+    int BKG_THRESH = 200;
+
+    int BOXSIZE = 500;
+
+    int CARD_MAX_AREA = 180000;
+    int CARD_MIN_AREA = 40000;
+
+    int l = 0;
+    int t = 0;
+
+    //double SCALEFACTOR = 100.0 / 100.0;
+
     private static ComputerVision instance = null;
 
-    public static ComputerVision getInstance(Context context, ImageView imageView){
-        if (instance == null){
+    private static String[] classNames = {
+            "Ah",
+            "Kh",
+            "Qh",
+            "Jh",
+            "10h",
+            "9h",
+            "8h",
+            "7h",
+            "6h",
+            "5h",
+            "4h",
+            "3h",
+            "2h",
+            "Ad",
+            "Kd",
+            "Qd",
+            "Jd",
+            "10d",
+            "9d",
+            "8d",
+            "7d",
+            "6d",
+            "5d",
+            "4d",
+            "3d",
+            "2d",
+            "Ac",
+            "Kc",
+            "Qc",
+            "Jc",
+            "10c",
+            "9c",
+            "8c",
+            "7c",
+            "6c",
+            "5c",
+            "4c",
+            "3c",
+            "2c",
+            "As",
+            "Ks",
+            "Qs",
+            "Js",
+            "10s",
+            "9s",
+            "8s",
+            "7s",
+            "6s",
+            "5s",
+            "4s",
+            "3s",
+            "2s"
+
+    };
+
+    public static ComputerVision getInstance(Context context, ImageView imageView) {
+        if (instance == null) {
             instance = new ComputerVision();
         }
         instance.setContext(context);
@@ -47,9 +122,9 @@ public class ComputerVision {
         return instance;
     }
 
-    private ComputerVision(){
+    private ComputerVision() {
         Handler handler = new Handler();
-        handler.postDelayed(runnable,500);
+        handler.postDelayed(runnable, 500);
     }
 
     private Context context;
@@ -78,7 +153,6 @@ public class ComputerVision {
             // Load Yolo
 
 
-
             //File fileDir = context.getFilesDir();
             //weights = new File(fileDir, "yolov.weights").getAbsolutePath();
             //cfg = new File(fileDir, "yolov3_tinynew.cfg").getAbsolutePath();
@@ -102,13 +176,12 @@ public class ComputerVision {
             String image = Environment.getExternalStorageDirectory() + "/Android/data/com.cdio.ss3000/dnns/" + "testcrop.jpg";
             Mat imgorig = Imgcodecs.imread(image);
             Mat img = new Mat();
-          //  Imgproc.resize(imgorig, img, new Size(1050,675));
+            //  Imgproc.resize(imgorig, img, new Size(1050,675));
             Mat imgOriginal = imgorig.clone();
 
             find_cards(preprocess_image(imgOriginal));
 
             System.out.println("Depth: " + imgOriginal.depth());
-
             if (contours.size() == 0)
                 return;
             System.out.println(contours.size() + " contours");
@@ -116,7 +189,7 @@ public class ComputerVision {
             Rect rect;
             MatOfPoint contour;
 
-            for (int index = 0; index < contours.size(); index ++){
+            for (int index = 0; index < contours.size(); index++) {
 
                 contour = contours.get(index);
                 rect = Imgproc.boundingRect(contour);
@@ -124,145 +197,179 @@ public class ComputerVision {
                 if (contourIsCard.get(index) != 1 || rect.height < rect.width || Imgproc.contourArea(contour) < 10000)
                     continue;
 
-                img = box_thing(imgOriginal, rect);
-                System.out.println(img.channels());
-                Bitmap bm = Bitmap.createBitmap(img.cols(), img.rows(),Bitmap.Config.ARGB_8888);
-                if (true)
-                    continue;
-                Utils.matToBitmap(img, bm);
-
-                imageView.setImageBitmap(bm);
+                for (int f = 0; f < 1; f++) {
 
 
-                if (true)
-                    continue;
-                Imgproc.cvtColor(img, img, Imgproc.COLOR_RGBA2BGR);
+                    img = convertToSquare(imgOriginal, rect);
+                    System.out.println(img.channels());
 
-                Mat blob = Dnn.blobFromImage(img, 1.0/255.0, new Size(416, 416), new Scalar(0, 0, 0), true, false);
-                net.setInput(blob);
-                List<Mat> outs = new ArrayList<>();
-                net.forward(outs, outputLayers);
-                int cols = img.cols();
-                int rows = img.rows();
-                List<Rect> detectedRects = new ArrayList<>();
-                List<Integer> classIds = new ArrayList<>();
-                List<Double> confidences = new ArrayList<>();
-                for (Mat out: outs){
-                    for (int i = 0; i < out.rows(); i++){
-                        double confidence = out.get(i, 2)[0];
-                        if (confidence > CONFIDENCE){
-                            int classId = (int) out.get(i, 1)[0];
-                            int left = (int) (out.get(i, 3)[0] * cols);
-                            int top = (int) (out.get(i, 4)[0] * rows);
-                            int right = (int) (out.get(i, 5)[0] * cols);
-                            int bottom = (int) (out.get(i, 6)[0] * rows);
-                            Rect detectionRect = new Rect(left, top, right-left, bottom-top);
-                            detectedRects.add(detectionRect);
-                            classIds.add(classId);
-                            confidences.add(confidence);
+                    Imgproc.cvtColor(img, img, Imgproc.COLOR_BGR2RGB);
+
+                    Mat blob = Dnn.blobFromImage(img,
+                            1.0 / 255.0,
+                            new Size(416, 416),
+                            new Scalar(0, 0, 0),
+                            false,
+                            false);
+                    net.setInput(blob);
+                    List<Mat> outs = new ArrayList<>();
+                    net.forward(outs);
+                    //net.forward(outs, outputLayers);
+                    int cols = img.cols();
+                    int rows = img.rows();
+                    List<Rect> detectedRects = new ArrayList<>();
+                    List<Integer> classIds = new ArrayList<>();
+                    List<Double> confidences = new ArrayList<>();
+                    System.out.println("BLOBS: " + outs.size());
+                    for (Mat out : outs) {
+                        System.out.println("DETECTIONS: " + out.rows());
+                        for (int i = 0; i < out.rows(); i++) {
+
+                            Mat row = out.row(i);
+                            Mat scores = row.colRange(5, out.cols());
+                            Core.MinMaxLocResult mm = Core.minMaxLoc(scores);
+
+                            //double confidence = out.get(i, 2)[0];
+                            double confidence = mm.maxVal;
+                            Point classIdPoint = mm.maxLoc;
+
+
+                            if (confidence > CONFIDENCE) {
+                                System.out.println("IN HERE ( CONFIDENCE IF )");
+                                int centerX = (int) (row.get(0, 0)[0] * cols);
+                                int centerY = (int) (row.get(0, 1)[0] * rows);
+                                int width = (int) (row.get(0, 2)[0] * cols);
+                                int height = (int) (row.get(0, 3)[0] * rows);
+                                int left = centerX - (width / 2);
+                                int top = centerY - (height / 2);
+                                int right = left + width;
+                                int bottom = top + height;
+
+                                Rect detectionRect = new Rect(left, top, width, height);
+                                detectedRects.add(detectionRect);
+                                classIds.add((int) classIdPoint.x);
+                                confidences.add(confidence);
+
+                                Imgproc.rectangle(
+                                        img,
+                                        new Point(left, top),
+                                        new Point(right, bottom),
+                                        new Scalar(TEXTR, TEXTG, TEXTB)
+                                );
+
+                                int origX1 = (int)((double)(left - l) / SCALEFACTOR) + rect.x;
+                                int origX2 = (int)((double)(right - l) / SCALEFACTOR) + rect.x;
+                                int origY1 = (int)((double)(top - t) / SCALEFACTOR) + rect.y;
+                                int origY2 = (int)((double)(bottom - t) / SCALEFACTOR) + rect.y;
+
+                                Imgproc.rectangle(
+                                        imgorig,
+                                        new Point(origX1, origY1),
+                                        new Point(origX2, origY2),
+                                        new Scalar(TEXTR, TEXTG, TEXTB)
+                                );
+
+                                String conf = (confidence + "").substring(0, 5);
+                                String label = classNames[(int) classIdPoint.x] + " " + conf;
+
+                                Imgproc.putText(
+                                        img,
+                                        label,
+                                        new Point(right, bottom),
+                                        Core.FONT_HERSHEY_TRIPLEX,
+                                        1,
+                                        new Scalar(TEXTR, TEXTG, TEXTB)
+
+                                );
+                                Imgproc.putText(
+                                        imgorig,
+                                        label,
+                                        new Point(origX2, origY2),
+                                        Core.FONT_HERSHEY_TRIPLEX,
+                                        1,
+                                        new Scalar(TEXTR, TEXTG, TEXTB)
+
+                                );
+
+                            }
                         }
                     }
+
+                    System.out.println("CLASSIDS: " + classIds);
+
+                    showMat(img);
                 }
-                System.out.println(classIds);
-
-
-
-
             }
-//
-//            indexes = cv2.dnn.NMSBoxes(boxes, confidences, 0.3, 0.4)
-//            print(indexes)
-//            font = cv2.FONT_HERSHEY_PLAIN
-//            for i in range(len(boxes)):
-//            if i in indexes:
-//            x, y, w, h = boxes[i]
-//            label = str(classes[class_ids[i]])
-//            color = colors[i]
-//            cv2.rectangle(img, (x, y), (x + w, y + h), color, 2)
-//            cv2.putText(img, label, (x, y + 30), font, 3, color, 3)
-//            print(f"{x} {y} {label} {scalar / 100}")
-//
-//            frame_array.append(img)
-//            cv2.imshow("Image", img)
-//            while (True):
-//            if cv2.waitKey(1) & 0xFF == ord('q'):
-//            break
-//                    cv2.destroyAllWindows()
+            showMat(imgorig);
 
-
-
-
-
-
-
-            // frame_width = int(cap.get(3))
-            // frame_height = int(cap.get(4))
-            // out = cv2.VideoWriter('outpy.avi', cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 10, (frame_width,frame_height))
-            //
-            // for i in range(len(frame_array)):
-            //     // writing to a image array
-//     out.write(frame_array[i])
-            //
-            // cap.release()
-//            cv2.imshow("Image", imgNotSoOrig)
-//            cv2.imwrite('out.jpg', imgNotSoOrig)
-//            while (True):
-//            if cv2.waitKey(1) & 0xFF == ord('q'):
-//            break
-//                    cv2.destroyAllWindows()
         }
     };
 
-    List<MatOfPoint> contours;
-    Mat hierarchy;
-    ArrayList<Integer> contourIsCard;
 
-    double CONFIDENCE = 0.5;
-    int BKG_THRESH = 200;
-    int CARD_THRESH = 30;
+    private Mat convertToSquare(Mat imgOriginal, Rect rect) {
 
-    //Width and height of card corner, where rank and suit are
-    int CORNER_WIDTH = 32;
-    int CORNER_HEIGHT = 84;
+        double SCALEFACTOR = ((double)BOXSIZE)/(4.0*(double)rect.width);
 
-    // Dimensions of rank train images
-    int RANK_WIDTH = 70;
-    int RANK_HEIGHT = 125;
-
-    // Dimensions of suit train images
-    int SUIT_WIDTH = 70;
-    int SUIT_HEIGHT = 100;
-
-    int RANK_DIFF_MAX = 2000;
-    int SUIT_DIFF_MAX = 700;
-
-    int CARD_MAX_AREA = 120000;
-    int CARD_MIN_AREA = 40000;
-
-    private Mat box_thing(Mat imgOriginal, Rect rect) {
-        //crop
+        //Crop and resize
         Mat img = imgOriginal.submat(rect);
+        img = img.clone();
+        Imgproc.resize(img, img, new Size(img.width() * SCALEFACTOR, img.height() * SCALEFACTOR));
 
-        Bitmap bm = Bitmap.createBitmap(img.cols(), img.rows(),Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(img, bm);
+        System.out.println("RECT: " + rect.width + " " + rect.height);
+        //Create black bars
+        int t, b, l, r;
+        if (CENTER) {
+            if (img.height() <= BOXSIZE) {
 
-        imageView.setImageBitmap(bm);
+                t = (BOXSIZE - img.height()) / 2;
+                b = (BOXSIZE - img.height()) / 2;
+
+                if (img.height() % 2 != 0 && BOXSIZE % 2 == 0)
+                    t++;
+
+                l = (BOXSIZE - img.width()) / 2;
+                r = (BOXSIZE - img.width()) / 2;
+
+                if (img.width() % 2 != 0 && BOXSIZE % 2 == 0)
+                    l++;
+            } else {
+                t = 0;
+                b = 0;
+
+                l = (img.height() - img.width()) / 2;
+                r = (img.height() - img.width()) / 2;
+
+                if (img.width() % 2 != 0 && img.height() % 2 == 0)
+                    l++;
+            }
+        }
+        else {
+            if (img.height() <= BOXSIZE) {
+
+                t = 50;
+                b = (BOXSIZE - img.height());
+
+                l = 50;
+                r = (BOXSIZE - img.width());
+
+            } else {
+                t = 50;
+                b = 0;
+
+                l = 50;
+                r = (img.height() - img.width());
+            }
+        }
+
+        this.t = t;
+        this.l = l;
+        this.SCALEFACTOR = SCALEFACTOR;
+
+        Core.copyMakeBorder(img, img, t, b, l, r, Core.BORDER_CONSTANT, new Scalar(255, 255, 255));
 
 
-
-        Mat blank_image = Mat.zeros(1000, 1000, 3);
-
-
-        img.copyTo(blank_image.submat(new Rect(0, 0, rect.width, rect.height)));
-
-        //find thing
-
-
-        //draw
-        return blank_image;
+        return img;
     }
-
-
 
 
     public void find_cards(Mat preprocessedImage) {
@@ -271,7 +378,6 @@ public class ComputerVision {
         contours = new ArrayList<>();
         hierarchy = new Mat();
         Imgproc.findContours(preprocessedImage, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-
 
 
         // If there are no contours, do nothing
@@ -298,23 +404,17 @@ public class ComputerVision {
         Mat gray = new Mat();
         Imgproc.cvtColor(image, gray, Imgproc.COLOR_BGR2GRAY);
         Mat blur = new Mat();
-        Imgproc.GaussianBlur(gray, blur,  new Size(5,5), 0);
+        Imgproc.GaussianBlur(gray, blur, new Size(5, 5), 0);
         Mat threshold = new Mat();
         Imgproc.threshold(blur, threshold, BKG_THRESH, 255, Imgproc.THRESH_BINARY);
-
-        Bitmap bm = Bitmap.createBitmap(threshold.cols(), threshold.rows(),Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(threshold, bm);
-
-        imageView.setImageBitmap(bm);
-
         return threshold;
     }
 
-    private List<String> getOutputNames(Net net){
+    private List<String> getOutputNames(Net net) {
         List<String> names = new ArrayList<>();
         List<Integer> outLayers = net.getUnconnectedOutLayers().toList();
         List<String> layerNames = net.getLayerNames();
-        for (int i = 0; i < outLayers.size(); i++){
+        for (int i = 0; i < outLayers.size(); i++) {
             names.add(layerNames.get(outLayers.get(i) - 1));
         }
         return names;
@@ -322,55 +422,50 @@ public class ComputerVision {
 
     // Upload file to storage and return a path.
     private static void pushNet(Context context) throws IOException {
-       // String weights = Environment.getDataDirectory() + "/" + "yolov.weights";
-        String weights = Environment.getExternalStorageDirectory() + "/Android/data/com.cdio.ss3000/dnns/"  + "yolov.weights";
-       // String cfg = Environment.getDataDirectory() + "/" + "yolov3_tinynew.cfg";
-        String cfg = Environment.getExternalStorageDirectory() + "/Android/data/com.cdio.ss3000/dnns/"  + "yolov3_tinynew.cfg";
+        // String weights = Environment.getDataDirectory() + "/" + "yolov.weights";
+        String weights = Environment.getExternalStorageDirectory() + "/Android/data/com.cdio.ss3000/dnns/" + "yolov.weights";
+        // String cfg = Environment.getDataDirectory() + "/" + "yolov3_tinynew.cfg";
+        String cfg = Environment.getExternalStorageDirectory() + "/Android/data/com.cdio.ss3000/dnns/" + "yolov3_tinynew.cfg";
         File fileDir = context.getFilesDir();
-       // File weights = new File(fileDir, "yolov.weights");
+        // File weights = new File(fileDir, "yolov.weights");
 
         InputStream in;
         FileOutputStream out;
-            System.out.println("HERE!");
-            in = context.getResources().openRawResource(R.raw.yolov);
-            out = new FileOutputStream(weights);
-            byte[] buff = new byte[1024];
-            int read = 0;
+        in = context.getResources().openRawResource(R.raw.yolov);
+        out = new FileOutputStream(weights);
+        byte[] buff = new byte[1024];
+        int read = 0;
 
-            try {
-                while ((read = in.read(buff)) > 0) {
-                    out.write(buff, 0, read);
-                }
-            } finally {
-                in.close();
-                out.close();
+        try {
+            while ((read = in.read(buff)) > 0) {
+                out.write(buff, 0, read);
             }
+        } finally {
+            in.close();
+            out.close();
+        }
 
 
+        in = context.getResources().openRawResource(R.raw.yolov3_tinynew);
+        out = new FileOutputStream(cfg);
+        buff = new byte[1024];
+        read = 0;
 
-    //    File cfg = new File(fileDir, "yolov3_tinynew.cfg");
-            System.out.println("THERE!");
-            in = context.getResources().openRawResource(R.raw.yolov3_tinynew);
-            out = new FileOutputStream(cfg);
-            buff = new byte[1024];
-            read = 0;
-
-            try {
-                while ((read = in.read(buff)) > 0) {
-                    System.out.println(read);
-                    out.write(buff, 0, read);
-                }
-            } finally {
-                in.close();
-                out.close();
+        try {
+            while ((read = in.read(buff)) > 0) {
+                out.write(buff, 0, read);
             }
+        } finally {
+            in.close();
+            out.close();
+        }
 
 
     }
 
     private static void pushPic(Context context) throws IOException {
         // String weights = Environment.getDataDirectory() + "/" + "yolov.weights";
-        String jpg = Environment.getExternalStorageDirectory() + "/Android/data/com.cdio.ss3000/dnns/"  + "testcrop.jpg";
+        String jpg = Environment.getExternalStorageDirectory() + "/Android/data/com.cdio.ss3000/dnns/" + "testcrop.jpg";
 
 
         InputStream in;
@@ -389,6 +484,14 @@ public class ComputerVision {
             out.close();
         }
 
+    }
+
+    private void showMat(Mat img) {
+        //Imgproc.cvtColor(img, img, Imgproc.COLOR_BGR2RGB);
+        ////SHOW ON SCREEN - FOR DEBUGGING
+        Bitmap bm = Bitmap.createBitmap(img.cols(), img.rows(), Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(img, bm);
+        imageView.setImageBitmap(bm);
     }
 
 
