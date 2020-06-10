@@ -33,4 +33,10 @@ public class GameControlTest {
         gameControl.checkPossibleMoves();
         assertEquals(2, state.tableau[2].get(state.tableau[2].size()-1).getMoves().size());
     }
+    @Test
+    public void moveToTableauPossibleTest(){
+        gameControl = new GameControl(state);
+        assertEquals(true, gameControl.moveToTableauPossible(hearts3, clubs4));
+        assertEquals(false, gameControl.moveToTableauPossible(hearts3,hearts2));
+    }
 }
