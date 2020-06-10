@@ -64,9 +64,7 @@ public class PointCalculatorTest {
         assertEquals(card.getSuit(), returnCard.getSuit());
         assertEquals(3, returnCard.getPoints());
     }
-    /*
-    TODO: Implement test for King is needed in foundation, but empty spot in tableau.
-     */
+
     @Test
     public void CardIsKingToFoundationWithEmptySlotTableau(){
         System.out.println("\n");
