@@ -20,7 +20,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-        <!--android:textColor="@color/goldHeader"-->
+    <!--android:textColor="@color/goldHeader"-->
 
 
     <Button
@@ -60,9 +60,9 @@
         android:layout_marginTop="5dp"
         android:paddingStart="40dp"
         android:text="@string/helpBtn"
+        android:textAllCaps="false"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -130,12 +130,25 @@
         app:layout_constraintTop_toTopOf="@+id/highscoreBtn"
         app:srcCompat="@drawable/podium" />
 
-    <ImageView
-        android:id="@+id/mats"
+    <HorizontalScrollView
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/dtulogo"
-        android:elevation="10dp"
-         />
+        android:scrollbars="none"
+        android:elevation="10dp">
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:elevation="10dp">
+
+            <ImageView
+                android:id="@+id/mats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="10dp"
+                app:srcCompat="@drawable/testcrop" />
+        </ScrollView>
+    </HorizontalScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
