@@ -9,6 +9,7 @@ public class PointCalculator {
     private final int FOUNDATION_POINTS = 10;
     private final int ACE = 1;
     private final int KING = 13;
+    private final int BASELINE = 2;
 
     private Card checkMoves(Card card){
         int temp_points = 0;
@@ -31,39 +32,42 @@ public class PointCalculator {
     }
 
     private Card checkCards(Card card){
-        int temp_points = 0;
+        boolean hasFoundItem = false;
         for(ArrayList<Card> move : card.getMoves()){
+            int temp_points = 0;
+            hasFoundItem = false;
             //Empty spot in Tableau
             if(move.isEmpty() && card.getValue() == KING){
+                hasFoundItem = true;
                 temp_points += TABLEAU_EMPTY_POINTS;
                 card.setPoints(temp_points);
-                return card;
-            }
-            //This will be a move to foundation
-            if(move.get(move.size()-1).getSuit() == card.getSuit()){
+               // return card;
+            }else if(move.get(move.size()-1).getSuit() == card.getSuit()){//This will be a move to foundation
                 temp_points += FOUNDATION_POINTS;
-            }
-
-            //Any other card in the tableau
-            if(move.get(move.size()-1).getValue() > 0 && move.get(move.size()-1).getValue() < 14){
+            }else if(move.get(move.size()-1).getValue() > 0 && move.get(move.size()-1).getValue() < 14){            //Any other card in the tableau
                 temp_points += TABLEAU_POINTS;
                 //Add points for each underlying face down card
             }
-            move.get(move.size()-1).setPoints(temp_points);
-        }
-
-        int highestPoint = 0;
-        Card newCard = new Card();
-        for(int j = 0; j < card.getMoves().size(); j++){
-            Card currentCard = ((Card)card.getMoves().get(j).get(card.getMoves().size()-1));//Get the current card
-            int cardPoints = currentCard.getPoints();//Get points from a card
-            //Compares the points to the current highest if higher -> save as new highest
-            if(cardPoints > highestPoint){
-                highestPoint = cardPoints;
-                newCard = currentCard;
+            if(!hasFoundItem) {
+                move.get(move.size() - 1).setPoints(temp_points);
             }
         }
-        return newCard;
+            int highestPoint = 0;
+            Card newCard = new Card();
+        for(ArrayList<Card> list : card.getMoves()){
+            if(list.isEmpty()){
+                if(highestPoint < card.getPoints()){
+                    highestPoint = card.getPoints();
+                    newCard = card;
+                }
+            }else{
+                if(highestPoint < list.get(0).getPoints()){
+                    highestPoint = list.get(0).getPoints();
+                    newCard = list.get(0);
+                }
+            }
+        }
+            return newCard;
     }
 
     private Card checkAce(Card card){
@@ -73,6 +77,23 @@ public class PointCalculator {
         }else{
             return null;
         }
+    }
+    /*
+    TODO: Add points for the amount of face-down cards
+     */
+
+    private int addBaseLinePoints(ArrayList<Card> column, Card card){
+        //Save points and index of card
+        int bl_points;
+        int index = column.indexOf(card);
+        //Create a sublist from the column
+        ArrayList<Card> sublist = (ArrayList<Card>)column.subList(0, index);
+        //Determine points based on size of sublist
+        if(sublist.size() == 1) return 0;
+
+        if(column.get(index-1).getSuit() == Suit.UNKNOWN) return 0;
+        bl_points = sublist.size()*BASELINE;
+        return bl_points;
     }
 
     public Card getBestMove(Card card){
