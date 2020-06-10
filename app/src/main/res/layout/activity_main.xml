@@ -79,19 +79,16 @@
 
     <ImageView
         android:id="@+id/dtuLogoIv"
-        android:layout_width="37dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_width="70dp"
+        android:layout_height="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/dtulogo" />
+        app:srcCompat="@drawable/dtu1logo" />
 
     <TextView
         android:id="@+id/groupNameTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
         android:text="@string/group"
         app:layout_constraintBottom_toBottomOf="@+id/dtuLogoIv"
         app:layout_constraintStart_toEndOf="@+id/dtuLogoIv"
