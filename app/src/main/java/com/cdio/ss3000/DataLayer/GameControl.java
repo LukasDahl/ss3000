@@ -14,8 +14,8 @@ public class GameControl {
      */
     private State state;
     private PointCalculator pointCalculator;
-    private Card emptyStackTableau = new Card(-1, UNKNOWN, false);
-    private Card emptyStackFoundation = new Card(-2, UNKNOWN, false);
+  //  private Card emptyStackTableau = new Card(-1, UNKNOWN, false);
+   // private Card emptyStackFoundation = new Card(-2, UNKNOWN, false);
 
     public GameControl(){
     }
@@ -98,17 +98,30 @@ public class GameControl {
 
 
         state = (State)getState();
+        int index;
 
 
         //Possible moves from tableau
         for(ArrayList<Card> cardList : state.tableau){
             if(!cardList.isEmpty()){
-                for(ArrayList<Card> otherCardListTableau : state.tableau){
+                for(ArrayList<Card> otherCardListTableau : state.tableau) {
+                    index = cardList.size() - 1;
+                    while (cardList.get(index).getSuit() != UNKNOWN) {
+                        if (moveToTableauPossible(cardList.get(index), otherCardListTableau.get(cardList.size() - 1))) {
+                            //cardList.get(cardList.size()-1).addMove(otherCardListTableau.get(otherCardListTableau.size()-1));
+                            cardList.get(index).addMove(otherCardListTableau);
+                            index -= 1;
+                        }
+                    }
+                }
+                    /*
                        if(moveToTableauPossible(cardList.get(cardList.size()-1), otherCardListTableau.get(cardList.size()-1))){
                            //cardList.get(cardList.size()-1).addMove(otherCardListTableau.get(otherCardListTableau.size()-1));
                            cardList.get(cardList.size()-1).addMove(otherCardListTableau);
                        }
-                    }
+
+                     */
+
                 for(ArrayList<Card> cardListFoundations : state.foundations){
                     if(moveToFoundationPossible(cardList.get(cardList.size()-1), cardListFoundations.get(cardListFoundations.size()-1))){
                         //cardList.get(cardList.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
