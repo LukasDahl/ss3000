@@ -13,21 +13,38 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cdio.ss3000.Vision.ComputerVision;
+
+import org.opencv.android.OpenCVLoader;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button start, help, highscore;
     TextView header, group;
     ImageView king, play, questionMark, dtu;
 
     private static final int MY_CAMERA_REQUEST_CODE = 100;
+    private static final int REQUEST_CODE = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        OpenCVLoader.initDebug();
+
+
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
+        }
+
+        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE);
+        }
+
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
         }
+        ComputerVision.getInstance(this, (ImageView)findViewById(R.id.mats));
 
         start = findViewById(R.id.startBtn);
         start.setOnClickListener(this);

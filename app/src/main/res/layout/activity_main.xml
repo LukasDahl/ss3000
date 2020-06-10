@@ -130,4 +130,12 @@
         app:layout_constraintTop_toTopOf="@+id/highscoreBtn"
         app:srcCompat="@drawable/podium" />
 
+    <ImageView
+        android:id="@+id/mats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/dtulogo"
+        android:elevation="10dp"
+         />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
