@@ -1,8 +1,10 @@
 package com.cdio.ss3000.DataLayer;
 
 import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * @Author Flotfyr27 - https://github.com/Flotfyr27
+ */
 public class PointCalculator {
     private final int ACE_POINTS = 100;
     private final int TABLEAU_EMPTY_POINTS = 3;

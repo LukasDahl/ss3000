@@ -1,12 +1,13 @@
 package com.cdio.ss3000.DataLayer;
 
 import org.junit.Test;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
+/**
+ * @Author Flotfyr27 - https://github.com/Flotfyr27
+ */
 public class PointCalculatorTest {
     PointCalculator PC = new PointCalculator();
     @Test
