@@ -27,7 +27,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_camera);
-    framelayout = (FrameLayout)findViewById(R.id.frameLayout);
+    framelayout = (FrameLayout) findViewById(R.id.frameLayout);
 
 
     //FrameLayout framelayout;
@@ -47,19 +47,31 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
   @Override
   public void onClick(View v) {
-    if(v == capture){
+    if (v == capture) {
 
-      for(int i=0; i<10; i++){
-        framelayout = (FrameLayout)findViewById(R.id.frameLayout);
+      for (int i = 0; i < 10; i++) {
+        framelayout = (FrameLayout) findViewById(R.id.frameLayout);
         framelayout.setDrawingCacheEnabled(true);
         framelayout.buildDrawingCache();
         bm = framelayout.getDrawingCache();
-        bmArray.add(bm);
+        Bitmap rbm = resizeBm(bm);
+        bmArray.add(rbm);
         framelayout.destroyDrawingCache();
-        System.out.println("Array er: "+bmArray.isEmpty());
+        System.out.println("Array er: " + bmArray.isEmpty());
 
       }
       image.setImageBitmap(bmArray.get(2));
     }
   }
+
+
+  public Bitmap resizeBm(Bitmap bitmap) {
+    if (bitmap.getHeight() < bitmap.getWidth()) {
+      Bitmap.createScaledBitmap(bitmap, 500, (int) ((double) bitmap.getHeight() / (double) bitmap.getWidth() * (double) 1500), true);
+    } else {
+      Bitmap.createScaledBitmap(bitmap, (int) ((double) bitmap.getWidth() / (double) bitmap.getHeight() * (double) 500), 1500, true);
+    }
+    return bitmap;
+  }
+
 }
