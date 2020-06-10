@@ -9,6 +9,7 @@ public class PointCalculator {
     private final int FOUNDATION_POINTS = 10;
     private final int ACE = 1;
     private final int KING = 13;
+    private final int BASELINE = 2;
 
     private Card checkMoves(Card card){
         int temp_points = 0;
@@ -76,6 +77,22 @@ public class PointCalculator {
         }else{
             return null;
         }
+    }
+    /*
+    TODO: Add points for the amount of face-down cards
+     */
+
+    private int addBaseLinePoints(ArrayList<Card> column, Card card){
+        //Save points and index of card
+        int bl_points;
+        int index = column.indexOf(card);
+        //Create a sublist from the column
+        ArrayList<Card> sublist = (ArrayList)column.subList(0, index);
+        //Determine points based on size of sublist
+        if(sublist.size() == 1) return 0;
+
+        bl_points = sublist.size()*BASELINE;
+        return bl_points;
     }
 
     public Card getBestMove(Card card){
