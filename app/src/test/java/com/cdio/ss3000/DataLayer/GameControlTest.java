@@ -31,6 +31,7 @@ public class GameControlTest {
         state.foundations[1].add(hearts2);
         gameControl = new GameControl(state);
         gameControl.checkPossibleMoves();
+        assertEquals(true, hearts3.equals(state.tableau[2].get(state.tableau[2].size()-1)));
         assertEquals(2, state.tableau[2].get(state.tableau[2].size()-1).getMoves().size());
     }
     @Test
