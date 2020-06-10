@@ -87,7 +87,7 @@ public class PointCalculator {
         int bl_points;
         int index = column.indexOf(card);
         //Create a sublist from the column
-        ArrayList<Card> sublist = (ArrayList)column.subList(0, index);
+        ArrayList<Card> sublist = (ArrayList<Card>)column.subList(0, index);
         //Determine points based on size of sublist
         if(sublist.size() == 1) return 0;
 
