@@ -106,12 +106,14 @@ public class GameControl {
         for(ArrayList<Card> cardList : state.tableau){
             if(!cardList.isEmpty()){
                 for(ArrayList<Card> otherCardListTableau : state.tableau) {
-                    index = cardList.size() - 1;
-                    while (cardList.get(index).getSuit() != UNKNOWN) {
-                        if (moveToTableauPossible(cardList.get(index), otherCardListTableau.get(cardList.size() - 1))) {
-                            //cardList.get(cardList.size()-1).addMove(otherCardListTableau.get(otherCardListTableau.size()-1));
-                            cardList.get(index).addMove(otherCardListTableau);
-                            index -= 1;
+                    if (!otherCardListTableau.isEmpty()) {
+                        index = cardList.size() - 1;
+                        while (cardList.get(index).getSuit() != UNKNOWN) {
+                            if (moveToTableauPossible(cardList.get(index), otherCardListTableau.get(otherCardListTableau.size() - 1))) {
+                                //cardList.get(cardList.size()-1).addMove(otherCardListTableau.get(otherCardListTableau.size()-1));
+                                cardList.get(index).addMove(otherCardListTableau);
+                                index -= 1;
+                            }
                         }
                     }
                 }
