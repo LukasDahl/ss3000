@@ -91,6 +91,7 @@ public class PointCalculator {
         //Determine points based on size of sublist
         if(sublist.size() == 1) return 0;
 
+        if(column.get(index-1).getSuit() == Suit.UNKNOWN) return 0;
         bl_points = sublist.size()*BASELINE;
         return bl_points;
     }
