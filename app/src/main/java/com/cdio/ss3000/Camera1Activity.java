@@ -1,6 +1,9 @@
 package com.cdio.ss3000;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,35 +12,41 @@ import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.cdio.ss3000.R;
+import com.pranavpandey.android.dynamic.utils.DynamicUnitUtils;
 
 import java.io.IOException;
 
-public class Camera1Activity extends AppCompatActivity {
+public class Camera1Activity extends AppCompatActivity implements View.OnClickListener {
+
+  private boolean isCameraInitialized;
+  private Camera mCamera = null;
+  private static SurfaceHolder myHolder;
+  private static CameraPreview mPreview;
+  private FrameLayout preview;
+  private static OrientationEventListener orientationEventListener = null;
+  private static boolean fM;
+  private Button capture;
+  private FrameLayout frameLayout;
+  public Bitmap[] bmArray = new Bitmap[10];
+  private Bitmap bm = null;
 
   @Override
   protected void onCreate(Bundle savedInstanceState){
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_camera1);
+
+    frameLayout = (FrameLayout)findViewById(R.id.camera_preview);
+
+    capture = findViewById(R.id.captureButt);
+    capture.setOnClickListener(this);
   }
-
-  private boolean isCameraInitialized;
-
-  private Camera mCamera = null;
-
-  private static SurfaceHolder myHolder;
-
-  private static CameraPreview mPreview;
-
-  private FrameLayout preview;
-
-  private static OrientationEventListener orientationEventListener = null;
-
-  private static boolean fM;
 
   @Override
   protected void onResume(){
@@ -77,6 +86,59 @@ public class Camera1Activity extends AppCompatActivity {
         }
       });
     }
+  }
+
+  @Override
+  protected void onPause(){
+    super.onPause();
+    mCamera.release();
+  }
+
+  @Override
+  public void onClick(View v) {
+    if(v == capture){
+      frameLayout = (FrameLayout) findViewById(R.id.camera_preview);
+      View screen = getWindow().getDecorView().getRootView();
+
+      for(int i=0; i<10; i++){
+        screen.setDrawingCacheEnabled(true);
+        Bitmap screenBitmap = Bitmap.createBitmap(screen.getDrawingCache());
+        bmArray[i] = screenBitmap;
+        screen.setDrawingCacheEnabled(false);
+
+          /*Bitmap bitmap = createBitmapFromView(framelayout, 0, 0);
+          bmArray[i] = bitmap;
+          image.setImageBitmap(bitmap);
+          image.bringToFront();*/
+      }
+
+      //image.setImageBitmap(bm);
+      System.out.println(bmArray[0]);
+    }
+  }
+
+  // Gotten from: https://dev.to/pranavpandey/android-create-bitmap-from-a-view-3lck?fbclid=IwAR3L4MavLBw5POk8o5POgNe29vOKux_jl_Sgd5LEiUKEV5ghf8kMDkFRFb0
+  public @NonNull
+  static Bitmap createBitmapFromView(@NonNull View view, int width, int height) {
+    if (width > 0 && height > 0) {
+      view.measure(View.MeasureSpec.makeMeasureSpec(DynamicUnitUtils
+                      .convertDpToPixels(width), View.MeasureSpec.EXACTLY),
+              View.MeasureSpec.makeMeasureSpec(DynamicUnitUtils
+                      .convertDpToPixels(height), View.MeasureSpec.EXACTLY));
+    }
+    view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+
+    Bitmap bitmap = Bitmap.createBitmap(view.getMeasuredWidth(),
+            view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+    Canvas canvas = new Canvas(bitmap);
+    Drawable background = view.getBackground();
+
+    if (background != null) {
+      background.draw(canvas);
+    }
+    view.draw(canvas);
+
+    return bitmap;
   }
 
   private static int rotation;
