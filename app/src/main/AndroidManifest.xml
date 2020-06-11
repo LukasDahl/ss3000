@@ -17,6 +17,8 @@
         <activity android:name=".BlackJackActivity"></activity>
         <activity android:name=".HighscoreActivity" />
         <activity android:name=".CameraActivity" />
+        <activity android:name=".Camera1Activity"
+            android:configChanges="orientation|screenSize"/>
         <activity android:name=".HelpActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

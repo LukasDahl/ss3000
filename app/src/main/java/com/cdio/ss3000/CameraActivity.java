@@ -27,8 +27,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
   Camera camera;
   FrameLayout framelayout;
   ShowCamera showCamera;
-  public Bitmap[] bmArray = new Bitmap[21];
-  //ArrayList<Bitmap> bmArray = new ArrayList<Bitmap>();
+  public Bitmap[] bmArray = new Bitmap[10];
   Bitmap bm = null;
 
   @Override
@@ -36,9 +35,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_camera);
     framelayout = (FrameLayout)findViewById(R.id.frameLayout);
-
-
-    //FrameLayout framelayout;
 
     tester = false;
 
@@ -57,6 +53,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     capture.bringToFront();
   }
 
+  // Gotten from: https://dev.to/pranavpandey/android-create-bitmap-from-a-view-3lck?fbclid=IwAR3L4MavLBw5POk8o5POgNe29vOKux_jl_Sgd5LEiUKEV5ghf8kMDkFRFb0
   public @NonNull static Bitmap createBitmapFromView(@NonNull View view, int width, int height) {
     if (width > 0 && height > 0) {
       view.measure(View.MeasureSpec.makeMeasureSpec(DynamicUnitUtils
@@ -83,12 +80,18 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
   public void onClick(View v) {
     if(v == capture){
         framelayout = (FrameLayout) findViewById(R.id.frameLayout);
+        View screen = getWindow().getDecorView().getRootView();
 
         for(int i=0; i<10; i++){
-        Bitmap bitmap = createBitmapFromView(framelayout, 0, 0);
-        bmArray[i] = bitmap;
-        image.setImageBitmap(bitmap);
-        image.bringToFront();
+          screen.setDrawingCacheEnabled(true);
+          Bitmap screenBitmap = Bitmap.createBitmap(screen.getDrawingCache());
+          bmArray[i] = screenBitmap;
+          screen.setDrawingCacheEnabled(false);
+
+          /*Bitmap bitmap = createBitmapFromView(framelayout, 0, 0);
+          bmArray[i] = bitmap;
+          image.setImageBitmap(bitmap);
+          image.bringToFront();*/
         }
 
         //image.setImageBitmap(bm);
