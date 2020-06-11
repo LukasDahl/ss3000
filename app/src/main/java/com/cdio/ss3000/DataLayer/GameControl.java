@@ -104,16 +104,16 @@ public class GameControl {
 
         //Possible moves from tableau
         for(ArrayList<Card> cardList : state.tableau){
-            if(!cardList.isEmpty()){
+            if(!cardList.isEmpty() && cardList.get(cardList.size()-1).getSuit() != UNKNOWN){
                 for(ArrayList<Card> otherCardListTableau : state.tableau) {
-                    if (!otherCardListTableau.isEmpty()) {
+                    if (!otherCardListTableau.isEmpty() && !otherCardListTableau.equals(cardList)) {
                         index = cardList.size() - 1;
                         while (cardList.get(index).getSuit() != UNKNOWN) {
                             if (moveToTableauPossible(cardList.get(index), otherCardListTableau.get(otherCardListTableau.size() - 1))) {
                                 //cardList.get(cardList.size()-1).addMove(otherCardListTableau.get(otherCardListTableau.size()-1));
                                 cardList.get(index).addMove(otherCardListTableau);
-                                index -= 1;
-                            }
+                            }else if (cardList.get(index).getSuit() == UNKNOWN) break;
+                            index -= 1;
                         }
                     }
                 }
