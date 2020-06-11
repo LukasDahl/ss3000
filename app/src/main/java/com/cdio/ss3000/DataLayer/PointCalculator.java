@@ -14,7 +14,7 @@ public class PointCalculator {
     private final int KING = 13;
     private final int BASELINE = 2;
 
-    private Card checkMoves(Card card){
+    private Card checkMoves(ArrayList<Card> column, Card card){
         int temp_points = 0;
         //If card is an ace
         Card ace = checkAce(card);
@@ -22,7 +22,7 @@ public class PointCalculator {
             return ace;
         }
         //Do all other moves
-        Card newCard = checkCards(card);
+        Card newCard = checkCards(column, card);
         //Remove all previous moves from the supplied card
         card.clearMoves();
         //Save the new card (best move) to the list of moves (as the only one)
@@ -34,10 +34,11 @@ public class PointCalculator {
         return card;
     }
 
-    private Card checkCards(Card card){
+    private Card checkCards(ArrayList<Card> column, Card card){
         boolean hasFoundItem = false;
+        int bonus = addBaseLinePoints(column, card);//Add the baseline points
         for(ArrayList<Card> move : card.getMoves()){
-            int temp_points = 0;
+            int temp_points = bonus;
             hasFoundItem = false;
             //Empty spot in Tableau
             if(move.isEmpty() && card.getValue() == KING){
@@ -102,7 +103,7 @@ public class PointCalculator {
     }
 
 
-    public Card getBestMove(Card card){
-        return checkMoves(card);
+    public Card getBestMove(ArrayList<Card> column, Card card){
+        return checkMoves(column, card);
     }
 }
