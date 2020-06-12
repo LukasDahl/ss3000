@@ -1,5 +1,6 @@
 package com.cdio.ss3000.Vision;
 
+import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -66,18 +67,21 @@ public class ComputerVision {
             "As", "Ks", "Qs", "Js", "10s", "9s", "8s", "7s", "6s", "5s", "4s", "3s", "2s"
     };
 
-    public static ComputerVision getInstance(Context context, ImageView imageView) {
+    public static ComputerVision getInstance(Context context) {
         if (instance == null) {
             instance = new ComputerVision();
         }
         instance.setContext(context);
-        instance.setImageView(imageView);
         return instance;
     }
 
     private ComputerVision() {
+        OpenCVLoader.initDebug();
+    }
+
+    public void runVision(){
         Handler handler = new Handler();
-        handler.postDelayed(runnable, 500);
+        handler.post(runnable);
     }
 
     private Context context;

@@ -30,9 +30,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        OpenCVLoader.initDebug();
-
-
         if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
         }
@@ -44,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
         }
-        ComputerVision.getInstance(this, (ImageView)findViewById(R.id.mats));
 
         start = findViewById(R.id.startBtn);
         start.setOnClickListener(this);

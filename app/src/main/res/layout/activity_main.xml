@@ -130,25 +130,4 @@
         app:layout_constraintTop_toTopOf="@+id/highscoreBtn"
         app:srcCompat="@drawable/podium" />
 
-    <HorizontalScrollView
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:elevation="10dp">
-
-        <ScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:elevation="10dp">
-
-            <ImageView
-                android:id="@+id/mats"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:elevation="10dp"
-                app:srcCompat="@drawable/testcrop" />
-        </ScrollView>
-    </HorizontalScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
