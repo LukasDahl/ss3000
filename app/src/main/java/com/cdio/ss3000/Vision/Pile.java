@@ -4,6 +4,7 @@ import com.cdio.ss3000.DataLayer.Card;
 import com.cdio.ss3000.DataLayer.State;
 import com.cdio.ss3000.DataLayer.Suit;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ public class Pile implements Comparable {
 
     int x, y;
     List<Integer> cards;
+    static boolean checkTop = false, flip = false;
 
     public Pile(int x, int y, List<Integer> cards) {
         this.x = x;
@@ -88,6 +90,25 @@ public class Pile implements Comparable {
             else
                 pilesTop.add(pile);
         }
+
+        // check once if stok is in bottom pile
+        if (!checkTop) {
+            for (Pile flop : pilesBottom) {
+                if (flop.cards.size() == 0) {
+                    flip = true;
+                    break;
+                }
+            }
+        }
+        // flip top and bottom if stok is in bottom pile
+        if (flip) {
+            List<Pile> tempPile = new ArrayList<>();
+            tempPile = pilesBottom;
+            pilesBottom = pilesTop;
+            pilesTop = tempPile;
+
+        }
+
 
     }
 

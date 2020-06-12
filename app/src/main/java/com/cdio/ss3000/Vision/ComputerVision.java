@@ -36,6 +36,7 @@ public class ComputerVision {
     ArrayList<Integer> contourIsCard;
 
     double SCALEFACTOR = 0;
+    double NOT_GLOBAL_SCALEFACTOR = 3.4;
 
     int TEXT_R = 138;
     int TEXT_G = 43;
@@ -251,7 +252,7 @@ public class ComputerVision {
 
     private Mat convertToSquare(Mat imgOriginal, Rect rect) {
 
-        double SCALEFACTOR = ((double)BOXSIZE)/(3.4*(double)rect.width);
+        double SCALEFACTOR = ((double)BOXSIZE)/(NOT_GLOBAL_SCALEFACTOR*(double)rect.width);
 
         //Crop and resize
         Mat img = imgOriginal.submat(rect);
