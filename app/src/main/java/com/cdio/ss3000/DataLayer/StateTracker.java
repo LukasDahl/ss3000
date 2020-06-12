@@ -42,6 +42,23 @@ public class StateTracker {
         }
     }
 
+    public void updateState(State inputState){
+        int columnIndex = 0;
+        //Index 0 is the card with highest value, index 1 is the card with lowest value
+
+        //First time run -> Cards are all unknown
+        for(int i = 0; i < 7; i++){
+            if(tableau[i].get(tableau[i].size()-1).getSuit() == Suit.UNKNOWN){
+                if(inputState.tableau[i].get(1).equals(inputState.tableau[i].get(0))){
+                    Card newCard = inputState.tableau[i].get(1);
+                    tableau[i].get(tableau[i].size()-1).setSuit(newCard.getSuit());//Set suit
+                    tableau[i].get(tableau[i].size()-1).setValue(newCard.getValue());//Set value
+                    tableau[i].get(tableau[i].size()-1).setMovable(true);//Set movable
+                }
+            }
+        }
+    }
+
     public void showTopCard(){
         for(int i = 0; i < 7; i++){
             System.out.println(tableau[i] + "\t coord: (" + i + ", " + i + ")");
