@@ -45,5 +45,10 @@ public class StateTrackerTest {
         State stateUpdated = new State(newState.foundations, newState.tableau, newState.stock, newState.waste);
         stateTracker.updateState(stateUpdated);
         stateTracker.showTopCard();
+        stateUpdated.tableau[1] = cardList;
+        stateTracker.updateState(stateUpdated);
+        stateTracker.showTopCard();
+
+        //TODO: Try with a full on board with a move.
     }
 }

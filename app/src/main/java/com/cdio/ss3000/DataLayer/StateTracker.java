@@ -68,8 +68,8 @@ public class StateTracker {
             //If the value of the updated card is lower than the current card, then the length of the column has increased
             if(tableau[i].get(tableau[i].size()-1).getValue() > inputState.tableau[i].get(1).getValue()){
                 tableau[i].add(inputState.tableau[i].get(1));//Adds the card with the lowest value (the one in the front) to our registered tableau.
-            }else{//If not then the column length has decreased
-
+            }else if(tableau[i].get(tableau[i].size()-1).getValue() < inputState.tableau[i].get(1).getValue()){//If true column size has decreased
+                tableau[i].remove(tableau[i].size()-1);//TODO this needs work with the whole flipping a card part -> Try with a full board and perform an actual move in test
             }
         }
 
