@@ -1,39 +1,50 @@
 package com.cdio.ss3000.DataLayer;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Stack;
 
 public class StateTracker {
-    private Card[][] board;
-    private Stack<Card> deck;
+    private State board;
+    private ArrayList<Card>[] foundation;
+    private ArrayList<Card>[] tableau;
+    private ArrayList<Card> deck;
+    private ArrayList<Card> discard;
 
     public StateTracker(){
+        initState();
+    }
+    public void initState(){
         resetBoard();
+        board = new State(foundation, tableau, deck, discard);
     }
     private void resetBoard(){
+        //Init required fields
+        foundation  = new ArrayList[4];
+        tableau = new ArrayList[7];
+        discard = new ArrayList<>();
         //Create the deck of cards
-        deck = new Stack<>();
+        deck = new ArrayList<>();
         for(int i = 0; i < 52; i++){
             deck.add(new Card());
         }
+
         //Fill the board with cards
-        board = new Card[7][20];
         int k = 1;
         for(int i = 0; i < 7; i++){
+            ArrayList<Card> temp_list = new ArrayList<>();
             for(int j = 0; j < k; j++){
-                board[i][j] = deck.peek();
-                deck.pop();
+                temp_list.add(deck.get(0));
+                deck.remove(0);
             }
-            //Debugging info only
-            System.out.println("Deck contains: " + deck.size() + " cards");
+            tableau[i] = temp_list;
+            System.out.println("Deck contains: " + deck.size() + " cards"); //Debugging info only
             k++;
         }
     }
 
     public void showTopCard(){
         for(int i = 0; i < 7; i++){
-            System.out.println(board[i][i] + "\t coord: (" + i + ", " + i + ")");
+            System.out.println(tableau[i] + "\t coord: (" + i + ", " + i + ")");
         }
     }
 }
