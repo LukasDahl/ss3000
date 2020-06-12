@@ -3,6 +3,9 @@ package com.cdio.ss3000.DataLayer;
 import java.util.ArrayList;
 import java.util.Stack;
 
+/**
+ * @Author Flotfyr27 - https://github.com/Flotfyr27
+ */
 public class StateTracker {
     private State board;
     private ArrayList<Card>[] foundation;
@@ -56,8 +59,20 @@ public class StateTracker {
                     tableau[i].get(tableau[i].size()-1).setValue(newCard.getValue());//Set value
                     tableau[i].get(tableau[i].size()-1).setMovable(true);//Set movable
                 }
+                if(i == 6) return;//Stop for the first time run
             }
         }
+
+        //Assume at least one card is face-up in every tableau column
+        for(int i = 0; i < 7; i++){
+            //If the value of the updated card is lower than the current card, then the length of the column has increased
+            if(tableau[i].get(tableau[i].size()-1).getValue() > inputState.tableau[i].get(1).getValue()){
+                tableau[i].add(inputState.tableau[i].get(1));//Adds the card with the lowest value (the one in the front) to our registered tableau.
+            }else{//If not then the column length has decreased
+
+            }
+        }
+
     }
 
     public void showTopCard(){
