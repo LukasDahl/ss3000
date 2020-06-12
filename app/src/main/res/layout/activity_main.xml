@@ -23,6 +23,17 @@
     <!--android:textColor="@color/goldHeader"-->
 
 
+    <ImageView
+        android:id="@+id/blackJIV"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="5dp"
+        android:elevation="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/blackJBtn"
+        app:layout_constraintStart_toStartOf="@+id/blackJBtn"
+        app:layout_constraintTop_toTopOf="@+id/blackJBtn"
+        app:srcCompat="@drawable/chipicon" />
+
     <Button
         android:id="@+id/startBtn"
         android:layout_width="200dp"
@@ -79,19 +90,16 @@
 
     <ImageView
         android:id="@+id/dtuLogoIv"
-        android:layout_width="37dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_width="70dp"
+        android:layout_height="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/dtulogo" />
+        app:srcCompat="@drawable/dtu1logo" />
 
     <TextView
         android:id="@+id/groupNameTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
         android:text="@string/group"
         app:layout_constraintBottom_toBottomOf="@+id/dtuLogoIv"
         app:layout_constraintStart_toEndOf="@+id/dtuLogoIv"
@@ -129,5 +137,31 @@
         app:layout_constraintStart_toStartOf="@+id/highscoreBtn"
         app:layout_constraintTop_toTopOf="@+id/highscoreBtn"
         app:srcCompat="@drawable/podium" />
+
+    <Button
+        android:id="@+id/blackJBtn"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingStart="39dp"
+        android:text="@string/blackJackBtn"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/kingIv"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/orTV" />
+
+    <TextView
+        android:id="@+id/orTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Or try..."
+        android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@+id/kingIv"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/kingIv" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

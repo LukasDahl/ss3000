@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageView king, play, questionMark, dtu;
 
     private static final int MY_CAMERA_REQUEST_CODE = 100;
+    private static final int MY_WRITE_REQUEST_CODE = 101;
     private static final int REQUEST_CODE = 101;
 
     @Override
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 
         if(v == start){
-            Intent i = new Intent(this, CameraActivity.class);
+            Intent i = new Intent(this, Camera1Activity.class);
             this.startActivity(i);
         }else if (v == help){
             Intent i = new Intent(this, HelpActivity.class);
