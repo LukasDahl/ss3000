@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ComputerVision {
@@ -36,16 +37,16 @@ public class ComputerVision {
 
     double SCALEFACTOR = 0;
 
-    int TEXTR = 138;
-    int TEXTG = 43;
-    int TEXTB = 226;
+    int TEXT_R = 138;
+    int TEXT_G = 43;
+    int TEXT_B = 226;
 
     boolean CENTER = true;
 
     double CONFIDENCE = 0.2;
     int BKG_THRESH = 200;
 
-    int BOXSIZE = 500;
+    int BOXSIZE = 430;
 
     int CARD_MAX_AREA = 180000;
     int CARD_MIN_AREA = 40000;
@@ -53,64 +54,13 @@ public class ComputerVision {
     int l = 0;
     int t = 0;
 
-    //double SCALEFACTOR = 100.0 / 100.0;
-
     private static ComputerVision instance = null;
 
     private static String[] classNames = {
-            "Ah",
-            "Kh",
-            "Qh",
-            "Jh",
-            "10h",
-            "9h",
-            "8h",
-            "7h",
-            "6h",
-            "5h",
-            "4h",
-            "3h",
-            "2h",
-            "Ad",
-            "Kd",
-            "Qd",
-            "Jd",
-            "10d",
-            "9d",
-            "8d",
-            "7d",
-            "6d",
-            "5d",
-            "4d",
-            "3d",
-            "2d",
-            "Ac",
-            "Kc",
-            "Qc",
-            "Jc",
-            "10c",
-            "9c",
-            "8c",
-            "7c",
-            "6c",
-            "5c",
-            "4c",
-            "3c",
-            "2c",
-            "As",
-            "Ks",
-            "Qs",
-            "Js",
-            "10s",
-            "9s",
-            "8s",
-            "7s",
-            "6s",
-            "5s",
-            "4s",
-            "3s",
-            "2s"
-
+            "Ah", "Kh", "Qh", "Jh", "10h", "9h", "8h", "7h", "6h", "5h", "4h", "3h", "2h",
+            "Ad", "Kd", "Qd", "Jd", "10d", "9d", "8d", "7d", "6d", "5d", "4d", "3d", "2d",
+            "Ac", "Kc", "Qc", "Jc", "10c", "9c", "8c", "7c", "6c", "5c", "4c", "3c", "2c",
+            "As", "Ks", "Qs", "Js", "10s", "9s", "8s", "7s", "6s", "5s", "4s", "3s", "2s"
     };
 
     public static ComputerVision getInstance(Context context, ImageView imageView) {
@@ -130,16 +80,8 @@ public class ComputerVision {
     private Context context;
     private ImageView imageView;
 
-    public Context getContext() {
-        return context;
-    }
-
     public void setContext(Context context) {
         this.context = context;
-    }
-
-    public ImageView getImageView() {
-        return imageView;
     }
 
     public void setImageView(ImageView imageView) {
@@ -151,33 +93,17 @@ public class ComputerVision {
         public void run() {
 
             // Load Yolo
-
-
-            //File fileDir = context.getFilesDir();
-            //weights = new File(fileDir, "yolov.weights").getAbsolutePath();
-            //cfg = new File(fileDir, "yolov3_tinynew.cfg").getAbsolutePath();
-
-            // String weights = Environment.getDataDirectory() + "/" + "yolov.weights";
             String weights = Environment.getExternalStorageDirectory() + "/Android/data/com.cdio.ss3000/dnns/" + "yolov.weights";
-            // String cfg = Environment.getDataDirectory() + "/" + "yolov3_tinynew.cfg";
             String cfg = Environment.getExternalStorageDirectory() + "/Android/data/com.cdio.ss3000/dnns/" + "yolov3_tinynew.cfg";
             Net net = Dnn.readNet(weights, cfg);
 
 
-//            classes = []
-//            frame_array = []
-//            with open("cards.names", "r") as f:
-//            classes = [line.strip() for line in f.readlines()]
-//            layer_names = net.getLayerNames()
-            List<String> outputLayers = getOutputNames(net);
-//            colors = np.random.uniform(0, 255, size=(len(classes), 3))
-
             // Loading image
             String image = Environment.getExternalStorageDirectory() + "/Android/data/com.cdio.ss3000/dnns/" + "testcrop.jpg";
             Mat imgorig = Imgcodecs.imread(image);
-            Mat img = new Mat();
-            //  Imgproc.resize(imgorig, img, new Size(1050,675));
+            Mat img;
             Mat imgOriginal = imgorig.clone();
+            Imgproc.cvtColor(imgorig, imgorig, Imgproc.COLOR_BGR2RGB);
 
             find_cards(preprocess_image(imgOriginal));
 
@@ -185,10 +111,15 @@ public class ComputerVision {
             if (contours.size() == 0)
                 return;
             System.out.println(contours.size() + " contours");
-            // For each contour detected:
+
+            List<Pile> piles = new ArrayList<>();
+            List<Pile> pilesTop = new ArrayList<>();
+            List<Pile> pilesBottom = new ArrayList<>();
+
             Rect rect;
             MatOfPoint contour;
 
+            // For each contour detected:
             for (int index = 0; index < contours.size(); index++) {
 
                 contour = contours.get(index);
@@ -198,7 +129,6 @@ public class ComputerVision {
                     continue;
 
                 for (int f = 0; f < 1; f++) {
-
 
                     img = convertToSquare(imgOriginal, rect);
                     System.out.println(img.channels());
@@ -254,7 +184,7 @@ public class ComputerVision {
                                         img,
                                         new Point(left, top),
                                         new Point(right, bottom),
-                                        new Scalar(TEXTR, TEXTG, TEXTB)
+                                        new Scalar(TEXT_R, TEXT_G, TEXT_B)
                                 );
 
                                 int origX1 = (int)((double)(left - l) / SCALEFACTOR) + rect.x;
@@ -266,7 +196,7 @@ public class ComputerVision {
                                         imgorig,
                                         new Point(origX1, origY1),
                                         new Point(origX2, origY2),
-                                        new Scalar(TEXTR, TEXTG, TEXTB)
+                                        new Scalar(TEXT_R, TEXT_G, TEXT_B)
                                 );
 
                                 String conf = (confidence + "").substring(0, 5);
@@ -278,7 +208,7 @@ public class ComputerVision {
                                         new Point(right, bottom),
                                         Core.FONT_HERSHEY_TRIPLEX,
                                         1,
-                                        new Scalar(TEXTR, TEXTG, TEXTB)
+                                        new Scalar(TEXT_R, TEXT_G, TEXT_B)
 
                                 );
                                 Imgproc.putText(
@@ -287,7 +217,7 @@ public class ComputerVision {
                                         new Point(origX2, origY2),
                                         Core.FONT_HERSHEY_TRIPLEX,
                                         1,
-                                        new Scalar(TEXTR, TEXTG, TEXTB)
+                                        new Scalar(TEXT_R, TEXT_G, TEXT_B)
 
                                 );
 
@@ -297,18 +227,31 @@ public class ComputerVision {
 
                     System.out.println("CLASSIDS: " + classIds);
 
+                    piles.add(new Pile(rect.x, rect.y, classIds));
+
                     showMat(img);
                 }
             }
+
             showMat(imgorig);
+
+            Pile.splitPiles(piles, pilesTop, pilesBottom);
+
+            Collections.sort(pilesBottom);
+            Collections.sort(pilesTop);
+
+            Pile.pileListToState(pilesTop, pilesBottom);
+
 
         }
     };
 
 
+
+
     private Mat convertToSquare(Mat imgOriginal, Rect rect) {
 
-        double SCALEFACTOR = ((double)BOXSIZE)/(4.0*(double)rect.width);
+        double SCALEFACTOR = ((double)BOXSIZE)/(3.4*(double)rect.width);
 
         //Crop and resize
         Mat img = imgOriginal.submat(rect);
@@ -370,7 +313,6 @@ public class ComputerVision {
 
         return img;
     }
-
 
     public void find_cards(Mat preprocessedImage) {
 
@@ -488,6 +430,7 @@ public class ComputerVision {
 
     private void showMat(Mat img) {
         //Imgproc.cvtColor(img, img, Imgproc.COLOR_BGR2RGB);
+
         ////SHOW ON SCREEN - FOR DEBUGGING
         Bitmap bm = Bitmap.createBitmap(img.cols(), img.rows(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(img, bm);
