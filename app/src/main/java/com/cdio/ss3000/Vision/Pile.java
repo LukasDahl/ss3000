@@ -1,5 +1,7 @@
 package com.cdio.ss3000.Vision;
 
+import androidx.annotation.NonNull;
+
 import com.cdio.ss3000.DataLayer.Card;
 import com.cdio.ss3000.DataLayer.State;
 import com.cdio.ss3000.DataLayer.Suit;
@@ -12,7 +14,7 @@ public class Pile implements Comparable {
 
     int x, y;
     List<Integer> cards;
-    static boolean checkTop = false, flip = false;
+    static boolean checkTop = true, flip = false;
 
     public Pile(int x, int y, List<Integer> cards) {
         this.x = x;
@@ -69,7 +71,7 @@ public class Pile implements Comparable {
 
 
     @Override
-    public int compareTo(Object o) {
+    public int compareTo(@NonNull Object o) {
         return x - ((Pile) o).getX();
     }
 
@@ -91,24 +93,16 @@ public class Pile implements Comparable {
                 pilesTop.add(pile);
         }
 
-        // check once if stok is in bottom pile
-        if (!checkTop) {
+        // check once if stock is in bottom pile
+        if (checkTop) {
             for (Pile flop : pilesBottom) {
                 if (flop.cards.size() == 0) {
                     flip = true;
                     break;
                 }
             }
+            checkTop = false;
         }
-        // flip top and bottom if stok is in bottom pile
-        if (flip) {
-            List<Pile> tempPile = new ArrayList<>();
-            tempPile = pilesBottom;
-            pilesBottom = pilesTop;
-            pilesTop = tempPile;
-
-        }
-
 
     }
 
@@ -132,6 +126,15 @@ public class Pile implements Comparable {
 
 
     public static State pileListToState(List<Pile> pilesTop, List<Pile> pilesBottom) {
+
+        // flip top and bottom if stock is in bottom pile
+        if (flip) {
+            List<Pile> tempPile;
+            tempPile = pilesBottom;
+            pilesBottom = pilesTop;
+            pilesTop = tempPile;
+        }
+
         LinkedList<Card>[] foundations = new LinkedList[4], tableau = new LinkedList[7];
         LinkedList<Card> stock = new LinkedList<>();
         LinkedList<Card> waste = new LinkedList<>();

@@ -49,6 +49,8 @@ public class ComputerVision {
 
     int BOXSIZE = 430;
 
+    int MIN_DISTANCE = 5;
+
     int CARD_MAX_AREA = 180000;
     int CARD_MIN_AREA = 40000;
 
@@ -225,6 +227,35 @@ public class ComputerVision {
                             }
                         }
                     }
+
+                    // remove to close detektions
+                    for (int i = 0; i< detectedRects.size(); i++){
+                        Rect r = detectedRects.get(i);
+                        for ( int j = 0; j<detectedRects.size(); j++){
+                            Rect r2 = detectedRects.get(j);
+                            if (r == r2){
+                                continue;
+                            }
+
+                            int distX = Math.abs(r.x - r2.x);
+                            int distY = Math.abs(r.y - r2.y);
+                            if ( MIN_DISTANCE > distX && MIN_DISTANCE > distY ) {
+                                if (confidences.get(i) > confidences.get(j)){
+                                    classIds.set(j, null);
+                                }
+                                else classIds.set(i, null);
+                            }
+                        }
+                    }
+                    for (int i = 0; i< detectedRects.size(); i++){
+                        if (classIds.get(i) == null){
+                            classIds.remove(i);
+                            confidences.remove(i);
+                            detectedRects.remove(i);
+                            i--;
+                        }
+                    }
+
 
                     System.out.println("CLASSIDS: " + classIds);
 
