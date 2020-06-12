@@ -39,6 +39,8 @@ public class ComputerVision {
     double SCALEFACTOR = 0;
     double NOT_GLOBAL_SCALEFACTOR = 3.4;
 
+    Bitmap bitmap, inputPic;
+
     int TEXT_R = 138;
     int TEXT_G = 43;
     int TEXT_B = 226;
@@ -46,7 +48,7 @@ public class ComputerVision {
     boolean CENTER = true;
 
     double CONFIDENCE = 0.2;
-    int BKG_THRESH = 200;
+    int BKG_THRESH = 150;
 
     int BOXSIZE = 430;
 
@@ -79,21 +81,18 @@ public class ComputerVision {
         OpenCVLoader.initDebug();
     }
 
-    public void runVision(){
+    public void runVision(Bitmap bitmap){
+        inputPic = bitmap;
         Handler handler = new Handler();
-        handler.post(runnable);
+        handler.postDelayed(runnable, 50);
     }
 
     private Context context;
-    private ImageView imageView;
 
     public void setContext(Context context) {
         this.context = context;
     }
 
-    public void setImageView(ImageView imageView) {
-        this.imageView = imageView;
-    }
 
     Runnable runnable = new Runnable() {
         @Override
@@ -106,8 +105,12 @@ public class ComputerVision {
 
 
             // Loading image
-            String image = Environment.getExternalStorageDirectory() + "/Android/data/com.cdio.ss3000/dnns/" + "testcrop.jpg";
-            Mat imgorig = Imgcodecs.imread(image);
+            //String image = Environment.getExternalStorageDirectory() + "/Android/data/com.cdio.ss3000/dnns/" + "testcrop.jpg";
+            //Mat imgorig = Imgcodecs.imread(image);
+            Mat imgorig = new Mat();
+            Utils.bitmapToMat(inputPic, imgorig);
+            Imgproc.resize(imgorig, imgorig, new Size(imgorig.width()/2, imgorig.height()/2));
+            Imgproc.cvtColor(imgorig, imgorig, Imgproc.COLOR_RGB2BGR);
             Mat img;
             Mat imgOriginal = imgorig.clone();
             Imgproc.cvtColor(imgorig, imgorig, Imgproc.COLOR_BGR2RGB);
@@ -134,6 +137,12 @@ public class ComputerVision {
 
                 if (contourIsCard.get(index) != 1 || rect.height < rect.width || Imgproc.contourArea(contour) < 10000)
                     continue;
+
+                Imgproc.rectangle(
+                        imgorig,
+                        new Point(rect.x,rect.y),
+                        new Point(rect.x + rect.width, rect.y + rect.height),
+                        new Scalar(0,255,0));
 
                 for (int f = 0; f < 1; f++) {
 
@@ -186,6 +195,7 @@ public class ComputerVision {
                                 detectedRects.add(detectionRect);
                                 classIds.add((int) classIdPoint.x);
                                 confidences.add(confidence);
+
 
                                 Imgproc.rectangle(
                                         img,
@@ -265,7 +275,7 @@ public class ComputerVision {
 
                     piles.add(new Pile(rect.x, rect.y, classIds));
 
-                    showMat(img);
+                    //showMat(img);
                 }
             }
 
@@ -384,7 +394,8 @@ public class ComputerVision {
         Mat blur = new Mat();
         Imgproc.GaussianBlur(gray, blur, new Size(5, 5), 0);
         Mat threshold = new Mat();
-        Imgproc.threshold(blur, threshold, BKG_THRESH, 255, Imgproc.THRESH_BINARY);
+        Imgproc.adaptiveThreshold(blur, threshold, 200, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY,101, -25);
+        showMat(threshold);
         return threshold;
     }
 
@@ -470,7 +481,7 @@ public class ComputerVision {
         ////SHOW ON SCREEN - FOR DEBUGGING
         Bitmap bm = Bitmap.createBitmap(img.cols(), img.rows(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(img, bm);
-        imageView.setImageBitmap(bm);
+        int x = 0;
     }
 
 

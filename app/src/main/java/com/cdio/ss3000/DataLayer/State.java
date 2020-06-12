@@ -195,7 +195,7 @@ public class State {
                             break;
                     }
                     noCard = false;
-                } catch (IndexOutOfBoundsException e) {
+                } catch (IndexOutOfBoundsException | NullPointerException e) {
                     string += "    ";
                 }
 

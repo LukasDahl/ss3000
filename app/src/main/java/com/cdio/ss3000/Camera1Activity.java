@@ -4,15 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.service.media.CameraPrewarmService;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -20,12 +16,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
-import com.cdio.ss3000.R;
-import com.pranavpandey.android.dynamic.utils.DynamicUnitUtils;
+import com.cdio.ss3000.Vision.ComputerVision;
 
 import java.io.File;
 import java.io.IOException;
@@ -141,6 +135,7 @@ public class Camera1Activity extends AppCompatActivity implements View.OnClickLi
       if (resultCode == RESULT_OK) {
         //use imageUri here to access the image
         Bitmap picture = BitmapFactory.decodeFile(currentPhotoPath);
+        ComputerVision.getInstance(this).runVision(picture);
         int x = 0;
       } else if (resultCode == RESULT_CANCELED) {
       } else {
@@ -192,30 +187,6 @@ public class Camera1Activity extends AppCompatActivity implements View.OnClickLi
     // Save a file: path for use with ACTION_VIEW intents
     currentPhotoPath = image.getAbsolutePath();
     return image;
-  }
-
-  // Gotten from: https://dev.to/pranavpandey/android-create-bitmap-from-a-view-3lck?fbclid=IwAR3L4MavLBw5POk8o5POgNe29vOKux_jl_Sgd5LEiUKEV5ghf8kMDkFRFb0
-  public @NonNull
-  static Bitmap createBitmapFromView(@NonNull View view, int width, int height) {
-    if (width > 0 && height > 0) {
-      view.measure(View.MeasureSpec.makeMeasureSpec(DynamicUnitUtils
-                      .convertDpToPixels(width), View.MeasureSpec.EXACTLY),
-              View.MeasureSpec.makeMeasureSpec(DynamicUnitUtils
-                      .convertDpToPixels(height), View.MeasureSpec.EXACTLY));
-    }
-    view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
-
-    Bitmap bitmap = Bitmap.createBitmap(view.getMeasuredWidth(),
-            view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-    Canvas canvas = new Canvas(bitmap);
-    Drawable background = view.getBackground();
-
-    if (background != null) {
-      background.draw(canvas);
-    }
-    view.draw(canvas);
-
-    return bitmap;
   }
 
   private static int rotation;
