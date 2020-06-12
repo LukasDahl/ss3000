@@ -13,7 +13,7 @@ public class StateTracker {
     public StateTracker(){
         initState();
     }
-    public void initState(){
+    private void initState(){
         resetBoard();
         board = new State(foundation, tableau, deck, discard);
     }
@@ -37,7 +37,7 @@ public class StateTracker {
                 deck.remove(0);
             }
             tableau[i] = temp_list;
-            System.out.println("Deck contains: " + deck.size() + " cards"); //Debugging info only
+            //System.out.println("Deck contains: " + deck.size() + " cards"); //Debugging info only
             k++;
         }
     }
