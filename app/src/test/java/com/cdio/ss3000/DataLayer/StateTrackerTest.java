@@ -44,6 +44,12 @@ public class StateTrackerTest {
         stateUpdated.tableau[1] = cardList;
         stateTracker.updateState(stateUpdated);
         assertEquals(stateUpdated.tableau[1].get(1), card);//Testing for the card to be removed
+
+    }
+
+    @Test
+    public void fullStateTest(){
         //TODO: Try with a full on board with a move.
+
     }
 }
