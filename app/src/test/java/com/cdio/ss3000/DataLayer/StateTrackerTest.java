@@ -33,10 +33,6 @@ public class StateTrackerTest {
         }
         State newState = new State(foundation, tableau, stock, waste);
         stateTracker.updateState(newState);
-        //stateTracker.showTopCard();
-        //TODO: add actual tests that can fail/pass
-        System.out.println(cardList.toString());
-        System.out.println(newState.tableau[0].toString());
         ArrayList<Card> cardList2 = new ArrayList<>();
         card.setMovable(false);
         cardList2.add(card);
@@ -44,11 +40,10 @@ public class StateTrackerTest {
         newState.tableau[1] = cardList2;
         State stateUpdated = new State(newState.foundations, newState.tableau, newState.stock, newState.waste);
         stateTracker.updateState(stateUpdated);
-        stateTracker.showTopCard();
+        assertEquals(stateUpdated.tableau[1], newState.tableau[1]);//Testing for the card to be added
         stateUpdated.tableau[1] = cardList;
         stateTracker.updateState(stateUpdated);
-        stateTracker.showTopCard();
-
+        assertEquals(stateUpdated.tableau[1].get(1), card);//Testing for the card to be removed
         //TODO: Try with a full on board with a move.
     }
 }
