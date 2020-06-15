@@ -49,6 +49,10 @@ public class StateTracker {
         for(int i = 0; i < 4; i++){
             foundation[i] = inputState.foundations[i];
         }
+        //Discard pile implementation
+        discard = inputState.waste;
+        deck = inputState.stock;
+
         int lowestCardIndex = 1, highestCardIndex = 0;
         //Index 0 is the card with highest value, index 1 is the card with lowest value
 
@@ -91,5 +95,9 @@ public class StateTracker {
 
     public ArrayList<Card>[] getTableau(){
         return tableau;
+    }
+
+    public State getBoard(){
+        return board;
     }
 }
