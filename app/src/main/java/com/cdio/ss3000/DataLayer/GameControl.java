@@ -158,10 +158,12 @@ public class GameControl {
                 if (moveToTableauPossible(state.waste.get(state.waste.size() - 1), cardList.get(cardList.size() - 1))) {
                     //state.waste.get(state.waste.size()-1).addMove(cardList.get(cardList.size()-1));
                     state.waste.get(state.waste.size() - 1).addMove(cardList);
+                    state.waste.get(state.waste.size() - 1).setWaste(true);
                 }
 
                 if (moveToEmptySpaceTableauPossible(state.waste.get(state.waste.size() - 1))) {
                     state.waste.get(state.waste.size() - 1).addMove(cardList);
+                    state.waste.get(state.waste.size() - 1).setWaste(true);
                 }
 
             }
@@ -216,7 +218,7 @@ public Card run(){
         }
     }
     if (state.waste.get(state.waste.size()-1).isMovable())
-        cardPointList.add(state.waste.get(state.waste.size()-1));
+        cardPointList.add(pointCalculator.getBestMoveWaste(state.waste.get(state.waste.size()-1), piles.getKnownCards(), state));
     for (ArrayList<Card> cards:state.foundations) {
         if (cards.get(cards.size()-1).isMovable())
             cardPointList.add(cards.get(cards.size()-1));

@@ -16,6 +16,18 @@ public class PointCalculator {
     private final int ONELOWER = 1; //Hvis der er et kort der har værdi 1 lavere end det kort vi tjekker
     private final int MOVABLEPILE = 5; //Hvis et træk resulterer i at en bunke kan rykkes over, så der frigøres ukendte kort.
 
+
+    private Card checkMovesWaste(Card card, ArrayList<Card> knownCards, State state){
+        ArrayList<Card> tempList = new ArrayList<>();
+        tempList.add(card);
+
+        Card bestCard = checkMoves(tempList, card);
+        if(restOfTableau(card, state) != 0) bestCard.setPoints(bestCard.getPoints() + restOfTableau(card, state));
+        else bestCard.setPoints(bestCard.getPoints() + lowerCardsInPile(card, knownCards));
+
+        return bestCard;
+    }
+
     private Card checkMoves(ArrayList<Card> column, Card card){
         int temp_points = 0;
         //If card is an ace
@@ -32,6 +44,11 @@ public class PointCalculator {
         moves.add(newCard);
         //Add the list of moves to the supplied card
         card.addMove(moves);
+
+
+        //points that are assigned to the card in moves, is copied to the moving card
+        card.setPoints(card.getPoints() + moves.get(0).getPoints());
+
         //Return the supplied card with the single best move
         return card;
     }
@@ -54,6 +71,7 @@ public class PointCalculator {
                 temp_points += TABLEAU_POINTS;
                 //Add points for each underlying face down card
             }
+
             if(!hasFoundItem) {
                 move.get(move.size() - 1).setPoints(temp_points);
             }
@@ -132,7 +150,7 @@ public class PointCalculator {
                 }
 
             }
-            if(isInTableau && pointGiven) bestHeuristic *= 2;
+           // if(isInTableau && pointGiven) bestHeuristic *= 2;
         }
 
         return bestHeuristic;
@@ -142,5 +160,9 @@ public class PointCalculator {
 
     public Card getBestMove(ArrayList<Card> column, Card card){
         return checkMoves(column, card);
+    }
+
+    public Card getBestMoveWaste(Card card, ArrayList<Card> knownCards, State state){
+        return checkMovesWaste(card, knownCards, state);
     }
 }

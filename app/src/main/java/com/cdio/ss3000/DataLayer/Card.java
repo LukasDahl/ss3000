@@ -10,12 +10,9 @@ public class Card {
     private Suit suit;
     private boolean movable;
     private ArrayList<ArrayList> moves = new ArrayList<>();
-    //LinkedList<LinkedList> emptySpaceTableau;
-    //LinkedList<LinkedList> emptySpaceFoundation;
     private int points = 0;
 
-    private boolean isPlacedInFoundation, isRed;
-    private Card topCard, bottomCard;
+    private boolean isPlacedInFoundation, isRed, isWaste;
 
     public Card(int value, Suit suit, boolean movable) {
         this.value = value;
@@ -88,16 +85,12 @@ public class Card {
 
     public void setPlacedInFoundation(boolean isPlacedInFoundation){this.isPlacedInFoundation = isPlacedInFoundation;}
 
-    public void setTopCard(Card topCard){this.topCard = topCard;}
-
-    public Card getTopCard() {return topCard;}
-
-    public void setBottomCard(Card bottomCard){this.bottomCard = bottomCard;}
-
-    public Card getBottomCard(){return bottomCard;}
 
     public boolean isRed(){return isRed;}
 
+    public boolean getWaste(){return isWaste;}
+
+    public void setWaste(boolean waste) {isWaste = waste;}
 
     @NonNull
     @Override
