@@ -220,14 +220,14 @@ public Card run(){
     checkPossibleMoves();
     for (ArrayList<Card> cards: state.tableau) {
         for (Card card: cards) {
-            if(card.isMovable())
+            if(card.getMoves() != null)
                 cardPointList.add(pointCalculator.getBestMove(cards, card));
         }
     }
-    if (state.waste.get(state.waste.size()-1).isMovable())
+    if (state.waste.get(state.waste.size()-1).getMoves() != null)
         cardPointList.add(pointCalculator.getBestMoveWaste(state.waste.get(state.waste.size()-1), piles.getKnownCards(), state));
     for (ArrayList<Card> cards:state.foundations) {
-        if (cards.get(cards.size()-1).isMovable())
+        if (cards.get(cards.size()-1).getMoves() != null)
             cardPointList.add(cards.get(cards.size()-1));
     }
     for (Card card:cardPointList) {
