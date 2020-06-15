@@ -32,7 +32,7 @@ public class GameControlTest {
         gameControl = new GameControl(state);
         gameControl.checkPossibleMoves();
         assertEquals(true, hearts3.equals(state.tableau[2].get(state.tableau[2].size()-1)));
-        assertEquals(2, state.tableau[2].get(state.tableau[2].size()-1).getMoves().size());
+        assertEquals(2, gameControl.getState().tableau[2].get(gameControl.getState().tableau[2].size()-1).getMoves().size());
     }
     @Test
     public void moveToTableauPossibleTest(){
