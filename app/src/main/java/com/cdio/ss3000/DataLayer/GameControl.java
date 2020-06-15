@@ -204,4 +204,28 @@ public class GameControl {
         for()
     }
 */
+public Card run(){
+    pointCalculator = new PointCalculator();
+    ArrayList<Card> cardPointList = new ArrayList<>();
+    Card _cardHighestValue = new Card();
+    checkPossibleMoves();
+    for (ArrayList<Card> cards: state.tableau) {
+        for (Card card: cards) {
+            if(card.isMovable())
+                cardPointList.add(pointCalculator.getBestMove(cards, card));
+        }
+    }
+    if (state.waste.get(state.waste.size()-1).isMovable())
+        cardPointList.add(state.waste.get(state.waste.size()-1));
+    for (ArrayList<Card> cards:state.foundations) {
+        if (cards.get(cards.size()-1).isMovable())
+            cardPointList.add(cards.get(cards.size()-1));
+    }
+    for (Card card:cardPointList) {
+        if (card.getPoints() > _cardHighestValue.getPoints())
+            _cardHighestValue = card;
+    }
+    return _cardHighestValue;
+}
+
 }
