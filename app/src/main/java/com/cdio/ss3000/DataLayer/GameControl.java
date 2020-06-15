@@ -97,14 +97,7 @@ public class GameControl {
      */
     public void checkPossibleMoves() {
 
-
-        try {
-            state = (State)state.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
         int index;
-
 
         //Possible moves from tableau
         for (ArrayList<Card> cardList : state.tableau) {
@@ -220,14 +213,14 @@ public Card run(){
     checkPossibleMoves();
     for (ArrayList<Card> cards: state.tableau) {
         for (Card card: cards) {
-            if(card.getMoves() != null)
+                if(!card.getMoves().isEmpty())
                 cardPointList.add(pointCalculator.getBestMove(cards, card));
         }
     }
-    if (state.waste.get(state.waste.size()-1).getMoves() != null)
+    if (!state.waste.get(state.waste.size()-1).getMoves().isEmpty())
         cardPointList.add(pointCalculator.getBestMoveWaste(state.waste.get(state.waste.size()-1), piles.getKnownCards(), state));
     for (ArrayList<Card> cards:state.foundations) {
-        if (cards.get(cards.size()-1).getMoves() != null)
+        if (!cards.get(cards.size()-1).getMoves().isEmpty())
             cardPointList.add(cards.get(cards.size()-1));
     }
     for (Card card:cardPointList) {

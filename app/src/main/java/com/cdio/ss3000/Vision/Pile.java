@@ -6,7 +6,7 @@ import com.cdio.ss3000.DataLayer.Card;
 import com.cdio.ss3000.DataLayer.State;
 import com.cdio.ss3000.DataLayer.Suit;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Pile implements Comparable {
@@ -140,12 +140,12 @@ public class Pile implements Comparable {
             pilesTop = tempPile;
         }
 
-        LinkedList<Card>[] foundations = new LinkedList[4], tableau = new LinkedList[7];
-        LinkedList<Card> stock = new LinkedList<>();
-        LinkedList<Card> waste = new LinkedList<>();
+        ArrayList<Card>[] foundations = new ArrayList[4], tableau = new ArrayList[7];
+        ArrayList<Card> stock = new ArrayList<>();
+        ArrayList<Card> waste = new ArrayList<>();
 
         for (int i = 0; i < 4; i++) {
-            foundations[i] = new LinkedList<>();
+            foundations[i] = new ArrayList<>();
         }
 
         Pile stockPile = null;
@@ -216,7 +216,7 @@ public class Pile implements Comparable {
 
 
         for (int i = 0; i < tableau.length; i++) {
-            tableau[i] = new LinkedList<>();
+            tableau[i] = new ArrayList<>();
             try {
                 tableau[i].add(intToCard(pilesBottom.get(i).largestCard()));
                 tableau[i].add(intToCard(pilesBottom.get(i).smallestCard()));
