@@ -48,6 +48,22 @@ public class StateTrackerTest {
     }
 
     @Test
+    public void foundationTest(){
+        StateTracker stateTracker = new StateTracker();
+        ArrayList<Card>[] foundation = new ArrayList[4];
+        //Add two cards to the hearts foundation
+        ArrayList<Card> foundation1 = new ArrayList<>();
+        Card f1 = new Card(1, Suit.HEARTS, false);
+        Card f2 = new Card(2, Suit.HEARTS, true);
+        foundation1.add(f1);
+        foundation1.add(f2);
+        foundation[0] = foundation1;
+        //Show change
+
+        //stateTracker.showTopCard();
+    }
+
+    @Test
     public void fullStateTest(){
         //TODO: Try with a full on board with a move.
         //Create a full board state
