@@ -16,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".WonGameActivity"></activity>
+        <activity android:name=".LostGameActivity"></activity>
         <activity android:name=".BlackJackActivity" />
         <activity android:name=".HighscoreActivity" />
         <activity android:name=".CameraActivity" />
