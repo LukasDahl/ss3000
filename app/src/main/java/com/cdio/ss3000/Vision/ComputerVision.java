@@ -38,6 +38,9 @@ public class ComputerVision {
     Mat hierarchy;
     ArrayList<Integer> contourIsCard;
 
+    File weightsFile;
+    File cfgFile;
+
     double SCALEFACTOR = 0;
     double NOT_GLOBAL_SCALEFACTOR = 3.4;
 
@@ -103,7 +106,13 @@ public class ComputerVision {
             // Load Yolo
             String weights = Environment.getExternalStorageDirectory() + "/Android/data/com.cdio.ss3000/dnns/" + "yolov.weights";
             String cfg = Environment.getExternalStorageDirectory() + "/Android/data/com.cdio.ss3000/dnns/" + "yolov3_tinynew.cfg";
-            Net net = Dnn.readNet(weights, cfg);
+
+            try {
+                pushNet(context);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Net net = Dnn.readNet(weightsFile.getAbsolutePath(), cfgFile.getAbsolutePath());
 
 
             // Loading image
@@ -412,43 +421,49 @@ public class ComputerVision {
     }
 
     // Upload file to storage and return a path.
-    private static void pushNet(Context context) throws IOException {
-        // String weights = Environment.getDataDirectory() + "/" + "yolov.weights";
-        String weights = Environment.getExternalStorageDirectory() + "/Android/data/com.cdio.ss3000/dnns/" + "yolov.weights";
-        // String cfg = Environment.getDataDirectory() + "/" + "yolov3_tinynew.cfg";
-        String cfg = Environment.getExternalStorageDirectory() + "/Android/data/com.cdio.ss3000/dnns/" + "yolov3_tinynew.cfg";
-        File fileDir = context.getFilesDir();
-        // File weights = new File(fileDir, "yolov.weights");
+    private void pushNet(Context context) throws IOException {
+        String weights = "yolov.weights";
+        String cfg = "yolov3_tinynew.cfg";
+
+
+        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+        weightsFile = new File(
+                storageDir, weights);
+
+        cfgFile = new File(
+                storageDir, cfg);
 
         InputStream in;
         FileOutputStream out;
-        in = context.getResources().openRawResource(R.raw.yolov);
-        out = new FileOutputStream(weights);
         byte[] buff = new byte[1024];
-        int read = 0;
+        int read;
 
-        try {
-            while ((read = in.read(buff)) > 0) {
-                out.write(buff, 0, read);
+
+        if (!weightsFile.exists()){
+            in = context.getResources().openRawResource(R.raw.yolov);
+            out = new FileOutputStream(weightsFile);
+            try {
+                while ((read = in.read(buff)) > 0) {
+                    out.write(buff, 0, read);
+                }
+            } finally {
+                in.close();
+                out.close();
             }
-        } finally {
-            in.close();
-            out.close();
         }
 
 
-        in = context.getResources().openRawResource(R.raw.yolov3_tinynew);
-        out = new FileOutputStream(cfg);
-        buff = new byte[1024];
-        read = 0;
-
-        try {
-            while ((read = in.read(buff)) > 0) {
-                out.write(buff, 0, read);
+        if (!cfgFile.exists()){
+            in = context.getResources().openRawResource(R.raw.yolov3_tinynew);
+            out = new FileOutputStream(cfgFile);
+            try {
+                while ((read = in.read(buff)) > 0) {
+                    out.write(buff, 0, read);
+                }
+            } finally {
+                in.close();
+                out.close();
             }
-        } finally {
-            in.close();
-            out.close();
         }
 
 
