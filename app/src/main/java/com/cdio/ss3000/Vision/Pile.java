@@ -15,6 +15,7 @@ public class Pile implements Comparable {
     int x, y;
     List<Integer> cards;
     static boolean checkTop = true, flip = false;
+    static int fAmount = 0;
 
     public Pile(int x, int y, List<Integer> cards) {
         this.x = x;
@@ -175,7 +176,12 @@ public class Pile implements Comparable {
 
                 foundations[i].add(intToCard(pile.largestCard()));
                 i++;
+                if (i > fAmount)
+                    fAmount = i;
             }
+
+        } else {
+
 
         }
 
