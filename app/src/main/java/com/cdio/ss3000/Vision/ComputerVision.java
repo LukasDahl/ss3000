@@ -56,7 +56,7 @@ public class ComputerVision {
 
     int MIN_DISTANCE = 5;
 
-    int CARD_MAX_AREA = 180000;
+    int CARD_MAX_AREA = 250000;
     int CARD_MIN_AREA = 40000;
 
     int l = 0;
@@ -111,7 +111,17 @@ public class ComputerVision {
             //Mat imgorig = Imgcodecs.imread(image);
             Mat imgorig = new Mat();
             Utils.bitmapToMat(inputPic, imgorig);
+            System.out.println("størrelse:");
+            System.out.println(imgorig.width());
+            System.out.println(imgorig.height());
+            int matematik;
+
+
             Imgproc.resize(imgorig, imgorig, new Size(imgorig.width()/2, imgorig.height()/2));
+            System.out.println(imgorig.width());
+            System.out.println(imgorig.height());
+
+
             Imgproc.cvtColor(imgorig, imgorig, Imgproc.COLOR_RGB2BGR);
             Mat img;
             Mat imgOriginal = imgorig.clone();
@@ -137,19 +147,45 @@ public class ComputerVision {
                 contour = contours.get(index);
                 rect = Imgproc.boundingRect(contour);
 
-                if (contourIsCard.get(index) != 1 || rect.height < rect.width || Imgproc.contourArea(contour) < 10000)
+
+                // debug start
+                if (Imgproc.contourArea(contour) < CARD_MIN_AREA)
                     continue;
 
-                Imgproc.rectangle(
-                        imgorig,
-                        new Point(rect.x,rect.y),
-                        new Point(rect.x + rect.width, rect.y + rect.height),
-                        new Scalar(0,255,0));
+                if (contourIsCard.get(index) != 1){
+                    System.out.println(rect.width);
+                    Imgproc.rectangle(
+                            imgorig,
+                            new Point(rect.x,rect.y),
+                            new Point(rect.x + rect.width, rect.y + rect.height),
+                            new Scalar(255,0,0));
+                    Imgproc.putText(
+                            imgorig,
+                            contourIsCard.get(index).toString(),
+                            new Point(rect.x + rect.width, rect.y),
+                            Core.FONT_HERSHEY_TRIPLEX,
+                            2,
+                            new Scalar(TEXT_R, TEXT_G, TEXT_B)
+                    );
+                } else {
+                    Imgproc.rectangle(
+                            imgorig,
+                            new Point(rect.x,rect.y),
+                            new Point(rect.x + rect.width, rect.y + rect.height),
+                            new Scalar(0,255,0));
+                }
+
+
+                // debug end
+
+                if (contourIsCard.get(index) != 1 || rect.height < rect.width || Imgproc.contourArea(contour) < CARD_MIN_AREA)
+                    continue;
+
+
 
                 for (int f = 0; f < 1; f++) {
 
                     img = convertToSquare(imgOriginal, rect);
-                    System.out.println(img.channels());
 
                     Imgproc.cvtColor(img, img, Imgproc.COLOR_BGR2RGB);
 
@@ -380,24 +416,51 @@ public class ComputerVision {
         for (int i = 0; i < contours.size(); i++) {
             MatOfPoint contour = contours.get(i);
             size = Imgproc.contourArea(contour);
-            if ((size < CARD_MAX_AREA) && (size > CARD_MIN_AREA) && (hierarchy.get(0, i)[3] == -1)) {
-                contourIsCard.add(1);
+            if (!(size < CARD_MAX_AREA)) {
+                contourIsCard.add(-1);
+            } else if (!(size > CARD_MIN_AREA)) {
+                contourIsCard.add(-2);
+            } else if (!(hierarchy.get(0, i)[3] == -1)) {
+                contourIsCard.add(-3);
+            } else if (contour.width() > contour.height()) {
+                contourIsCard.add(-4);
             } else {
-                contourIsCard.add(0);
+                contourIsCard.add(1);
             }
         }
-        return;
     }
 
     public Mat preprocess_image(Mat image) {
+
+        int tuning = -25, meanVal;
+        double tempMeanVal;
 
         Mat gray = new Mat();
         Imgproc.cvtColor(image, gray, Imgproc.COLOR_BGR2GRAY);
         Mat blur = new Mat();
         Imgproc.GaussianBlur(gray, blur, new Size(5, 5), 0);
         Mat threshold = new Mat();
-        Imgproc.adaptiveThreshold(blur, threshold, 200, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY,101, -25);
-        showMat(threshold);
+        while (true) {
+            Imgproc.adaptiveThreshold(blur, threshold, 200, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 101, tuning);
+
+
+            // debug
+//            System.out.println("threshold val:");
+//            System.out.println(threshold.get(0, 0)[0]);
+//            System.out.println(Core.mean(threshold));
+            //showMat(threshold);
+
+            meanVal = (int) Core.mean(threshold).val[0];
+            if (meanVal < 30) {
+                tuning = tuning + 5;
+            }
+            else if (meanVal > 50){
+                tuning = tuning - 5;
+            }
+            else {
+                break;
+            }
+        }
         return threshold;
     }
 
@@ -486,7 +549,6 @@ public class ComputerVision {
         ImageView im = ((Camera1Activity) context).findViewById(R.id.mats);
         im.setImageBitmap(bm);
         im.setVisibility(View.VISIBLE);
-        int x = 0;
     }
 
 

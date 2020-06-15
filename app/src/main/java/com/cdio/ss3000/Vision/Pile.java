@@ -182,6 +182,31 @@ public class Pile implements Comparable {
 
         } else {
 
+            if(pilesTop.size() > fAmount){
+                int biggetsLenth = 0;
+                for (Pile pile : pilesTop) {
+                    int lenth = 0;
+
+
+                    for (Pile pile2 : pilesTop) {
+                        if (pile == pile2)
+                            continue;
+                        lenth = lenth + Math.abs(pile.x - pile2.x);
+                    }
+
+                    if (lenth > biggetsLenth)
+                        wastePile = pile;
+                }
+                waste.add(intToCard(wastePile.largestCard()));
+            }
+            int i2 = 0;
+            for (Pile pile : pilesTop) {
+                if (pile == wastePile)
+                    continue;
+
+                foundations[i2].add(intToCard(pile.largestCard()));
+                i2++;
+            }
 
         }
 
