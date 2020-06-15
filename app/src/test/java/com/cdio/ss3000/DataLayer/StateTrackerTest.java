@@ -71,28 +71,29 @@ public class StateTrackerTest {
         cardlist.add(ace_heart);
         cardlist.add(ace_heart);
         //Add cards to the foundation
-        ArrayList<Card> addToFoundation1 = new ArrayList<>();
-        ArrayList<Card> addToFoundation2 = new ArrayList<>();
-        ArrayList<Card> addToFoundation3 = new ArrayList<>();
-        ArrayList<Card> addToFoundation4 = new ArrayList<>();
-        addToFoundation1.add(new Card(1, Suit.HEARTS, true));
-        addToFoundation2.add(new Card(3, Suit.DIAMONDS, true));
-        addToFoundation3.add(new Card(5, Suit.SPADES, true));
-        addToFoundation4.add(new Card(7, Suit.CLUBS, true));
+        ArrayList<Card> addToFoundation1 = new ArrayList<>(); //The first foundation
+        ArrayList<Card> addToFoundation2 = new ArrayList<>(); //The second foundation slot
+        ArrayList<Card> addToFoundation3 = new ArrayList<>(); //The third foundation slot
+        ArrayList<Card> addToFoundation4 = new ArrayList<>(); //The fourth foundation slot
+        addToFoundation1.add(new Card(1, Suit.HEARTS, true)); //Add Ace of hearts to foundation
+        addToFoundation2.add(new Card(3, Suit.DIAMONDS, true)); //Add 3 of diamonds to foundation
+        addToFoundation3.add(new Card(5, Suit.SPADES, true)); //Add 5 of Spades to foundation
+        addToFoundation4.add(new Card(7, Suit.CLUBS, true)); //Add 7 of Clubs to foundation
 
+        //Add local foundations to foundation of new state
         foundation[0] = addToFoundation1;
         foundation[1] = addToFoundation2;
         foundation[2] = addToFoundation3;
         foundation[3] = addToFoundation4;
-        //Tableau
+        //Add the aces as the top card of all tableau columns
         ArrayList<Card>[] tableau = new ArrayList[7];
         for(int i = 0; i < 7; i++){
             tableau[i] = cardlist;
         }
-        //Show change
+        //Create a new state from local fields (stock and waste = null as they are not needed)
         State nextState = new State(foundation, tableau, null, null);
-        stateTracker.updateState(nextState);
-        stateTracker.showTopCard();
+        stateTracker.updateState(nextState);//Update state
+        stateTracker.showTopCard();//Prints out an overview of current tableau and foundation state.
         System.out.println("foundationTest: OK");
     }
 
