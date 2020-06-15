@@ -1,59 +1,58 @@
 package com.cdio.ss3000.DataLayer;
 
-import com.cdio.ss3000.DataLayer.Card;
-import com.cdio.ss3000.DataLayer.State;
+import android.graphics.Point;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.ArrayList;
 
 import static com.cdio.ss3000.DataLayer.Suit.*;
 
 public class GameControl {
 
     /*
-    private LinkedList<Card>[] foundations = new LinkedList[4], tableau = new LinkedList[7];
-    private LinkedList<Card> stock, waste;
+    private ArrayList<Card>[] foundations = new ArrayList[4], tableau = new ArrayList[7];
+    private ArrayList<Card> stock, waste;
      */
     private State state;
+    private PointCalculator pointCalculator;
+    private Piles piles;
+    private StateTracker stateTracker;
+    //  private Card emptyStackTableau = new Card(-1, UNKNOWN, false);
+    // private Card emptyStackFoundation = new Card(-2, UNKNOWN, false);
 
-    public GameControl(){
+    public GameControl(State state) {
+        this.state = state;
     }
 
-    public Object getState() {
-        try {
-            return state.clone();
+    public State getState() {
 
-            } catch (CloneNotSupportedException e) {
-            System.out.println("Error in cloning state");
-            return state;
-    }
+        return state;
     }
 
-    public void setState(State state){
+    public void setState(State state) {
         this.state = state;
     }
 
     //Checks if a card can be placed on another specific card
-    public boolean movePossibleTableau(Card movingCard, Card receivingCardTableau){
-        if(movingCard.getSuit() == HEARTS || movingCard.getSuit() == DIAMONDS){
-            if(receivingCardTableau.getSuit() == SPADES || receivingCardTableau.getSuit() == CLUBS){
-                if(movingCard.getValue()+1 == receivingCardTableau.getValue()){
+    public boolean moveToTableauPossible(Card movingCard, Card receivingCardTableau) {
+        if (movingCard.getSuit() == HEARTS || movingCard.getSuit() == DIAMONDS) {
+            if (receivingCardTableau.getSuit() == SPADES || receivingCardTableau.getSuit() == CLUBS) {
+                if (movingCard.getValue() == receivingCardTableau.getValue() - 1) {
                     //movingCard.setMovable(true);
                     return true;
                 }
-            }else{
+            } else {
                 //movingCard.setMovable(false);
                 return false;
             }
             //return(receivingCardTableau.getSuit() == SPADES || receivingCardTableau.getSuit() == CLUBS);
 
-        }else if(movingCard.getSuit() == SPADES || movingCard.getSuit() == CLUBS){
-            if(receivingCardTableau.getSuit() == HEARTS || receivingCardTableau.getSuit() == DIAMONDS){
-                if(movingCard.getValue()+1 == receivingCardTableau.getValue()){
-                   // movingCard.setMovable(true);
+        } else if (movingCard.getSuit() == SPADES || movingCard.getSuit() == CLUBS) {
+            if (receivingCardTableau.getSuit() == HEARTS || receivingCardTableau.getSuit() == DIAMONDS) {
+                if (movingCard.getValue() == receivingCardTableau.getValue() - 1) {
+                    // movingCard.setMovable(true);
                     return true;
                 }
-            }else{
+            } else {
                 //movingCard.setMovable(false);
                 return false;
             }
@@ -61,115 +60,181 @@ public class GameControl {
         }
         return false;
     }
+
     //Checks if card can be moved to foundations
-    public boolean movePossibleFoundations(Card movingCard, Card receivingCardFoundations){
-        if(movingCard.getSuit() == receivingCardFoundations.getSuit()){
-            if(movingCard.getValue()-1 == receivingCardFoundations.getValue()){
+    public boolean moveToFoundationPossible(Card movingCard, Card receivingCardFoundations) {
+        if (movingCard.getSuit() == receivingCardFoundations.getSuit()) {
+            if (movingCard.getValue() == receivingCardFoundations.getValue() + 1) {
                 //movingCard.setMovable(true);
                 return true;
-            }else return false;
-        }else{
+            } else return false;
+        } else {
             //movingCard.setMovable(false);
             return false;
         }
 
         //return (movingCard.getSuit() == receivingCardFoundations.getSuit());
     }
+
     //Checks if card is a King
-    public boolean movePossibleEmptyStackTableau(Card movingCard){
-        if(movingCard.getValue() == 13){
+    public boolean moveToEmptySpaceTableauPossible(Card movingCard) {
+        if (movingCard.getValue() == 13) {
             return true;
-        }else return false;
-    }
-    //Checks if card is an Ace
-    public boolean movePossibleEmptyStackFoundation(Card movingCard){
-            if(movingCard.getValue() == 1){
-            return true;
-        }else return false;
+        } else return false;
     }
 
-    public void suggestMove(){}
+    //Checks if card is an Ace
+    public boolean moveToEmptyFoundationPossible(Card movingCard) {
+        if (movingCard.getValue() == 1) {
+            return true;
+        } else return false;
+    }
+
 
     /*
     This finds all possible moves
     Each possible move is added to the specific card
      */
-    public void checkPossibleMoves(){
+    public void checkPossibleMoves() {
 
 
-        state = (State)getState();
+        try {
+            state = (State)state.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        int index;
 
 
         //Possible moves from tableau
-        for(LinkedList<Card> cardList : state.tableau){
-            if(!cardList.isEmpty()){
-                for(LinkedList<Card> otherCardListTableau : state.tableau){
-                       if(movePossibleTableau(cardList.peek(), otherCardListTableau.peek())){
-                           cardList.peek().addMove(otherCardListTableau.peek());
+        for (ArrayList<Card> cardList : state.tableau) {
+            if (!cardList.isEmpty() && cardList.get(cardList.size() - 1).getSuit() != UNKNOWN) {
+                for (ArrayList<Card> otherCardListTableau : state.tableau) {
+                    if (!otherCardListTableau.isEmpty() && !otherCardListTableau.equals(cardList)) {
+                        index = cardList.size() - 1;
+                        while (cardList.get(index).getSuit() != UNKNOWN) {
+                            if (moveToTableauPossible(cardList.get(index), otherCardListTableau.get(otherCardListTableau.size() - 1))) {
+                                //cardList.get(cardList.size()-1).addMove(otherCardListTableau.get(otherCardListTableau.size()-1));
+                                cardList.get(index).addMove(otherCardListTableau);
+                            } else if (cardList.get(index).getSuit() == UNKNOWN) break;
+                            index -= 1;
+                        }
+                    }
+                }
+                    /*
+                       if(moveToTableauPossible(cardList.get(cardList.size()-1), otherCardListTableau.get(cardList.size()-1))){
+                           //cardList.get(cardList.size()-1).addMove(otherCardListTableau.get(otherCardListTableau.size()-1));
+                           cardList.get(cardList.size()-1).addMove(otherCardListTableau);
                        }
-                    }
-                for(LinkedList<Card> cardListFoundations : state.foundations){
-                    if(movePossibleFoundations(cardList.peek(), cardListFoundations.peek())){
-                        cardList.peek().addMove(cardListFoundations.peek());
+
+                     */
+
+                for (ArrayList<Card> cardListFoundations : state.foundations) {
+                    if (moveToFoundationPossible(cardList.get(cardList.size() - 1), cardListFoundations.get(cardListFoundations.size() - 1))) {
+                        //cardList.get(cardList.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
+                        cardList.get(cardList.size() - 1).addMove(cardListFoundations);
                     }
                 }
 
-                for(LinkedList<Card> otherCardlistTableau : state.tableau){
-                    if(otherCardlistTableau.isEmpty()){
-                        if(movePossibleEmptyStackTableau(cardList.peek())){
-                            cardList.peek().addMoveToEmptySpace(otherCardlistTableau);
+                for (ArrayList<Card> otherCardlistTableau : state.tableau) {
+                    if (otherCardlistTableau.isEmpty()) {
+                        if (moveToEmptySpaceTableauPossible(cardList.get(cardList.size() - 1))) {
+                            // cardList.get(cardList.size()-1).addMove(emptyStackTableau);
+                            cardList.get(cardList.size() - 1).addMove(otherCardlistTableau);
                         }
                     }
 
                 }
 
-                for(LinkedList<Card> cardListFoundations : state.foundations){
-                    if(cardListFoundations.isEmpty()){
-                        if(movePossibleEmptyStackFoundation(cardList.peek())){
-                            cardList.peek().addMoveToEmptySpace(cardListFoundations);
+                for (ArrayList<Card> cardListFoundations : state.foundations) {
+                    if (cardListFoundations.isEmpty()) {
+                        if (moveToEmptyFoundationPossible(cardList.get(cardList.size() - 1))) {
+                            //cardList.get(cardList.size()-1).addMove(emptyStackFoundation);
+                            cardList.get(cardList.size() - 1).addMove(cardListFoundations);
                         }
                     }
                 }
+
                 //possible moves from waste pile
-                if(movePossibleTableau(state.waste.peek(), cardList.peek())){
-                    state.waste.peek().addMove(cardList.peek());
+                if (moveToTableauPossible(state.waste.get(state.waste.size() - 1), cardList.get(cardList.size() - 1))) {
+                    //state.waste.get(state.waste.size()-1).addMove(cardList.get(cardList.size()-1));
+                    state.waste.get(state.waste.size() - 1).addMove(cardList);
+                    state.waste.get(state.waste.size() - 1).setWaste(true);
                 }
 
-                if(movePossibleEmptyStackTableau(state.waste.peek())){
-                    state.waste.peek().addMoveToEmptySpace(cardList);
+                if (moveToEmptySpaceTableauPossible(state.waste.get(state.waste.size() - 1))) {
+                    state.waste.get(state.waste.size() - 1).addMove(cardList);
+                    state.waste.get(state.waste.size() - 1).setWaste(true);
                 }
-
-                for(LinkedList<Card> cardListFoundations: state.foundations){
-                    if(movePossibleFoundations(state.waste.peek(), cardListFoundations.peek())){
-                        state.waste.peek().addMove(cardListFoundations.peek());
-                    }
-                    if(movePossibleEmptyStackFoundation(state.waste.peek())){
-                        state.waste.peek().addMoveToEmptySpace(cardListFoundations);
-                    }
-
-                }
-
-
-
-
 
             }
         }
 
+
+        //possible moves from waste pile
+        for (ArrayList<Card> cardListFoundations : state.foundations) {
+            if (moveToFoundationPossible(state.waste.get(state.waste.size() - 1), cardListFoundations.get(cardListFoundations.size() - 1))) {
+                //state.waste.get(state.waste.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
+                state.waste.get(state.waste.size() - 1).addMove(cardListFoundations);
+            }
+            if (moveToEmptyFoundationPossible(state.waste.get(state.waste.size() - 1))) {
+                //state.waste.get(state.waste.size()-1).addMove(emptyStackFoundation);
+                state.waste.get(state.waste.size() - 1).addMove(cardListFoundations);
+            }
+
+        }
+
+
         //Possible moves from foundations
-        for(LinkedList<Card> cardList : state.foundations){
-            for(LinkedList<Card> cardListTableau : state.tableau){
-                if(movePossibleFoundations(cardList.peek(), cardListTableau.peek())){
-                    cardList.peek().addMove(cardListTableau.peek());
+        for (ArrayList<Card> cardList : state.foundations) {
+            for (ArrayList<Card> cardListTableau : state.tableau) {
+                if (moveToTableauPossible(cardList.get(cardList.size() - 1), cardListTableau.get(cardListTableau.size() - 1))) {
+                    //cardList.get(cardList.size()-1).addMove(cardListTableau.get(cardListTableau.size()-1));
+                    cardList.get(cardList.size() - 1).addMove(cardListTableau);
                 }
 
-                if(movePossibleEmptyStackTableau(cardList.peek())){
-                    cardList.peek().addMoveToEmptySpace(cardListTableau);
+                if (moveToEmptySpaceTableauPossible(cardList.get(cardList.size() - 1))) {
+                    //cardList.get(cardList.size()-1).addMove(emptyStackTableau);
+                    cardList.get(cardList.size() - 1).addMove(cardListTableau);
                 }
             }
         }
     }
 
+/*
+    public void suggestMove(){
+        ArrayList<Card> bestMoveCards;
+        for()
+    }
+*/
 
+public void updateState(State newState){
+    stateTracker.updateState(newState);
+    state = stateTracker.getBoard();
+}
+
+public Card run(){
+    pointCalculator = new PointCalculator();
+    ArrayList<Card> cardPointList = new ArrayList<>();
+    Card _cardHighestValue = new Card();
+    checkPossibleMoves();
+    for (ArrayList<Card> cards: state.tableau) {
+        for (Card card: cards) {
+            if(card.getMoves() != null)
+                cardPointList.add(pointCalculator.getBestMove(cards, card));
+        }
+    }
+    if (state.waste.get(state.waste.size()-1).getMoves() != null)
+        cardPointList.add(pointCalculator.getBestMoveWaste(state.waste.get(state.waste.size()-1), piles.getKnownCards(), state));
+    for (ArrayList<Card> cards:state.foundations) {
+        if (cards.get(cards.size()-1).getMoves() != null)
+            cardPointList.add(cards.get(cards.size()-1));
+    }
+    for (Card card:cardPointList) {
+        if (card.getPoints() > _cardHighestValue.getPoints())
+            _cardHighestValue = card;
+    }
+    return _cardHighestValue;
+}
 
 }
