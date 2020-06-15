@@ -41,10 +41,8 @@ public class ComputerVision {
     File weightsFile;
     File cfgFile;
 
-    double SCALEFACTOR = 0;
-    double NOT_GLOBAL_SCALEFACTOR = 3.4;
-    double PRE_SCALE;
-    double PRE_SCALE_WITH = 1280;
+    double SCALE;
+    double SCALE_WITH = 1280;
 
     Bitmap bitmap, inputPic;
 
@@ -55,11 +53,10 @@ public class ComputerVision {
     boolean CENTER = true;
 
     double CONFIDENCE = 0.2;
-    int BKG_THRESH = 150;
 
     int BOXSIZE = 430;
 
-    int MIN_DISTANCE = 5;
+    int MIN_DISTANCE = 15;
 
     int CARD_MAX_AREA = 200000;
     int CARD_MIN_AREA = 10000;
@@ -123,8 +120,8 @@ public class ComputerVision {
             Mat imgorig = new Mat();
             Utils.bitmapToMat(inputPic, imgorig);
 
-            PRE_SCALE = PRE_SCALE_WITH/imgorig.width();
-            Imgproc.resize(imgorig, imgorig, new Size(imgorig.width() * PRE_SCALE, imgorig.height() * PRE_SCALE));
+            SCALE = SCALE_WITH/imgorig.width();
+            Imgproc.resize(imgorig, imgorig, new Size(imgorig.width() * SCALE, imgorig.height() * SCALE));
 
             Imgproc.cvtColor(imgorig, imgorig, Imgproc.COLOR_RGB2BGR);
             Mat img;
@@ -167,7 +164,7 @@ public class ComputerVision {
                             new Point(rect.x + rect.width, rect.y),
                             Core.FONT_HERSHEY_TRIPLEX,
                             2,
-                            new Scalar(TEXT_R, TEXT_G, TEXT_B)
+                            new Scalar(255,0,0)
                     );
                 } else {
                     Imgproc.rectangle(
@@ -175,6 +172,9 @@ public class ComputerVision {
                             new Point(rect.x,rect.y),
                             new Point(rect.x + rect.width, rect.y + rect.height),
                             new Scalar(0,255,0));
+                    System.out.println("with:");
+                    System.out.println(rect.width);
+                    System.out.println(rect.height);
                 }
 
 
@@ -244,10 +244,10 @@ public class ComputerVision {
                                         new Scalar(TEXT_R, TEXT_G, TEXT_B)
                                 );
 
-                                int origX1 = (int)((double)(left - l) / SCALEFACTOR) + rect.x;
-                                int origX2 = (int)((double)(right - l) / SCALEFACTOR) + rect.x;
-                                int origY1 = (int)((double)(top - t) / SCALEFACTOR) + rect.y;
-                                int origY2 = (int)((double)(bottom - t) / SCALEFACTOR) + rect.y;
+                                int origX1 = (int)((double)(left - l)) + rect.x;
+                                int origX2 = (int)((double)(right - l)) + rect.x;
+                                int origY1 = (int)((double)(top - t)) + rect.y;
+                                int origY2 = (int)((double)(bottom - t)) + rect.y;
 
                                 Imgproc.rectangle(
                                         imgorig,
@@ -273,7 +273,7 @@ public class ComputerVision {
                                         label,
                                         new Point(origX2, origY2),
                                         Core.FONT_HERSHEY_TRIPLEX,
-                                        1,
+                                        0.5,
                                         new Scalar(TEXT_R, TEXT_G, TEXT_B)
 
                                 );
@@ -392,7 +392,7 @@ public class ComputerVision {
 
         this.t = t;
         this.l = l;
-        this.SCALEFACTOR = SCALEFACTOR;
+        //this.SCALEFACTOR = SCALEFACTOR;
 
         Core.copyMakeBorder(img, img, t, b, l, r, Core.BORDER_CONSTANT, new Scalar(255, 255, 255));
 
@@ -424,11 +424,10 @@ public class ComputerVision {
                 contourIsCard.add(-2);
             } else if (!(hierarchy.get(0, i)[3] == -1)) {
                 contourIsCard.add(-3);
-            } else if (contour.width() > contour.height()) {
+            } else if (contour.width() > (contour.height() * 0.8)) {
                 contourIsCard.add(-4);
             } else {
-                System.out.println("with:");
-                System.out.println(contour.width());
+
                 contourIsCard.add(1);
             }
         }
