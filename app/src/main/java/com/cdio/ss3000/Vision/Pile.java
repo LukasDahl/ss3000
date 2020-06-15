@@ -186,10 +186,14 @@ public class Pile implements Comparable {
         }
 
 
-        for (int i = 0; i < pilesBottom.size(); i++) {
+        for (int i = 0; i < tableau.length; i++) {
             tableau[i] = new LinkedList<>();
-            tableau[i].add(intToCard(pilesBottom.get(i).largestCard()));
-            tableau[i].add(intToCard(pilesBottom.get(i).smallestCard()));
+            try {
+                tableau[i].add(intToCard(pilesBottom.get(i).largestCard()));
+                tableau[i].add(intToCard(pilesBottom.get(i).smallestCard()));
+            } catch (IndexOutOfBoundsException e){
+                continue;
+            }
         }
 
 

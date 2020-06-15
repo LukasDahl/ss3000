@@ -18,8 +18,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.os.Handler;
+import android.view.View;
 import android.widget.ImageView;
 
+import com.cdio.ss3000.Camera1Activity;
 import com.cdio.ss3000.R;
 
 import java.io.File;
@@ -481,6 +483,9 @@ public class ComputerVision {
         ////SHOW ON SCREEN - FOR DEBUGGING
         Bitmap bm = Bitmap.createBitmap(img.cols(), img.rows(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(img, bm);
+        ImageView im = ((Camera1Activity) context).findViewById(R.id.mats);
+        im.setImageBitmap(bm);
+        im.setVisibility(View.VISIBLE);
         int x = 0;
     }
 
