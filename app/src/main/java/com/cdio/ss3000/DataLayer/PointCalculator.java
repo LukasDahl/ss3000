@@ -82,9 +82,6 @@ public class PointCalculator {
             return null;
         }
     }
-    /*
-    TODO: Add points for the amount of face-down cards
-     */
 
     int addBaseLinePoints(ArrayList<Card> column, Card card){
         if(column.size() == 1) return 0;
