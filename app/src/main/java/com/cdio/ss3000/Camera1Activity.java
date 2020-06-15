@@ -8,25 +8,19 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.service.media.CameraPrewarmService;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
-
-import com.cdio.ss3000.R;
 import com.pranavpandey.android.dynamic.utils.DynamicUnitUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -64,12 +58,12 @@ public class Camera1Activity extends AppCompatActivity implements View.OnClickLi
   protected void onResume() {
     super.onResume();
 
-//    if (!isCameraInitialized) {
-//      mCamera = Camera.open();
-//      mPreview = new CameraPreview(this, mCamera);
-//      preview = findViewById(R.id.camera_preview);
-//      preview.addView(mPreview);
-//      rotateCamera();
+    if (!isCameraInitialized) {
+      mCamera = Camera.open();
+      mPreview = new CameraPreview(this, mCamera);
+      preview = findViewById(R.id.camera_preview);
+      preview.addView(mPreview);
+      rotateCamera();
 //      orientationEventListener = new OrientationEventListener(this) {
 //        @Override
 //        public void onOrientationChanged(int orientation) {
@@ -77,32 +71,34 @@ public class Camera1Activity extends AppCompatActivity implements View.OnClickLi
 //        }
 //      };
 //      orientationEventListener.enable();
-//      preview.setOnLongClickListener(new View.OnLongClickListener() {
-//        @Override
-//        public boolean onLongClick(View v) {
-//          if (whichCamera) {
-//            if (fM) {
-//              p.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-//            } else {
-//              p.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-//            }
-//            try {
-//              mCamera.setParameters(p);
-//            } catch (Exception e) {
-//
-//            }
-//            fM = !fM;
-//          }
-//          return true;
-//        }
-//      });
-//    }
+      preview.setOnLongClickListener(new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+          if (whichCamera) {
+            if (fM) {
+              p.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            } else {
+              p.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+            }
+            try {
+              mCamera.setParameters(p);
+            } catch (Exception e) {
+
+            }
+            fM = !fM;
+          }
+          return true;
+        }
+      });
+    }
   }
 
   @Override
   protected void onPause() {
     super.onPause();
-    //mCamera.release();
+    mCamera.release();
+    frameLayout = (FrameLayout) findViewById(R.id.camera_preview);
+    frameLayout.removeAllViews();
   }
 
   @Override
@@ -141,7 +137,6 @@ public class Camera1Activity extends AppCompatActivity implements View.OnClickLi
       if (resultCode == RESULT_OK) {
         //use imageUri here to access the image
         Bitmap picture = BitmapFactory.decodeFile(currentPhotoPath);
-        int x = 0;
       } else if (resultCode == RESULT_CANCELED) {
       } else {
       }
