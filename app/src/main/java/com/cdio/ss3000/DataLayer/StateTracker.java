@@ -72,6 +72,10 @@ public class StateTracker {
                 tableau[i].remove(tableau[i].size()-1);//TODO this needs work with the whole flipping a card part -> Try with a full board and perform an actual move in test
             }
         }
+        //Update the foundation
+        for(int i = 0; i < 4; i++){
+            foundation[i] = inputState.foundations[i];
+        }
 
     }
 

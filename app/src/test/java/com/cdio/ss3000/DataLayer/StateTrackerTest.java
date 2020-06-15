@@ -59,7 +59,6 @@ public class StateTrackerTest {
         foundation1.add(f2);
         foundation[0] = foundation1;
         //Show change
-
 //        stateTracker.showTopCard();
     }
 
