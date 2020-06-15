@@ -40,6 +40,8 @@ public class ComputerVision {
 
     double SCALEFACTOR = 0;
     double NOT_GLOBAL_SCALEFACTOR = 3.4;
+    double PRE_SCALE;
+    double PRE_SCALE_WITH = 1280;
 
     Bitmap bitmap, inputPic;
 
@@ -56,8 +58,8 @@ public class ComputerVision {
 
     int MIN_DISTANCE = 5;
 
-    int CARD_MAX_AREA = 250000;
-    int CARD_MIN_AREA = 40000;
+    int CARD_MAX_AREA = 200000;
+    int CARD_MIN_AREA = 10000;
 
     int l = 0;
     int t = 0;
@@ -111,16 +113,9 @@ public class ComputerVision {
             //Mat imgorig = Imgcodecs.imread(image);
             Mat imgorig = new Mat();
             Utils.bitmapToMat(inputPic, imgorig);
-            System.out.println("størrelse:");
-            System.out.println(imgorig.width());
-            System.out.println(imgorig.height());
-            int matematik;
 
-
-            Imgproc.resize(imgorig, imgorig, new Size(imgorig.width()/2, imgorig.height()/2));
-            System.out.println(imgorig.width());
-            System.out.println(imgorig.height());
-
+            PRE_SCALE = PRE_SCALE_WITH/imgorig.width();
+            Imgproc.resize(imgorig, imgorig, new Size(imgorig.width() * PRE_SCALE, imgorig.height() * PRE_SCALE));
 
             Imgproc.cvtColor(imgorig, imgorig, Imgproc.COLOR_RGB2BGR);
             Mat img;
@@ -129,10 +124,8 @@ public class ComputerVision {
 
             find_cards(preprocess_image(imgOriginal));
 
-            System.out.println("Depth: " + imgOriginal.depth());
             if (contours.size() == 0)
                 return;
-            System.out.println(contours.size() + " contours");
 
             List<Pile> piles = new ArrayList<>();
             List<Pile> pilesTop = new ArrayList<>();
@@ -335,12 +328,12 @@ public class ComputerVision {
 
     private Mat convertToSquare(Mat imgOriginal, Rect rect) {
 
-        double SCALEFACTOR = ((double)BOXSIZE)/(NOT_GLOBAL_SCALEFACTOR*(double)rect.width);
+        //double SCALEFACTOR = ((double)BOXSIZE)/(NOT_GLOBAL_SCALEFACTOR*(double)rect.width);
 
         //Crop and resize
         Mat img = imgOriginal.submat(rect);
         img = img.clone();
-        Imgproc.resize(img, img, new Size(img.width() * SCALEFACTOR, img.height() * SCALEFACTOR));
+        //Imgproc.resize(img, img, new Size(img.width() * SCALEFACTOR, img.height() * SCALEFACTOR));
 
         System.out.println("RECT: " + rect.width + " " + rect.height);
         //Create black bars
@@ -425,6 +418,8 @@ public class ComputerVision {
             } else if (contour.width() > contour.height()) {
                 contourIsCard.add(-4);
             } else {
+                System.out.println("with:");
+                System.out.println(contour.width());
                 contourIsCard.add(1);
             }
         }
@@ -445,10 +440,9 @@ public class ComputerVision {
 
 
             // debug
-//            System.out.println("threshold val:");
-//            System.out.println(threshold.get(0, 0)[0]);
-//            System.out.println(Core.mean(threshold));
-            //showMat(threshold);
+            System.out.println("threshold val:");
+            System.out.println(threshold.get(0, 0)[0]);
+            System.out.println(Core.mean(threshold));
 
             meanVal = (int) Core.mean(threshold).val[0];
             if (meanVal < 30) {
@@ -461,6 +455,7 @@ public class ComputerVision {
                 break;
             }
         }
+        showMat(threshold);
         return threshold;
     }
 
