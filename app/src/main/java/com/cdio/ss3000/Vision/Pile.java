@@ -6,7 +6,6 @@ import com.cdio.ss3000.DataLayer.Card;
 import com.cdio.ss3000.DataLayer.State;
 import com.cdio.ss3000.DataLayer.Suit;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,12 +34,14 @@ public class Pile implements Comparable {
         return cards;
     }
 
+
+    // Finds the card with the smallest value
     public int smallestCard() {
         int min = 14;
         int returnCard = 0;
         for (int card : cards) {
             int value = valueOfCard(card);
-            if (value < min) {
+                if (value < min) {
                 min = value;
                 returnCard = card;
             }
@@ -48,6 +49,7 @@ public class Pile implements Comparable {
         return returnCard;
     }
 
+    // Finds the card with the biggest value
     public int largestCard() {
         int max = 0;
         int returnCard = 0;
@@ -61,6 +63,7 @@ public class Pile implements Comparable {
         return returnCard;
     }
 
+    // Gets the value from the number yolo returns
     public static int valueOfCard(int card) {
         int value = card % 13;
         if (value == 0) {
@@ -76,6 +79,7 @@ public class Pile implements Comparable {
         return x - ((Pile) o).getX();
     }
 
+    // Split piles based on y value
     public static void splitPiles(List<Pile> piles, List<Pile> pilesTop, List<Pile> pilesBottom) {
         int min = 1000000, max = -1000000, middle;
         for (Pile pile : piles) {
@@ -94,7 +98,7 @@ public class Pile implements Comparable {
                 pilesTop.add(pile);
         }
 
-        // check once if stock is in bottom pile
+        // Check once if stock is in bottom pile
         if (checkTop) {
             for (Pile flop : pilesBottom) {
                 if (flop.cards.size() == 0) {
@@ -128,7 +132,7 @@ public class Pile implements Comparable {
 
     public static State pileListToState(List<Pile> pilesTop, List<Pile> pilesBottom) {
 
-        // flip top and bottom if stock is in bottom pile
+        // Flip top and bottom if stock is in bottom pile
         if (flip) {
             List<Pile> tempPile;
             tempPile = pilesBottom;
@@ -148,14 +152,14 @@ public class Pile implements Comparable {
         Pile wastePile = null;
 
 
-        //FIND EMPTY PILE
+        // Find empty pile
         for (int i = 0; i < pilesTop.size(); i++) {
             if (pilesTop.get(i).cards.size() == 0) {
                 stockPile = pilesTop.get(i);
             }
         }
 
-        //FIND WASTE WHICH IS CLOSE TO STOCK
+        // Find waste which is close to stock
         if (stockPile != null) {
             for (int i = 0; i < pilesTop.size(); i++) {
                 if (pilesTop.get(i) == stockPile)
