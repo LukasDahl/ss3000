@@ -15,6 +15,7 @@ public class GameControl {
     private State state;
     private PointCalculator pointCalculator;
     private Piles piles;
+    private StateTracker stateTracker;
     //  private Card emptyStackTableau = new Card(-1, UNKNOWN, false);
     // private Card emptyStackFoundation = new Card(-2, UNKNOWN, false);
 
@@ -206,6 +207,12 @@ public class GameControl {
         for()
     }
 */
+
+public void updateState(State newState){
+    stateTracker.updateState(newState);
+    state = stateTracker.getBoard();
+}
+
 public Card run(){
     pointCalculator = new PointCalculator();
     ArrayList<Card> cardPointList = new ArrayList<>();
