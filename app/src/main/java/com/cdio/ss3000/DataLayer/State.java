@@ -138,6 +138,9 @@ public class State {
                     case SPADES:
                         string += "S ";
                         break;
+                    case UNKNOWN:
+                        string += "X ";
+                        break;
                 }
                 noCard = false;
 
@@ -163,6 +166,9 @@ public class State {
                     break;
                 case SPADES:
                     string += "S ";
+                    break;
+                case UNKNOWN:
+                    string += "X ";
                     break;
             }
         }
@@ -193,6 +199,9 @@ public class State {
                             break;
                         case SPADES:
                             string += "S ";
+                            break;
+                        case UNKNOWN:
+                            string += "X ";
                             break;
                     }
                     noCard = false;

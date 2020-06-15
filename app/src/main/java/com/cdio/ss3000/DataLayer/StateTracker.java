@@ -59,7 +59,8 @@ public class StateTracker {
         //First time run -> Cards are all unknown
         for(int i = 0; i < 7; i++){
             if(tableau[i].get(tableau[i].size()-1).getSuit() == Suit.UNKNOWN){//Check if the top card in tableau is a face down card
-                if(inputState.tableau[i].get(lowestCardIndex).equals(inputState.tableau[i].get(highestCardIndex))){//Check if both highest and lowest card is the same card.
+                if(inputState.tableau[i].get(lowestCardIndex).getSuit() == inputState.tableau[i].get(highestCardIndex).getSuit() &&
+                        inputState.tableau[i].get(lowestCardIndex).getValue() == inputState.tableau[i].get(highestCardIndex).getValue()){//Check if both highest and lowest card is the same card.
                     Card newCard = inputState.tableau[i].get(lowestCardIndex);//Save the card to be used
                     //"Turns" the card so it is now face-up.
                     tableau[i].get(tableau[i].size()-1).setSuit(newCard.getSuit());//Set suit

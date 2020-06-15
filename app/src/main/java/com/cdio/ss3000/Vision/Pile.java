@@ -187,7 +187,7 @@ public class Pile implements Comparable {
         } else {
 
             if(pilesTop.size() > fAmount){
-                int biggetsLenth = 0;
+                int biggetsLength = 0;
                 for (Pile pile : pilesTop) {
                     int lenth = 0;
 
@@ -198,7 +198,7 @@ public class Pile implements Comparable {
                         lenth = lenth + Math.abs(pile.x - pile2.x);
                     }
 
-                    if (lenth > biggetsLenth)
+                    if (lenth > biggetsLength)
                         wastePile = pile;
                 }
                 waste.add(intToCard(wastePile.largestCard()));

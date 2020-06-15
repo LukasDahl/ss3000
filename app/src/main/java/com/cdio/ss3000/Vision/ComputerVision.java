@@ -21,6 +21,8 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.cdio.ss3000.Camera1Activity;
+import com.cdio.ss3000.DataLayer.Card;
+import com.cdio.ss3000.DataLayer.GameControl;
 import com.cdio.ss3000.R;
 
 import java.io.File;
@@ -74,7 +76,7 @@ public class ComputerVision {
     int l = 0;
     int t = 0;
 
-
+    GameControl gc;
 
     private static String[] classNames = {
             "Ah", "Kh", "Qh", "Jh", "10h", "9h", "8h", "7h", "6h", "5h", "4h", "3h", "2h",
@@ -95,6 +97,7 @@ public class ComputerVision {
 
     private ComputerVision() {
         OpenCVLoader.initDebug();
+        gc = new GameControl(null);
     }
 
     public void runVision(Bitmap bitmap) {
@@ -355,7 +358,10 @@ public class ComputerVision {
             Collections.sort(pilesTop);
 
             // Convert piles to state object
-            Pile.pileListToState(pilesTop, pilesBottom);
+            gc.updateState(Pile.pileListToState(pilesTop, pilesBottom));
+            Card bestMove = gc.run();
+            System.out.println(bestMove.toMovesString());
+
 
 
         }
@@ -460,7 +466,7 @@ public class ComputerVision {
     // Process image to find bounding boxes of cards
     public Mat prepareBoard(Mat image) {
 
-        int tuning = -25, meanVal;
+        int tuning = -15, meanVal;
 
         // Convert to grayscale
         Mat gray = new Mat();
@@ -477,9 +483,9 @@ public class ComputerVision {
             System.out.println("THRESHOLD: " + threshold.get(0, 0)[0] + " " + Core.mean(threshold));
             meanVal = (int) Core.mean(threshold).val[0];
             if (meanVal < 30) {
-                tuning = tuning + 4;
+                tuning = tuning + 2;
             } else if (meanVal > 50) {
-                tuning = tuning - 4;
+                tuning = tuning - 2;
             } else {
                 break;
             }
