@@ -2,6 +2,7 @@ package com.cdio.ss3000;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.CycleInterpolator;
@@ -13,7 +14,7 @@ import android.widget.Toast;
 
 public class WonGameActivity extends AppCompatActivity implements View.OnClickListener {
     EditText enterName;
-    Button save;
+    Button save, mainMenu, newGame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +26,12 @@ public class WonGameActivity extends AppCompatActivity implements View.OnClickLi
 
         save = findViewById(R.id.saveBtn);
         save.setOnClickListener(this);
+
+        mainMenu = findViewById(R.id.mainMenuBtn);
+        mainMenu.setOnClickListener(this);
+
+        newGame = findViewById(R.id.newGameBtn);
+        newGame.setOnClickListener(this);
 
     }
 
@@ -38,23 +45,24 @@ public class WonGameActivity extends AppCompatActivity implements View.OnClickLi
                 Toast.makeText(this, "Enter your name to save!", Toast.LENGTH_SHORT).show();
                 return;
             }else{
-                //Score person = new Score(enterName.getText().toString(),udregnScore());
-                //Logik.highScoreList.add(person);
+              //Gem data her
 
-               // gemData();
-
-                //Gør sådan så knappen kun kan trykkes på én gang. Da brugeren ellers ville
-                // kunne gemme samme score flere gange
                 save.setEnabled(false);
 
                 //gemmer keyboardet når gem knap trykkes
                 enterName.onEditorAction(EditorInfo.IME_ACTION_DONE);
                 enterName.setEnabled(false);
 
-
                 Toast.makeText(this, "Highscore saved!", Toast.LENGTH_SHORT).show();
 
             }
+        }else if(v == mainMenu){
+            Intent i = new Intent(this, MainActivity.class);
+            this.startActivity(i);
+
+        }else if(v == newGame){
+            Intent i = new Intent(this, Camera1Activity.class);
+            this.startActivity(i);
         }
     }
 
