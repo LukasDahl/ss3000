@@ -76,8 +76,13 @@ public class StateTracker {
     }
 
     public void showTopCard(){
+        System.out.println("-----\tTableau\t-----");
         for(int i = 0; i < 7; i++){
             System.out.println(tableau[i] + "\t coord: (" + i + ", " + i + ")");
+        }
+        System.out.println("-----\tFoundation\t-----");
+        for(int i = 0; i < 4; i++){
+            System.out.println(foundation[i] + "\t index: " + i);
         }
     }
 }
