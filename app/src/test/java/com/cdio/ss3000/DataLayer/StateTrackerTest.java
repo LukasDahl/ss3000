@@ -50,6 +50,6 @@ public class StateTrackerTest {
     @Test
     public void fullStateTest(){
         //TODO: Try with a full on board with a move.
-
+        //Create a full board state
     }
 }
