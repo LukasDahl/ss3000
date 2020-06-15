@@ -14,13 +14,16 @@ public class Card {
     //LinkedList<LinkedList> emptySpaceFoundation;
     private int points = 0;
 
-    private boolean isPlacedInFoundation;
+    private boolean isPlacedInFoundation, isRed;
     private Card topCard, bottomCard;
 
     public Card(int value, Suit suit, boolean movable) {
         this.value = value;
         this.suit = suit;
         this.movable = movable;
+
+        if(this.suit == suit.SPADES || this.suit == suit.CLUBS ) isRed = false;
+        else if(this.suit == suit.HEARTS || this.suit == suit.HEARTS) isRed = true;
     }
 
     public Card() {
@@ -92,6 +95,8 @@ public class Card {
     public void setBottomCard(Card bottomCard){this.bottomCard = bottomCard;}
 
     public Card getBottomCard(){return bottomCard;}
+
+    public boolean isRed(){return isRed;}
 
 
     @NonNull

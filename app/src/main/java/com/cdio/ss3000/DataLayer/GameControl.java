@@ -14,6 +14,7 @@ public class GameControl {
      */
     private State state;
     private PointCalculator pointCalculator;
+    private Piles piles;
     //  private Card emptyStackTableau = new Card(-1, UNKNOWN, false);
     // private Card emptyStackFoundation = new Card(-2, UNKNOWN, false);
 

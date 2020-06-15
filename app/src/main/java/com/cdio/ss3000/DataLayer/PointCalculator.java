@@ -13,6 +13,8 @@ public class PointCalculator {
     private final int ACE = 1;
     private final int KING = 13;
     private final int BASELINE = 2;
+    private final int ONELOWER = 1; //Hvis der er et kort der har værdi 1 lavere end det kort vi tjekker
+    private final int MOVABLEPILE = 5; //Hvis et træk resulterer i at en bunke kan rykkes over, så der frigøres ukendte kort.
 
     private Card checkMoves(ArrayList<Card> column, Card card){
         int temp_points = 0;
@@ -101,6 +103,44 @@ public class PointCalculator {
         bl_points = sublist.size()*BASELINE;
         return bl_points;
     }
+    
+    int lowerCardsInPile(Card card, ArrayList<Card> knownCards){
+            int bestHeuristic = 0;
+            boolean pointGiven = false;
+
+            for(Card mCard : knownCards){
+                if(mCard.getValue() == card.getValue()-1 && mCard.isRed() != card.isRed() && !pointGiven){
+                    bestHeuristic += ONELOWER;
+                    pointGiven = true;
+                }
+            }
+        
+        return bestHeuristic;
+    }
+
+    int restOfTableau(Card card, State state){
+        int bestHeuristic = 0;
+        boolean pointGiven = false;
+        boolean isInTableau = false;
+
+        for(ArrayList<Card> tableauPile : state.tableau){
+            for (Card mCard : tableauPile){
+                if(mCard.getValue() == card.getValue() && mCard.getSuit() == card.getSuit()) isInTableau = true;
+                if(mCard.getValue() != 0 && !pointGiven){
+                    if(mCard.getValue() == card.getValue()-1 && mCard.isRed() != card.isRed()){
+                       bestHeuristic += MOVABLEPILE;
+                       pointGiven = true;
+                    }
+                    break;
+                }
+
+            }
+            if(isInTableau && pointGiven) bestHeuristic *= 2;
+        }
+
+        return bestHeuristic;
+    }
+
 
 
     public Card getBestMove(ArrayList<Card> column, Card card){
