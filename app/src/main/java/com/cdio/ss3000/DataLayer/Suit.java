@@ -5,5 +5,6 @@ public enum Suit {
     CLUBS,
     DIAMONDS,
     SPADES,
-    UNKNOWN
+    UNKNOWN,
+    STOCK
 }
