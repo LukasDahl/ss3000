@@ -178,7 +178,14 @@ public class Card {
             return str;
         }
 
-        Card destination = getMoves().get(0).get(getMoves().size() - 1);
+        if (getMoves().get(0).size() == 0){
+            str += "Foundation";
+            return str;
+        }
+
+        Card destination = getMoves().get(0).get(getMoves().get(0).size() - 1);
+
+
         switch (destination.getValue()) {
             case 1:
                 str += "Ace";

@@ -78,6 +78,14 @@ public class StateTracker {
                 tableau[i].add(inputState.tableau[i].get(lowestCardIndex));//Adds the card with the lowest value (the one in the front) to our registered tableau.
             }else if(tableau[i].get(tableau[i].size()-1).getValue() < inputState.tableau[i].get(lowestCardIndex).getValue()){//If true column size has decreased
                 tableau[i].remove(tableau[i].size()-1);//TODO this needs work with the whole flipping a card part -> Try with a full board and perform an actual move in test
+//                tableau[i].get(tableau[i].size()-1).setSuit(inputState.tableau[i].get(highestCardIndex).getSuit());
+//                tableau[i].get(tableau[i].size()-1).setValue(inputState.tableau[i].get(highestCardIndex).getValue());
+            }
+            //We'll try this
+            if(inputState.tableau[i].get(lowestCardIndex).getValue() == inputState.tableau[i].get(highestCardIndex).getValue() &&
+                    inputState.tableau[i].get(lowestCardIndex).getSuit() == inputState.tableau[i].get(highestCardIndex).getSuit()){
+                tableau[i].get(tableau[i].size()-1).setSuit(inputState.tableau[i].get(highestCardIndex).getSuit());
+                tableau[i].get(tableau[i].size()-1).setValue(inputState.tableau[i].get(highestCardIndex).getValue());
             }
         }
 
