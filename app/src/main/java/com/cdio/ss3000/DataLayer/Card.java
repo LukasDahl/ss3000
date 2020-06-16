@@ -140,6 +140,12 @@ public class Card {
     public String toMovesString() {
 
         String str = "";
+
+        if (getSuit() == Suit.STOCK){
+            str = "Turn card from stock";
+            return str;
+        }
+
         switch (getValue()) {
             case 1:
                 str += "Ace";
