@@ -35,7 +35,6 @@ public class PointCalculator {
         Card ace = checkAce(card);
         if (ace != null) {
             ace.clearMoves();
-            ace.addMove(new ArrayList<Card>());
             return ace;
         }
         //Do all other moves

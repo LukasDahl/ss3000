@@ -16,6 +16,7 @@ public class GameControl {
     private PointCalculator pointCalculator;
     private Piles piles;
     private StateTracker stateTracker;
+    private Card lastMove = null;
     //  private Card emptyStackTableau = new Card(-1, UNKNOWN, false);
     // private Card emptyStackFoundation = new Card(-2, UNKNOWN, false);
 
@@ -174,13 +175,15 @@ public class GameControl {
         //possible moves from waste pile
         if (state.waste.size() > 0) {
             for (ArrayList<Card> cardListFoundations : state.foundations) {
-                if (moveToFoundationPossible(state.waste.get(state.waste.size() - 1), cardListFoundations.get(cardListFoundations.size() - 1))) {
-                    //state.waste.get(state.waste.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
-                    state.waste.get(state.waste.size() - 1).addMove(cardListFoundations);
-                }
-                if (moveToEmptyFoundationPossible(state.waste.get(state.waste.size() - 1))) {
-                    //state.waste.get(state.waste.size()-1).addMove(emptyStackFoundation);
-                    state.waste.get(state.waste.size() - 1).addMove(cardListFoundations);
+                if (!cardListFoundations.isEmpty()) {
+                    if (moveToFoundationPossible(state.waste.get(state.waste.size() - 1), cardListFoundations.get(cardListFoundations.size() - 1))) {
+                        //state.waste.get(state.waste.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
+                        state.waste.get(state.waste.size() - 1).addMove(cardListFoundations);
+                    }
+                    if (moveToEmptyFoundationPossible(state.waste.get(state.waste.size() - 1))) {
+                        //state.waste.get(state.waste.size()-1).addMove(emptyStackFoundation);
+                        state.waste.get(state.waste.size() - 1).addMove(cardListFoundations);
+                    }
                 }
 
             }
@@ -191,14 +194,16 @@ public class GameControl {
         for (ArrayList<Card> cardList : state.foundations) {
             if (cardList.size() > 0) {
                 for (ArrayList<Card> cardListTableau : state.tableau) {
-                    if (moveToTableauPossible(cardList.get(cardList.size() - 1), cardListTableau.get(cardListTableau.size() - 1))) {
-                        //cardList.get(cardList.size()-1).addMove(cardListTableau.get(cardListTableau.size()-1));
-                        cardList.get(cardList.size() - 1).addMove(cardListTableau);
-                    }
+                    if (!cardListTableau.isEmpty()) {
+                        if (moveToTableauPossible(cardList.get(cardList.size() - 1), cardListTableau.get(cardListTableau.size() - 1))) {
+                            //cardList.get(cardList.size()-1).addMove(cardListTableau.get(cardListTableau.size()-1));
+                            cardList.get(cardList.size() - 1).addMove(cardListTableau);
+                        }
 
-                    if (moveToEmptySpaceTableauPossible(cardList.get(cardList.size() - 1))) {
-                        //cardList.get(cardList.size()-1).addMove(emptyStackTableau);
-                        cardList.get(cardList.size() - 1).addMove(cardListTableau);
+                        if (moveToEmptySpaceTableauPossible(cardList.get(cardList.size() - 1))) {
+                            //cardList.get(cardList.size()-1).addMove(emptyStackTableau);
+                            cardList.get(cardList.size() - 1).addMove(cardListTableau);
+                        }
                     }
                 }
             }
@@ -214,14 +219,14 @@ public class GameControl {
 
     public void updateState(State newState) {
         System.out.println(newState);
-        stateTracker.updateState(newState);
+        stateTracker.updateState(newState, lastMove);
         state = stateTracker.getBoard();
     }
 
     public Card run() {
 
         try {
-            state = (State)state.clone();
+            state = (State) state.clone();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
@@ -240,19 +245,23 @@ public class GameControl {
                     cardPointList.add(pointCalculator.getBestMove(cards, card));
             }
         }
-        if (state.waste.size() > 0 && !state.waste.get(state.waste.size() - 1).getMoves().isEmpty())
-            cardPointList.add(pointCalculator.getBestMoveWaste(state.waste.get(state.waste.size() - 1), piles.getKnownCards(), state));
+        //TODO
+//        if (state.waste.size() > 0 && !state.waste.get(state.waste.size() - 1).getMoves().isEmpty())
+//            cardPointList.add(pointCalculator.getBestMoveWaste(state.waste.get(state.waste.size() - 1), piles.getKnownCards(), state));
         for (ArrayList<Card> cards : state.foundations) {
             if (cards.size() > 0 && !cards.get(cards.size() - 1).getMoves().isEmpty())
                 cardPointList.add(cards.get(cards.size() - 1));
         }
 
-        if(cardPointList.isEmpty()) return new Card(1, STOCK, true);
+        if (cardPointList.isEmpty())
+            _cardHighestValue = new Card(1, STOCK, true);
 
         for (Card card : cardPointList) {
             if (card.getPoints() > _cardHighestValue.getPoints())
                 _cardHighestValue = card;
         }
+
+        lastMove = _cardHighestValue;
         return _cardHighestValue;
     }
 

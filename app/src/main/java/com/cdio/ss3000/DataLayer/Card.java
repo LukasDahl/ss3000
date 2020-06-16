@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-public class Card {
+public class Card implements Comparable{
     private int value; // From 1 (ace) to 13 (king) (0 is unknown)
     private Suit suit;
     private boolean movable;
@@ -179,12 +179,7 @@ public class Card {
         }
         str += " --> ";
 
-        if (getMoves().size() == 0){
-            str += "Unknown";
-            return str;
-        }
-
-        if (getMoves().get(0).size() == 0){
+        if (getMoves().isEmpty()){
             str += "Foundation";
             return str;
         }
@@ -225,5 +220,10 @@ public class Card {
         }
 
         return str;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return (getValue() * getSuit().ordinal()) - (((Card)o).getValue() * ((Card)o).getSuit().ordinal());
     }
 }
