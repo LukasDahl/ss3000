@@ -183,6 +183,33 @@ public class StateTracker {
             return;
         }
 
+        // Waste card to foundation
+        if (!discard.isEmpty()) {
+            if (lastMove.compareTo(discard.get(discard.size() - 1)) == 0 &&
+                    lastMove.getMoves().get(0).get(0).getSuit() == lastMove.getSuit()) {
+                System.arraycopy(inputState.foundations, 0, foundation, 0, 4);
+                discard.remove(discard.size() - 1);
+                board.waste = discard;
+                return;
+            }
+
+            // Waste card to card
+            if (lastMove.compareTo(discard.get(discard.size() - 1)) == 0 &&
+                    lastMove.getMoves().get(0).get(0).isRed() != lastMove.isRed()) {
+                int x = 0;
+                outerloop:
+                for (int i = 0; i < tableau.length; i++) {
+                    for (Card card : tableau[i]) {
+                        if (card.compareTo(lastMove.getMoves().get(0).get(0)) == 0) {
+                            x = i;
+                            break outerloop;
+                        }
+                    }
+                }
+                tableau[x].add(discard.remove(discard.size() - 1));
+                return;
+            }
+        }
 
         // Card to foundation
         if (lastMove.getMoves().get(0).get(0).getSuit() == lastMove.getSuit()) {
@@ -205,10 +232,12 @@ public class StateTracker {
             return;
         }
 
+
         // Card to card
         if (lastMove.getMoves().get(0).get(0).isRed() != lastMove.isRed()) {
             int x = 0;
-            outerloop: for (int i = 0; i < tableau.length; i++) {
+            outerloop:
+            for (int i = 0; i < tableau.length; i++) {
                 for (Card card : tableau[i]) {
                     if (card.compareTo(lastMove.getMoves().get(0).get(0)) == 0) {
                         x = i;
@@ -243,41 +272,6 @@ public class StateTracker {
             return;
 
         }
-
-
-
-
-
-
-
-
-        /*//Update the foundation
-        for (int i = 0; i < 4; i++) {
-            foundation[i] = inputState.foundations[i];
-        }
-        //Discard pile implementation
-        discard = inputState.waste;
-        deck = inputState.stock;
-
-        for (int i = 0; i < 7; i++) {
-            ArrayList<Card> tableauColumn = inputState.tableau[i];
-            if (tableauColumn.get(0).compareTo(tableauColumn.get(1)) == 0) {
-                boolean exists = false;
-                for (ArrayList<Card> knownColumn : tableau) {
-                    for (Card card : knownColumn) {
-                        if (card.compareTo(tableauColumn.get(0)) == 0) {
-                            exists = true;
-                        }
-                    }
-                }
-                if (!exists) {
-
-                    //TODO NEW CARD ADDED!!!!
-
-                }
-            }
-
-        }*/
 
 
     }
