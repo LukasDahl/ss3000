@@ -20,13 +20,10 @@ public class GameControlTest {
     public void checkPossibleMovesTest() {
         for (int i = 0; i < foundations.length; i++) {
             foundations[i] = new ArrayList<>();
-            foundations[i].add(new Card());
         }
         for (int i = 0; i < tableau.length; i++) {
             tableau[i] = new ArrayList<>();
-            tableau[i].add(new Card());
         }
-        waste.add(new Card());
         state.tableau[2].add(hearts3);
         state.tableau[4].add(clubs4);
         state.foundations[1].add(hearts2);
@@ -55,18 +52,15 @@ public class GameControlTest {
     public void testRun(){
         for (int i = 0; i < foundations.length; i++) {
             foundations[i] = new ArrayList<>();
-            foundations[i].add(new Card());
         }
         for (int i = 0; i < tableau.length; i++) {
             tableau[i] = new ArrayList<>();
-            tableau[i].add(new Card());
         }
-        waste.add(new Card());
         state.tableau[2].add(hearts3);
         state.tableau[4].add(clubs4);
         state.foundations[1].add(hearts2);
         gameControl = new GameControl(state);
-        assertEquals(true, hearts3.equals(gameControl.run()));
+        assertEquals(hearts3, gameControl.run());
     }
 
     @Test
