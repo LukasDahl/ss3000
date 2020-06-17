@@ -80,7 +80,7 @@ public class StateTracker {
                     if (!foundation[i].isEmpty()) {
                         if (destination.compareTo(foundation[i].get(foundation[i].size() - 1)) == 0) {
 
-
+                            //TODO KING TO FOUNDATION
                             return;
                         }
                     }
@@ -115,11 +115,13 @@ public class StateTracker {
                                 break;
                             }
                         }
-                        tempTableau = getTempTableau(inputState.tableau);
 
-                        if (tableau[i].size() > 0) {
-                            tableau[i].get(tableau[i].size() - 1).setValue(tempTableau[i].get(LARGESTCARD).getValue());
-                            tableau[i].get(tableau[i].size() - 1).setSuit(tempTableau[i].get(LARGESTCARD).getSuit());
+                        if (!tableau[i].isEmpty()) {
+                            if (tableau[i].get(tableau[i].size() - 1).getSuit() == Suit.UNKNOWN) {
+                                tempTableau = getTempTableau(inputState.tableau);
+                                tableau[i].get(tableau[i].size() - 1).setValue(tempTableau[i].get(SMALLESTCARD).getValue());
+                                tableau[i].get(tableau[i].size() - 1).setSuit(tempTableau[i].get(SMALLESTCARD).getSuit());
+                            }
                         }
                         break;
                     }
@@ -175,10 +177,12 @@ public class StateTracker {
                 if (!tableauColumn.isEmpty()) {
                     if (lastMove.compareTo(tableauColumn.get(tableauColumn.size() - 1)) == 0) {
                         tableauColumn.remove(tableauColumn.size() - 1);
-                        tempTableau = getTempTableau(inputState.tableau);
-                        if (tableauColumn.size() > 0) {
-                            tableauColumn.get(tableauColumn.size() - 1).setValue(tempTableau[i].get(LARGESTCARD).getValue());
-                            tableauColumn.get(tableauColumn.size() - 1).setSuit(tempTableau[i].get(LARGESTCARD).getSuit());
+                        if (!tableauColumn.isEmpty()) {
+                            if (tableau[i].get(tableau[i].size() - 1).getSuit() == Suit.UNKNOWN) {
+                                tempTableau = getTempTableau(inputState.tableau);
+                                tableauColumn.get(tableauColumn.size() - 1).setValue(tempTableau[i].get(SMALLESTCARD).getValue());
+                                tableauColumn.get(tableauColumn.size() - 1).setSuit(tempTableau[i].get(SMALLESTCARD).getSuit());
+                            }
                         }
                         break;
                     }
@@ -224,10 +228,12 @@ public class StateTracker {
                 if (!tableauColumn.isEmpty()) {
                     if (lastMove.compareTo(tableauColumn.get(tableauColumn.size() - 1)) == 0) {
                         tableauColumn.remove(tableauColumn.size() - 1);
-                        tempTableau = getTempTableau(inputState.tableau);
-                        if (tableauColumn.size() > 0) {
-                            tableauColumn.get(tableauColumn.size() - 1).setValue(tempTableau[i].get(LARGESTCARD).getValue());
-                            tableauColumn.get(tableauColumn.size() - 1).setSuit(tempTableau[i].get(LARGESTCARD).getSuit());
+                        if (!tableauColumn.isEmpty()) {
+                            if (tableau[i].get(tableau[i].size() - 1).getSuit() == Suit.UNKNOWN) {
+                                tempTableau = getTempTableau(inputState.tableau);
+                                tableauColumn.get(tableauColumn.size() - 1).setValue(tempTableau[i].get(SMALLESTCARD).getValue());
+                                tableauColumn.get(tableauColumn.size() - 1).setSuit(tempTableau[i].get(SMALLESTCARD).getSuit());
+                            }
                         }
                         break;
                     }
@@ -265,9 +271,11 @@ public class StateTracker {
                         }
 
                         if (!tableau[i].isEmpty()) {
-                            tempTableau = getTempTableau(inputState.tableau);
-                            tableau[i].get(tableau[i].size() - 1).setValue(tempTableau[i].get(LARGESTCARD).getValue());
-                            tableau[i].get(tableau[i].size() - 1).setSuit(tempTableau[i].get(LARGESTCARD).getSuit());
+                            if (tableau[i].get(tableau[i].size() - 1).getSuit() == Suit.UNKNOWN) {
+                                tempTableau = getTempTableau(inputState.tableau);
+                                tableau[i].get(tableau[i].size() - 1).setValue(tempTableau[i].get(SMALLESTCARD).getValue());
+                                tableau[i].get(tableau[i].size() - 1).setSuit(tempTableau[i].get(SMALLESTCARD).getSuit());
+                            }
                         }
                         break outerloop;
                     }

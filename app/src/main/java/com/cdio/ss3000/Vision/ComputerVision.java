@@ -117,8 +117,6 @@ public class ComputerVision {
         @Override
         public void run() {
 
-            ((TextView)((CameraActivity)context).findViewById(R.id.move_text)).setText("Please stand by");
-
             // Load yolo net
             try {
                 pushNet(context);
@@ -136,6 +134,8 @@ public class ComputerVision {
             SCALE = SCALE_WIDTH / imgorig.width();
             Imgproc.resize(imgorig, imgorig, new Size(imgorig.width() * SCALE, imgorig.height() * SCALE));
 
+
+            ((TextView)((CameraActivity)context).findViewById(R.id.move_text)).setText("Please stand by");
             // Convert the color for openCV as that wants BGR not RGB
             Imgproc.cvtColor(imgorig, imgorig, Imgproc.COLOR_RGB2BGR);
             Mat img;
