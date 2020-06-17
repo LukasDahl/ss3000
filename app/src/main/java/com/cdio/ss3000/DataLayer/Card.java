@@ -224,6 +224,6 @@ public class Card implements Comparable{
 
     @Override
     public int compareTo(Object o) {
-        return (getValue() * getSuit().ordinal()) - (((Card)o).getValue() * ((Card)o).getSuit().ordinal());
+        return (getValue() + (13 * getSuit().ordinal())) - (((Card)o).getValue() + (13 * ((Card)o).getSuit().ordinal()));
     }
 }

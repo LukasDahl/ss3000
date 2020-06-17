@@ -32,7 +32,7 @@ TextView scoreValues;
             Intent i = new Intent(this, MainActivity.class);
             this.startActivity(i);
         }else if(v==newGame){
-            Intent i = new Intent(this, Camera1Activity.class);
+            Intent i = new Intent(this, CameraActivity.class);
             this.startActivity(i);
         }
     }
