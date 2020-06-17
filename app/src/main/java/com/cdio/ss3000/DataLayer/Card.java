@@ -179,7 +179,7 @@ public class Card implements Comparable{
                 str += "spades";
                 break;
         }
-        str += " --> ";
+        str += " → ";
 
         if (getMoves().isEmpty()){
             str += "Foundation";
@@ -187,6 +187,12 @@ public class Card implements Comparable{
         }
 
         Card destination = getMoves().get(0).get(getMoves().get(0).size() - 1);
+
+        if (getValue() == 13){
+            if (!(destination.getValue() == 12) || !(destination.getSuit() == getSuit())){
+                 str += "Left-most empty spot";
+            }
+        }
 
 
         switch (destination.getValue()) {

@@ -117,6 +117,8 @@ public class ComputerVision {
         @Override
         public void run() {
 
+            ((TextView)((CameraActivity)context).findViewById(R.id.move_text)).setText("Please stand by");
+
             // Load yolo net
             try {
                 pushNet(context);
