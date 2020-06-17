@@ -19,6 +19,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.cdio.ss3000.Camera1Activity;
 import com.cdio.ss3000.DataLayer.Card;
@@ -360,7 +361,9 @@ public class ComputerVision {
             // Convert piles to state object
             gc.updateState(Pile.pileListToState(pilesTop, pilesBottom));
             Card bestMove = gc.run();
-            System.out.println(bestMove.toMovesString());
+            String bestMoveString = bestMove.toMovesString();
+            System.out.println(bestMoveString);
+            ((TextView)((Camera1Activity)context).findViewById(R.id.move_text)).setText(bestMoveString);
 
 
 
