@@ -61,7 +61,7 @@ public class WonGameActivity extends AppCompatActivity implements View.OnClickLi
             this.startActivity(i);
 
         }else if(v == newGame){
-            Intent i = new Intent(this, Camera1Activity.class);
+            Intent i = new Intent(this, CameraActivity.class);
             this.startActivity(i);
         }
     }

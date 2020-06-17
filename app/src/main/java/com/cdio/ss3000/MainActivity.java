@@ -13,10 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cdio.ss3000.Vision.ComputerVision;
-
-import org.opencv.android.OpenCVLoader;
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button start, help, highscore;
     TextView header, group;
@@ -92,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 
         if(v == start){
-            Intent i = new Intent(this, Camera1Activity.class);
+            Intent i = new Intent(this, CameraActivity.class);
             this.startActivity(i);
         }else if (v == help){
             Intent i = new Intent(this, LostGameActivity.class);

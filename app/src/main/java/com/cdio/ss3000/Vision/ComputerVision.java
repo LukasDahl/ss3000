@@ -17,11 +17,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.os.Handler;
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.cdio.ss3000.Camera1Activity;
+import com.cdio.ss3000.CameraActivity;
 import com.cdio.ss3000.DataLayer.Card;
 import com.cdio.ss3000.DataLayer.GameControl;
 import com.cdio.ss3000.R;
@@ -363,7 +361,7 @@ public class ComputerVision {
             Card bestMove = gc.run();
             String bestMoveString = bestMove.toMovesString();
             System.out.println(bestMoveString);
-            ((TextView)((Camera1Activity)context).findViewById(R.id.move_text)).setText(bestMoveString);
+            ((TextView)((CameraActivity)context).findViewById(R.id.move_text)).setText(bestMoveString);
 
 
 
@@ -552,7 +550,7 @@ public class ComputerVision {
         //// SHOW ON SCREEN - FOR DEBUGGING
         Bitmap bm = Bitmap.createBitmap(img.cols(), img.rows(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(img, bm);
-//        ImageView im = ((Camera1Activity) context).findViewById(R.id.mats);
+//        ImageView im = ((CameraActivity) context).findViewById(R.id.mats);
 //        im.setImageBitmap(bm);
 //        im.setVisibility(View.VISIBLE);
     }
