@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent i = new Intent(this, Camera1Activity.class);
             this.startActivity(i);
         }else if (v == help){
-            Intent i = new Intent(this, HelpActivity.class);
+            Intent i = new Intent(this, LostGameActivity.class);
             this.startActivity(i);
         }
         else if (v == highscore){
