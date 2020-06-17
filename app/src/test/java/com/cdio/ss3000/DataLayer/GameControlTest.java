@@ -15,6 +15,7 @@ public class GameControlTest {
     Card hearts2 = new Card(2, Suit.HEARTS, true);
     Card hearts3 = new Card(3, Suit.HEARTS, true);
     Card clubs4 = new Card(4, Suit.CLUBS, true);
+    Card spade13 = new Card(13, Suit.SPADES, true);
     @Test
     public void checkPossibleMovesTest() {
         for (int i = 0; i < foundations.length; i++) {
@@ -67,4 +68,51 @@ public class GameControlTest {
         gameControl = new GameControl(state);
         assertEquals(true, hearts3.equals(gameControl.run()));
     }
+
+    @Test
+    public void kingHasMoveTest(){
+        for (int i = 0; i < state.tableau.length; i++) {
+            state.tableau[i] = new ArrayList<>();
+            }
+        for (int i = 0; i < state.foundations.length; i++) {
+            state.foundations[i] = new ArrayList<>();
+        }
+        state.tableau[2].add(spade13);
+        gameControl = new GameControl(state);
+        gameControl.checkPossibleMoves();
+        assertEquals(6, state.tableau[2].get(state.tableau[2].size()-1).getMoves().size());
+    }
+
+    @Test
+    public void value14Test(){
+        for (int i = 0; i < tableau.length; i++) {
+            tableau[i] = new ArrayList<>();
+        }
+        for (int i = 0; i < foundations.length; i++) {
+            foundations[i] = new ArrayList<>();
+        }
+        Card hearts14 = new Card(14,Suit.HEARTS, true);
+        state.tableau[2].add(hearts14);
+        state.tableau[5].add(spade13);
+        gameControl = new GameControl(state);
+        gameControl.checkPossibleMoves();
+        assertEquals(1, state.tableau[2].get(state.tableau[2].size()-1).getMoves().size());
+
+    }
+
+    @Test
+    public void allUnknownTest(){
+        for (int i = 0; i < foundations.length; i++) {
+            foundations[i] = new ArrayList<>();
+            foundations[i].add(new Card());
+        }
+        for (int i = 0; i < tableau.length; i++) {
+            tableau[i] = new ArrayList<>();
+            tableau[i].add(new Card());
+        }
+        gameControl = new GameControl(state);
+        gameControl.checkPossibleMoves();
+        assertEquals(0, state.tableau[2].get(state.tableau[2].size()-1).getMoves().size());
+    }
+
 }

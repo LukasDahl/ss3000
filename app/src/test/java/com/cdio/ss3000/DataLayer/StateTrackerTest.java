@@ -38,7 +38,7 @@ public class StateTrackerTest {
         }
         //Create new state from fields
         State newState = new State(foundation, tableau, stock, waste);
-        stateTracker.updateState(newState);//Update the state
+        stateTracker.updateState(newState,null);//Update the state
 
         ArrayList<Card> cardList2 = new ArrayList<>();//Create second cardlist to be added on top of previous cards
         //Set previous top card to no longer be movable
@@ -52,10 +52,10 @@ public class StateTrackerTest {
         //Create new state from new set of tableau fields
         State stateUpdated = new State(newState.foundations, newState.tableau, newState.stock, newState.waste);
         //Update state
-        stateTracker.updateState(stateUpdated);
+        stateTracker.updateState(stateUpdated, null);
         assertEquals(stateUpdated.tableau[1], newState.tableau[1]);//Testing for the card to be added
         stateUpdated.tableau[1] = cardList;//Change the previously updated tableau slot to the former (cardlist)
-        stateTracker.updateState(stateUpdated);//Update state again
+        stateTracker.updateState(stateUpdated, null);//Update state again
         assertEquals(stateUpdated.tableau[1].get(1), card);//Testing for the card to be removed
         System.out.println("updateStateTest: OK");
     }
@@ -92,7 +92,7 @@ public class StateTrackerTest {
         }
         //Create a new state from local fields (stock and waste = null as they are not needed)
         State nextState = new State(foundation, tableau, null, null);
-        stateTracker.updateState(nextState);//Update state
+        stateTracker.updateState(nextState, null);//Update state
         stateTracker.showTopCard();//Prints out an overview of current tableau and foundation state.
         System.out.println("foundationTest: OK");
     }
