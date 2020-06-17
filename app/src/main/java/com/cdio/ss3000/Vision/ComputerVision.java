@@ -348,7 +348,7 @@ public class ComputerVision {
             }
 
             // For debugging
-            showMat(imgorig);
+            //showMat(imgorig);
 
             // Find top and bottom piles
             Pile.splitPiles(piles, pilesTop, pilesBottom);
@@ -490,7 +490,7 @@ public class ComputerVision {
                 break;
             }
         }
-        showMat(threshold);
+        //showMat(threshold);
         return threshold;
     }
 
@@ -549,9 +549,9 @@ public class ComputerVision {
         //// SHOW ON SCREEN - FOR DEBUGGING
         Bitmap bm = Bitmap.createBitmap(img.cols(), img.rows(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(img, bm);
-        ImageView im = ((Camera1Activity) context).findViewById(R.id.mats);
-        im.setImageBitmap(bm);
-        im.setVisibility(View.VISIBLE);
+//        ImageView im = ((Camera1Activity) context).findViewById(R.id.mats);
+//        im.setImageBitmap(bm);
+//        im.setVisibility(View.VISIBLE);
     }
 
 
