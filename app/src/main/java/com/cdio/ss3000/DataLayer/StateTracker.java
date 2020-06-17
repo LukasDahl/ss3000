@@ -88,12 +88,19 @@ public class StateTracker {
             }
 
 
+
+
             int x = 0;
             for (int i = 0; i < inputState.tableau.length; i++) {
                 if (!inputState.tableau[i].isEmpty() && inputState.tableau[i].get(LARGESTCARD).compareTo(lastMove) == 0) {
                     x = i;
                     break;
                 }
+            }
+
+            if (!discard.isEmpty() && discard.get(discard.size() - 1).compareTo(lastMove) == 0){
+                tableau[x].add(discard.remove(discard.size() - 1));
+                return;
             }
 
 
