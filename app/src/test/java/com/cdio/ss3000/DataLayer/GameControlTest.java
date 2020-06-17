@@ -112,7 +112,13 @@ public class GameControlTest {
         }
         gameControl = new GameControl(state);
         gameControl.checkPossibleMoves();
+        assertEquals(0, state.tableau[0].get(state.tableau[0].size()-1).getMoves().size());
+        assertEquals(0, state.tableau[1].get(state.tableau[1].size()-1).getMoves().size());
         assertEquals(0, state.tableau[2].get(state.tableau[2].size()-1).getMoves().size());
+        assertEquals(0, state.tableau[3].get(state.tableau[3].size()-1).getMoves().size());
+        assertEquals(0, state.tableau[4].get(state.tableau[4].size()-1).getMoves().size());
+        assertEquals(0, state.tableau[5].get(state.tableau[5].size()-1).getMoves().size());
+        assertEquals(0, state.tableau[6].get(state.tableau[6].size()-1).getMoves().size());
     }
 
 }
