@@ -191,6 +191,7 @@ public class Card implements Comparable{
         if (getValue() == 13){
             if (!(destination.getValue() == 12) || !(destination.getSuit() == getSuit())){
                  str += "Left-most empty spot";
+                 return str;
             }
         }
 
