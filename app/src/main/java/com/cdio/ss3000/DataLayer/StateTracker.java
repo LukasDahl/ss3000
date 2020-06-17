@@ -114,6 +114,15 @@ public class StateTracker {
             return;
         }
 
+        // Ace to foundation from waste
+        if (!discard.isEmpty()){
+            if (lastMove.getMoves().isEmpty() && lastMove.compareTo(discard.get(discard.size() - 1) ) == 0){
+                System.arraycopy(inputState.foundations, 0, foundation, 0, 4);
+                discard.remove(discard.size() - 1);
+                return;
+            }
+        }
+
         // Ace to foundation
         if (lastMove.getMoves().isEmpty()) {
 
@@ -200,7 +209,7 @@ public class StateTracker {
             }
 
 
-            for (int i = 0; i < tableau.length; i++) {
+            outerloop: for (int i = 0; i < tableau.length; i++) {
                 for (int j = 0; j < tableau[i].size(); j++) {
                     Card card = tableau[i].get(j);
                     if (card.compareTo(lastMove) == 0) {
@@ -211,13 +220,13 @@ public class StateTracker {
                                 break;
                             }
                         }
-                        tempTableau = getTempTableau(inputState.tableau);
 
                         if (!tableau[i].isEmpty()) {
+                            tempTableau = getTempTableau(inputState.tableau);
                             tableau[i].get(tableau[i].size() - 1).setValue(tempTableau[i].get(LARGESTCARD).getValue());
                             tableau[i].get(tableau[i].size() - 1).setSuit(tempTableau[i].get(LARGESTCARD).getSuit());
                         }
-                        break;
+                        break outerloop;
                     }
 
                 }
