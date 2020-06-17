@@ -253,13 +253,15 @@ public class GameControl {
                 cardPointList.add(cards.get(cards.size() - 1));
         }
 
-        if (cardPointList.isEmpty())
-            _cardHighestValue = new Card(1, STOCK, true);
-
         for (Card card : cardPointList) {
             if (card.getPoints() > _cardHighestValue.getPoints())
                 _cardHighestValue = card;
         }
+        if (cardPointList.isEmpty())
+            _cardHighestValue = new Card(1, STOCK, true);
+
+        if (_cardHighestValue.getSuit() == UNKNOWN)
+            _cardHighestValue = new Card(1, STOCK, true);
 
         lastMove = _cardHighestValue;
         return _cardHighestValue;
