@@ -62,6 +62,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
         if (!firstTimeOpen)
             ((TextView) findViewById(R.id.move_text)).setText("Please stand by");
+        else
+            firstTimeOpen = false;
+
         if (!isCameraInitialized) {
             mCamera = Camera.open();
             mPreview = new CameraPreview(this, mCamera);
