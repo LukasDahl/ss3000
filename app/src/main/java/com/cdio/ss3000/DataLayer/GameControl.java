@@ -17,12 +17,14 @@ public class GameControl {
     private Piles piles;
     private StateTracker stateTracker;
     private Card lastMove = null;
+    private Card stockCard = new Card(1, STOCK, true);
     //  private Card emptyStackTableau = new Card(-1, UNKNOWN, false);
     // private Card emptyStackFoundation = new Card(-2, UNKNOWN, false);
 
     public GameControl(State state) {
         this.state = state;
         stateTracker = new StateTracker();
+        pointCalculator = new PointCalculator();
     }
 
     public State getState() {
@@ -126,7 +128,7 @@ public class GameControl {
                      */
 
                 for (ArrayList<Card> cardListFoundations : state.foundations) {
-                    if (cardListFoundations.size() > 0) {
+                    if (!cardListFoundations.isEmpty()) {
                         if (moveToFoundationPossible(cardList.get(cardList.size() - 1), cardListFoundations.get(cardListFoundations.size() - 1))) {
                             //cardList.get(cardList.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
                             cardList.get(cardList.size() - 1).addMove(cardListFoundations);
@@ -135,7 +137,7 @@ public class GameControl {
                 }
 
                 for (ArrayList<Card> otherCardlistTableau : state.tableau) {
-                    if (otherCardlistTableau.isEmpty()) {
+                    if (!otherCardlistTableau.isEmpty()) {
                         if (moveToEmptySpaceTableauPossible(cardList.get(cardList.size() - 1))) {
                             // cardList.get(cardList.size()-1).addMove(emptyStackTableau);
                             cardList.get(cardList.size() - 1).addMove(otherCardlistTableau);
@@ -145,7 +147,7 @@ public class GameControl {
                 }
 
                 for (ArrayList<Card> cardListFoundations : state.foundations) {
-                    if (cardListFoundations.isEmpty()) {
+                    if (!cardListFoundations.isEmpty()) {
                         if (moveToEmptyFoundationPossible(cardList.get(cardList.size() - 1))) {
                             //cardList.get(cardList.size()-1).addMove(emptyStackFoundation);
                             cardList.get(cardList.size() - 1).addMove(cardListFoundations);
@@ -235,7 +237,6 @@ public class GameControl {
         System.out.println("In run()");
         System.out.println(state.toString());
 
-        pointCalculator = new PointCalculator();
         ArrayList<Card> cardPointList = new ArrayList<>();
         Card _cardHighestValue = new Card();
         checkPossibleMoves();
@@ -253,15 +254,21 @@ public class GameControl {
                 cardPointList.add(cards.get(cards.size() - 1));
         }
 
+        if(!state.waste.isEmpty() || !state.stock.isEmpty()){
+            stockCard.setPoints(2);
+            cardPointList.add(stockCard);
+
+        }
+
         for (Card card : cardPointList) {
             if (card.getPoints() > _cardHighestValue.getPoints())
                 _cardHighestValue = card;
         }
-        if (cardPointList.isEmpty())
-            _cardHighestValue = new Card(1, STOCK, true);
+/*        if (cardPointList.isEmpty())
+            _cardHighestValue = new Card(1, STOCK, true);*/
 
         if (_cardHighestValue.getSuit() == UNKNOWN)
-            _cardHighestValue = new Card(1, STOCK, true);
+            _cardHighestValue = stockCard;
 
         lastMove = _cardHighestValue;
         return _cardHighestValue;

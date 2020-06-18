@@ -7,8 +7,9 @@ import java.util.ArrayList;
  */
 public class PointCalculator {
     private final int ACE_POINTS = 100;
-    private final int TABLEAU_EMPTY_POINTS = 3;
-    private final int TABLEAU_POINTS = 2;
+    private final int TABLEAU_EMPTY_POINTS = 6;
+    private final int TABLEAU_POINTS = 3;
+    private final int TABLEAU_SPLIT_POINTS = 1;
     private final int FOUNDATION_POINTS = 10;
     private final int ACE = 1;
     private final int KING = 13;
@@ -53,6 +54,7 @@ public class PointCalculator {
             card.setPoints(moves.get(0).getPoints());
         }
 
+
         //Return the supplied card with the single best move
         return card;
     }
@@ -71,8 +73,13 @@ public class PointCalculator {
                 // return card;
             } else if (move.get(move.size() - 1).getSuit() == card.getSuit()) {//This will be a move to foundation
                 temp_points += FOUNDATION_POINTS;
-            } else if (move.get(move.size() - 1).getValue() > 0 && move.get(move.size() - 1).getValue() < 14) {            //Any other card in the tableau
-                temp_points += TABLEAU_POINTS;
+            } else if (move.get(move.size() - 1).getValue() > 0 && move.get(move.size() - 1).getValue() < 14) {//Any other card in the tableau
+                if(column.get(column.size()-1).equals(card)){
+                    temp_points += TABLEAU_POINTS;
+                }
+                //TODO: now there is never enough points to ever suggest splitting. Give points to splitting piles in special cases
+                else temp_points += TABLEAU_SPLIT_POINTS;
+
                 //Add points for each underlying face down card
             }
 
@@ -109,7 +116,7 @@ public class PointCalculator {
     }
 
     int addBaseLinePoints(ArrayList<Card> column, Card card) {
-        if (column.size() == 1) return 0;
+        if (column.size() == 1 || column.get(column.indexOf(card)-1).getSuit() != Suit.UNKNOWN) return 0;
         //Save points and index of card
         int bl_points;
         int index = column.indexOf(card);
