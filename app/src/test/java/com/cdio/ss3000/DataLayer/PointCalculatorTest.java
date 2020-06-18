@@ -157,4 +157,37 @@ public class PointCalculatorTest {
         assertEquals(0, bonus);
 
     }
+    ArrayList<Card>[] foundations = new ArrayList[4], tableau = new ArrayList[7];
+
+    ArrayList<Card> waste = new ArrayList<>(), stock= new ArrayList<>();
+    State state = new State(foundations, tableau, stock, waste);
+    GameControl gameControl;
+    Card hearts2 = new Card(2, Suit.HEARTS, true);
+    Card hearts3 = new Card(3, Suit.HEARTS, true);
+    Card clubs4 = new Card(4, Suit.CLUBS, true);
+    Card spade13 = new Card(13, Suit.SPADES, true);
+    @Test
+    public void restOfTableauTest() {
+        for (int i = 0; i < foundations.length; i++) {
+            foundations[i] = new ArrayList<>();
+        }
+        for (int i = 0; i < tableau.length; i++) {
+            tableau[i] = new ArrayList<>();
+            tableau[i].add(new Card());
+        }
+        state.tableau[2].add(hearts3);
+        state.tableau[4].add(clubs4);
+        state.foundations[1].add(hearts2);
+        gameControl = new GameControl(state);
+        assertEquals(5, PC.restOfTableau(hearts3,state));
+    }
+
+    @Test
+    public void lowerCardsInPileTest(){
+        ArrayList knownCards = new ArrayList();
+        knownCards.add(hearts2);
+        knownCards.add(spade13);
+        knownCards.add(hearts3);
+        assertEquals(1, PC.lowerCardsInPile(clubs4,knownCards));
+    }
 }

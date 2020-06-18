@@ -51,53 +51,6 @@ public class StateTracker {
         }
     }
 
-    /*public void updateState(State inputState){
-        //Update the foundation
-        for(int i = 0; i < 4; i++){
-            foundation[i] = inputState.foundations[i];
-        }
-        //Discard pile implementation
-        discard = inputState.waste;
-        deck = inputState.stock;
-
-        int lowestCardIndex = 1, highestCardIndex = 0;
-        //Index 0 is the card with highest value, index 1 is the card with lowest value
-
-        //First time run -> Cards are all unknown
-        for(int i = 0; i < 7; i++){
-            if(tableau[i].get(tableau[i].size()-1).getSuit() == Suit.UNKNOWN){//Check if the top card in tableau is a face down card
-                if(inputState.tableau[i].get(lowestCardIndex).getSuit() == inputState.tableau[i].get(highestCardIndex).getSuit() &&
-                        inputState.tableau[i].get(lowestCardIndex).getValue() == inputState.tableau[i].get(highestCardIndex).getValue()){//Check if both highest and lowest card is the same card.
-                    Card newCard = inputState.tableau[i].get(lowestCardIndex);//Save the card to be used
-                    //"Turns" the card so it is now face-up.
-                    tableau[i].get(tableau[i].size()-1).setSuit(newCard.getSuit());//Set suit
-                    tableau[i].get(tableau[i].size()-1).setValue(newCard.getValue());//Set value
-                    tableau[i].get(tableau[i].size()-1).setMovable(true);//Set movable
-                }
-                if(i == 6) return;//Stop for the first time run
-            }
-        }
-
-        //Assume at least one card is face-up in every tableau column
-        for(int i = 0; i < 7; i++){
-            //If the value of the updated card is lower than the current card, then the length of the column has increased
-            if(tableau[i].get(tableau[i].size()-1).getValue() > inputState.tableau[i].get(lowestCardIndex).getValue()){
-                tableau[i].add(inputState.tableau[i].get(lowestCardIndex));//Adds the card with the lowest value (the one in the front) to our registered tableau.
-            }else if(tableau[i].get(tableau[i].size()-1).getValue() < inputState.tableau[i].get(lowestCardIndex).getValue()){//If true column size has decreased
-                tableau[i].remove(tableau[i].size()-1);//TODO this needs work with the whole flipping a card part -> Try with a full board and perform an actual move in test
-//                tableau[i].get(tableau[i].size()-1).setSuit(inputState.tableau[i].get(highestCardIndex).getSuit());
-//                tableau[i].get(tableau[i].size()-1).setValue(inputState.tableau[i].get(highestCardIndex).getValue());
-            }
-            //We'll try this
-            if(inputState.tableau[i].get(lowestCardIndex).getValue() == inputState.tableau[i].get(highestCardIndex).getValue() &&
-                    inputState.tableau[i].get(lowestCardIndex).getSuit() == inputState.tableau[i].get(highestCardIndex).getSuit()){
-                tableau[i].get(tableau[i].size()-1).setSuit(inputState.tableau[i].get(highestCardIndex).getSuit());
-                tableau[i].get(tableau[i].size()-1).setValue(inputState.tableau[i].get(highestCardIndex).getValue());
-            }
-        }
-
-    }*/
-
     public void updateState(State inputState, Card lastMove) {
         ArrayList<Card>[] tempTableau;
 
@@ -119,14 +72,35 @@ public class StateTracker {
         }
 
 
-        // King on empty
-        if (!lastMove.getMoves().isEmpty() && !lastMove.getMoves().get(0).isEmpty() && lastMove.getMoves().get(0).get(0).compareTo(lastMove) == 0 /*lastMove.getMoves().get(0).isEmpty()*/) {
+        // King cases
+        if (lastMove.getValue() == 13) {
+            Card destination = lastMove.getMoves().get(0).get(lastMove.getMoves().get(0).size() - 1);
+            if (destination.getSuit() == lastMove.getSuit() && destination.getValue() == 12) {
+                for (int i = 0; i < foundation.length; i++) {
+                    if (!foundation[i].isEmpty()) {
+                        if (destination.compareTo(foundation[i].get(foundation[i].size() - 1)) == 0) {
+
+                            //TODO KING TO FOUNDATION
+                            return;
+                        }
+                    }
+                }
+            }
+
+
+
+
             int x = 0;
             for (int i = 0; i < inputState.tableau.length; i++) {
                 if (!inputState.tableau[i].isEmpty() && inputState.tableau[i].get(LARGESTCARD).compareTo(lastMove) == 0) {
                     x = i;
                     break;
                 }
+            }
+
+            if (!discard.isEmpty() && discard.get(discard.size() - 1).compareTo(lastMove) == 0){
+                tableau[x].add(discard.remove(discard.size() - 1));
+                return;
             }
 
 
@@ -141,11 +115,13 @@ public class StateTracker {
                                 break;
                             }
                         }
-                        tempTableau = getTempTableau(inputState.tableau);
 
-                        if (tableau[i].size() > 0) {
-                            tableau[i].get(tableau[i].size() - 1).setValue(tempTableau[i].get(LARGESTCARD).getValue());
-                            tableau[i].get(tableau[i].size() - 1).setSuit(tempTableau[i].get(LARGESTCARD).getSuit());
+                        if (!tableau[i].isEmpty()) {
+                            if (tableau[i].get(tableau[i].size() - 1).getSuit() == Suit.UNKNOWN) {
+                                tempTableau = getTempTableau(inputState.tableau);
+                                tableau[i].get(tableau[i].size() - 1).setValue(tempTableau[i].get(SMALLESTCARD).getValue());
+                                tableau[i].get(tableau[i].size() - 1).setSuit(tempTableau[i].get(SMALLESTCARD).getSuit());
+                            }
                         }
                         break;
                     }
@@ -153,17 +129,47 @@ public class StateTracker {
                 }
             }
             return;
+
         }
         // Flip stock card
         if (lastMove.getSuit() == Suit.STOCK) {
-            discard = inputState.waste;
-            board.waste = inputState.waste;
+            if (deck.isEmpty() && discard.isEmpty())
+                return;
+
+            if (deck.isEmpty()) {
+                while (true) {
+                    try {
+                        deck.add(discard.remove(discard.size() - 1));
+                    } catch (IndexOutOfBoundsException e) {
+                        break;
+                    }
+                }
+                discard.add(deck.remove(deck.size() - 1));
+                return;
+            }
+
+            discard.add(deck.remove(deck.size() - 1));
+
+            if (discard.get(discard.size() - 1).getSuit() == Suit.UNKNOWN) {
+                Card newWasteCard = inputState.waste.get(0);
+                discard.get(discard.size() - 1).setSuit(newWasteCard.getSuit());
+                discard.get(discard.size() - 1).setValue(newWasteCard.getValue());
+            }
+
             return;
+        }
+
+        // Ace to foundation from waste
+        if (!discard.isEmpty()) {
+            if (lastMove.getMoves().isEmpty() && lastMove.compareTo(discard.get(discard.size() - 1)) == 0) {
+                System.arraycopy(inputState.foundations, 0, foundation, 0, 4);
+                discard.remove(discard.size() - 1);
+                return;
+            }
         }
 
         // Ace to foundation
         if (lastMove.getMoves().isEmpty()) {
-
             System.arraycopy(inputState.foundations, 0, foundation, 0, 4);
             for (int i = 0; i < 7; i++) {
                 ArrayList<Card> tableauColumn = tableau[i];
@@ -171,10 +177,12 @@ public class StateTracker {
                 if (!tableauColumn.isEmpty()) {
                     if (lastMove.compareTo(tableauColumn.get(tableauColumn.size() - 1)) == 0) {
                         tableauColumn.remove(tableauColumn.size() - 1);
-                        tempTableau = getTempTableau(inputState.tableau);
-                        if (tableauColumn.size() > 0) {
-                            tableauColumn.get(tableauColumn.size() - 1).setValue(tempTableau[i].get(LARGESTCARD).getValue());
-                            tableauColumn.get(tableauColumn.size() - 1).setSuit(tempTableau[i].get(LARGESTCARD).getSuit());
+                        if (!tableauColumn.isEmpty()) {
+                            if (tableau[i].get(tableau[i].size() - 1).getSuit() == Suit.UNKNOWN) {
+                                tempTableau = getTempTableau(inputState.tableau);
+                                tableauColumn.get(tableauColumn.size() - 1).setValue(tempTableau[i].get(SMALLESTCARD).getValue());
+                                tableauColumn.get(tableauColumn.size() - 1).setSuit(tempTableau[i].get(SMALLESTCARD).getSuit());
+                            }
                         }
                         break;
                     }
@@ -220,10 +228,12 @@ public class StateTracker {
                 if (!tableauColumn.isEmpty()) {
                     if (lastMove.compareTo(tableauColumn.get(tableauColumn.size() - 1)) == 0) {
                         tableauColumn.remove(tableauColumn.size() - 1);
-                        tempTableau = getTempTableau(inputState.tableau);
-                        if (tableauColumn.size() > 0) {
-                            tableauColumn.get(tableauColumn.size() - 1).setValue(tempTableau[i].get(LARGESTCARD).getValue());
-                            tableauColumn.get(tableauColumn.size() - 1).setSuit(tempTableau[i].get(LARGESTCARD).getSuit());
+                        if (!tableauColumn.isEmpty()) {
+                            if (tableau[i].get(tableau[i].size() - 1).getSuit() == Suit.UNKNOWN) {
+                                tempTableau = getTempTableau(inputState.tableau);
+                                tableauColumn.get(tableauColumn.size() - 1).setValue(tempTableau[i].get(SMALLESTCARD).getValue());
+                                tableauColumn.get(tableauColumn.size() - 1).setSuit(tempTableau[i].get(SMALLESTCARD).getSuit());
+                            }
                         }
                         break;
                     }
@@ -247,6 +257,7 @@ public class StateTracker {
             }
 
 
+            outerloop:
             for (int i = 0; i < tableau.length; i++) {
                 for (int j = 0; j < tableau[i].size(); j++) {
                     Card card = tableau[i].get(j);
@@ -258,13 +269,15 @@ public class StateTracker {
                                 break;
                             }
                         }
-                        tempTableau = getTempTableau(inputState.tableau);
 
-                        if (tableau[i].size() > 0) {
-                            tableau[i].get(tableau[i].size() - 1).setValue(tempTableau[i].get(LARGESTCARD).getValue());
-                            tableau[i].get(tableau[i].size() - 1).setSuit(tempTableau[i].get(LARGESTCARD).getSuit());
+                        if (!tableau[i].isEmpty()) {
+                            if (tableau[i].get(tableau[i].size() - 1).getSuit() == Suit.UNKNOWN) {
+                                tempTableau = getTempTableau(inputState.tableau);
+                                tableau[i].get(tableau[i].size() - 1).setValue(tempTableau[i].get(SMALLESTCARD).getValue());
+                                tableau[i].get(tableau[i].size() - 1).setSuit(tempTableau[i].get(SMALLESTCARD).getSuit());
+                            }
                         }
-                        break;
+                        break outerloop;
                     }
 
                 }

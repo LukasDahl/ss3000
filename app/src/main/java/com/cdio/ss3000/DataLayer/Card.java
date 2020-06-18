@@ -19,8 +19,8 @@ public class Card implements Comparable{
         this.suit = suit;
         this.movable = movable;
 
-        if (this.suit == suit.SPADES || this.suit == suit.CLUBS) isRed = false;
-        else if (this.suit == suit.HEARTS || this.suit == suit.HEARTS) isRed = true;
+        if (this.suit == Suit.SPADES || this.suit == Suit.CLUBS) isRed = false;
+        else if (this.suit == Suit.HEARTS || this.suit == Suit.DIAMONDS) isRed = true;
     }
 
     public Card() {
@@ -51,6 +51,8 @@ public class Card implements Comparable{
 
     public void setSuit(Suit suit) {
         this.suit = suit;
+        if (this.suit == Suit.SPADES || this.suit == Suit.CLUBS) isRed = false;
+        else if (this.suit == Suit.HEARTS || this.suit == Suit.DIAMONDS) isRed = true;
     }
 
     public boolean isMovable() {
@@ -177,7 +179,7 @@ public class Card implements Comparable{
                 str += "spades";
                 break;
         }
-        str += " --> ";
+        str += " → ";
 
         if (getMoves().isEmpty()){
             str += "Foundation";
@@ -185,6 +187,13 @@ public class Card implements Comparable{
         }
 
         Card destination = getMoves().get(0).get(getMoves().get(0).size() - 1);
+
+        if (getValue() == 13){
+            if (!(destination.getValue() == 12) || !(destination.getSuit() == getSuit())){
+                 str += "Left-most empty spot";
+                 return str;
+            }
+        }
 
 
         switch (destination.getValue()) {

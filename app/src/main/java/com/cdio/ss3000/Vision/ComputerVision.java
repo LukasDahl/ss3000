@@ -481,14 +481,14 @@ public class ComputerVision {
         // Calculate a threshold and threshold the image
         while (true) {
             Imgproc.adaptiveThreshold(blur, threshold, 200, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 101, tuning);
-            if(true)
+            if (true)
                 break;
             System.out.println("THRESHOLD: " + threshold.get(0, 0)[0] + " " + Core.mean(threshold));
             meanVal = (int) Core.mean(threshold).val[0];
             if (meanVal < 30) {
-                tuning = tuning + 1;
+                tuning = tuning + 2;
             } else if (meanVal > 50) {
-                tuning = tuning - 1;
+                tuning = tuning - 2;
             } else {
                 break;
             }
