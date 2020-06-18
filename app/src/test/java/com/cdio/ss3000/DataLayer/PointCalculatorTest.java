@@ -181,4 +181,13 @@ public class PointCalculatorTest {
         gameControl = new GameControl(state);
         assertEquals(5, PC.restOfTableau(hearts3,state));
     }
+
+    @Test
+    public void lowerCardsInPileTest(){
+        ArrayList knownCards = new ArrayList();
+        knownCards.add(hearts2);
+        knownCards.add(spade13);
+        knownCards.add(hearts3);
+        assertEquals(1, PC.lowerCardsInPile(clubs4,knownCards));
+    }
 }

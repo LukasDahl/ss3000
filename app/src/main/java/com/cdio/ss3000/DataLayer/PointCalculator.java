@@ -148,7 +148,7 @@ public class PointCalculator {
                 if (mCard.getValue() == card.getValue() && mCard.getSuit() == card.getSuit())
                     isInTableau = true;
                 if (mCard.getValue() != 0 && !pointGiven) {
-                    if (card.getValue() == mCard.getValue() - 1 && mCard.isRed() != card.isRed()) {
+                    if (mCard.getValue() == card.getValue() - 1 && mCard.isRed() != card.isRed()) {
                         bestHeuristic += MOVABLEPILE;
                         pointGiven = true;
                     }
