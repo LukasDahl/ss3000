@@ -96,7 +96,7 @@ public class PointCalculator {
                 if(column.get(column.size()-1).equals(card) || column.get(column.indexOf(card)-1).getSuit() == Suit.UNKNOWN){
                     temp_points += TABLEAU_POINTS;
                 }
-                //TODO: now there is never enough points to ever suggest splitting. Give points to splitting piles in special cases
+                //TODO: now there is never enough points to ever suggest splitting. Give points to splitting piles in special cases ***Moves have been added to all cards in waste pile and stock pile***
                 else temp_points += TABLEAU_SPLIT_POINTS;
 
                 //Add points for each underlying face down card

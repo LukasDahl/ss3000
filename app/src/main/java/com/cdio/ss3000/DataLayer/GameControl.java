@@ -158,17 +158,38 @@ public class GameControl {
 
                 //possible moves from waste pile
                 if (!state.waste.isEmpty()) {
-                    if (moveToTableauPossible(state.waste.get(state.waste.size() - 1), cardList.get(cardList.size() - 1))) {
-                        //state.waste.get(state.waste.size()-1).addMove(cardList.get(cardList.size()-1));
-                        state.waste.get(state.waste.size() - 1).addMove(cardList);
-                        state.waste.get(state.waste.size() - 1).setWaste(true);
-                    }
+                    for(Card card : state.waste){
+                        if (moveToTableauPossible(card, cardList.get(cardList.size() - 1))) {
+                            //state.waste.get(state.waste.size()-1).addMove(cardList.get(cardList.size()-1));
+                            card.addMove(cardList);
+                            card.setWaste(true);
+                        }
 
 
-                    if (moveToEmptySpaceTableauPossible(state.waste.get(state.waste.size() - 1))) {
-                        state.waste.get(state.waste.size() - 1).addMove(cardList);
-                        state.waste.get(state.waste.size() - 1).setWaste(true);
+                        if (moveToEmptySpaceTableauPossible(card)) {
+                            card.addMove(cardList);
+                            card.setWaste(true);
+                        }
                     }
+
+                }
+
+                //possible moves from stock pile
+                if (!state.stock.isEmpty()) {
+                    for(Card card : state.stock){
+                        if (moveToTableauPossible(card, cardList.get(cardList.size() - 1))) {
+                            //state.waste.get(state.waste.size()-1).addMove(cardList.get(cardList.size()-1));
+                            card.addMove(cardList);
+                            card.setWaste(true);
+                        }
+
+
+                        if (moveToEmptySpaceTableauPossible(card)) {
+                            card.addMove(cardList);
+                            card.setWaste(true);
+                        }
+                    }
+
                 }
 
             }
@@ -177,19 +198,42 @@ public class GameControl {
 
         //possible moves from waste pile
         if (!state.waste.isEmpty()) {
-            for (ArrayList<Card> cardListFoundations : state.foundations) {
-                if (!cardListFoundations.isEmpty()) {
-                    if (moveToFoundationPossible(state.waste.get(state.waste.size() - 1), cardListFoundations.get(cardListFoundations.size() - 1))) {
-                        //state.waste.get(state.waste.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
-                        state.waste.get(state.waste.size() - 1).addMove(cardListFoundations);
+            for(Card card : state.waste){
+                for (ArrayList<Card> cardListFoundations : state.foundations) {
+                    if (!cardListFoundations.isEmpty()) {
+                        if (moveToFoundationPossible(card, cardListFoundations.get(cardListFoundations.size() - 1))) {
+                            //state.waste.get(state.waste.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
+                            card.addMove(cardListFoundations);
+                        }
+                        if (moveToEmptyFoundationPossible(card)) {
+                            //state.waste.get(state.waste.size()-1).addMove(emptyStackFoundation);
+                            card.addMove(cardListFoundations);
+                        }
                     }
-                    if (moveToEmptyFoundationPossible(state.waste.get(state.waste.size() - 1))) {
-                        //state.waste.get(state.waste.size()-1).addMove(emptyStackFoundation);
-                        state.waste.get(state.waste.size() - 1).addMove(cardListFoundations);
-                    }
-                }
 
+                }
             }
+
+        }
+
+        //possible moves from stock pile
+        if (!state.stock.isEmpty()) {
+            for(Card card : state.stock){
+                for (ArrayList<Card> cardListFoundations : state.foundations) {
+                    if (!cardListFoundations.isEmpty()) {
+                        if (moveToFoundationPossible(card, cardListFoundations.get(cardListFoundations.size() - 1))) {
+                            //state.waste.get(state.waste.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
+                            card.addMove(cardListFoundations);
+                        }
+                        if (moveToEmptyFoundationPossible(card)) {
+                            //state.waste.get(state.waste.size()-1).addMove(emptyStackFoundation);
+                            card.addMove(cardListFoundations);
+                        }
+                    }
+
+                }
+            }
+
         }
 
 
