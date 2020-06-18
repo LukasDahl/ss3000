@@ -74,7 +74,7 @@ public class PointCalculator {
             } else if (move.get(move.size() - 1).getSuit() == card.getSuit()) {//This will be a move to foundation
                 temp_points += FOUNDATION_POINTS;
             } else if (move.get(move.size() - 1).getValue() > 0 && move.get(move.size() - 1).getValue() < 14) {//Any other card in the tableau
-                if(column.get(column.size()-1).equals(card)){
+                if(column.get(column.size()-1).equals(card) || column.get(column.indexOf(card)-1).getSuit() == Suit.UNKNOWN){
                     temp_points += TABLEAU_POINTS;
                 }
                 //TODO: now there is never enough points to ever suggest splitting. Give points to splitting piles in special cases
