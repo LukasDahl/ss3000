@@ -42,6 +42,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
   private Bitmap bm = null;
   Uri imageUri;
   private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+  private static Camera.Parameters p;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
     if (!isCameraInitialized) {
       mCamera = Camera.open();
+      p = mCamera.getParameters();
+      p.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+      mCamera.setParameters(p);
       mPreview = new CameraPreview(this, mCamera);
       preview = findViewById(R.id.camera_preview);
       preview.addView(mPreview);
@@ -196,7 +200,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
   private static boolean whichCamera = true;
 
-  private static Camera.Parameters p;
+
 
   private void rotateCamera() {
     if (mCamera != null) {

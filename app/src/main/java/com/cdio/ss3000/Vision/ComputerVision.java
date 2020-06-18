@@ -467,7 +467,7 @@ public class ComputerVision {
     // Process image to find bounding boxes of cards
     public Mat prepareBoard(Mat image) {
 
-        int tuning = -15, meanVal;
+        int tuning = -25, meanVal;
 
         // Convert to grayscale
         Mat gray = new Mat();
@@ -481,12 +481,14 @@ public class ComputerVision {
         // Calculate a threshold and threshold the image
         while (true) {
             Imgproc.adaptiveThreshold(blur, threshold, 200, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 101, tuning);
+            if(true)
+                break;
             System.out.println("THRESHOLD: " + threshold.get(0, 0)[0] + " " + Core.mean(threshold));
             meanVal = (int) Core.mean(threshold).val[0];
             if (meanVal < 30) {
-                tuning = tuning + 2;
+                tuning = tuning + 1;
             } else if (meanVal > 50) {
-                tuning = tuning - 2;
+                tuning = tuning - 1;
             } else {
                 break;
             }
