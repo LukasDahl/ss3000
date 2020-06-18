@@ -18,6 +18,7 @@ public class GameControl {
     private StateTracker stateTracker;
     private Card lastMove = null;
     private Card stockCard = new Card(1, STOCK, true);
+    private final int TURN_CARD_POINTS = 2;
     //  private Card emptyStackTableau = new Card(-1, UNKNOWN, false);
     // private Card emptyStackFoundation = new Card(-2, UNKNOWN, false);
 
@@ -243,19 +244,19 @@ public class GameControl {
         for (ArrayList<Card> cards : state.tableau) {
             for (Card card : cards) {
                 if (!card.getMoves().isEmpty())
-                    cardPointList.add(pointCalculator.getBestMove(cards, card));
+                    cardPointList.add(pointCalculator.getBestMove(cards, card, state));
             }
         }
         //TODO piles.knownCards --> state.waste
         if (!state.waste.isEmpty() && !state.waste.get(state.waste.size() - 1).getMoves().isEmpty())
-            cardPointList.add(pointCalculator.getBestMoveWaste(state.waste.get(state.waste.size() - 1), state.waste, state));
+            cardPointList.add(pointCalculator.getBestMoveWaste(state.waste.get(state.waste.size() - 1),/* state.waste,*/ state));
         for (ArrayList<Card> cards : state.foundations) {
             if (cards.size() > 0 && !cards.get(cards.size() - 1).getMoves().isEmpty())
                 cardPointList.add(cards.get(cards.size() - 1));
         }
 
         if(!state.waste.isEmpty() || !state.stock.isEmpty()){
-            stockCard.setPoints(2);
+            stockCard.setPoints(TURN_CARD_POINTS);
             cardPointList.add(stockCard);
 
         }

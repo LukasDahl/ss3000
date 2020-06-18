@@ -12,6 +12,7 @@ public class Card implements Comparable{
     private ArrayList<ArrayList<Card>> moves = new ArrayList<>();
     private int points = 0;
 
+    //TODO: Rework isRed
     private boolean isPlacedInFoundation, isRed, isWaste;
 
     public Card(int value, Suit suit, boolean movable) {

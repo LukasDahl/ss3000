@@ -16,21 +16,21 @@ public class PointCalculator {
     private final int BASELINE = 2;
     private final int ONELOWER = 1; //Hvis der er et kort der har værdi 1 lavere end det kort vi tjekker
     private final int MOVABLEPILE = 5; //Hvis et træk resulterer i at en bunke kan rykkes over, så der frigøres ukendte kort.
+    private final int MAX_HIGHERVAL_FOUNDATION = 3;
 
 
-    private Card checkMovesWaste(Card card, ArrayList<Card> knownCards, State state) {
+    private Card checkMovesWaste(Card card,/* ArrayList<Card> knownCards, */State state) {
         ArrayList<Card> tempList = new ArrayList<>();
         tempList.add(card);
 
-        Card bestCard = checkMoves(tempList, card);
-        if (restOfTableau(card, state) != 0)
-            bestCard.setPoints(bestCard.getPoints() + restOfTableau(card, state));
-        else bestCard.setPoints(bestCard.getPoints() + lowerCardsInPile(card, knownCards));
+        Card bestCard = checkMoves(tempList, card, state);
+        bestCard.setPoints(bestCard.getPoints() + restOfTableau(card, state));
+        //else bestCard.setPoints(bestCard.getPoints() + lowerCardsInPile(card, knownCards));
 
         return bestCard;
     }
 
-    private Card checkMoves(ArrayList<Card> column, Card card) {
+    private Card checkMoves(ArrayList<Card> column, Card card, State state) {
         int temp_points = 0;
         //If card is an ace
         Card ace = checkAce(card);
@@ -39,7 +39,7 @@ public class PointCalculator {
             return ace;
         }
         //Do all other moves
-        Card newCard = checkCards(column, card);
+        Card newCard = checkCards(column, card, state);
         //Remove all previous moves from the supplied card
         card.clearMoves();
         //Save the new card (best move) to the list of moves (as the only one)
@@ -59,7 +59,7 @@ public class PointCalculator {
         return card;
     }
 
-    private Card    checkCards(ArrayList<Card> column, Card card) {
+    private Card    checkCards(ArrayList<Card> column, Card card, State state) {
         boolean hasFoundItem = false;
         int bonus = addBaseLinePoints(column, card);//Add the baseline points
         for (ArrayList<Card> move : card.getMoves()) {
@@ -71,9 +71,28 @@ public class PointCalculator {
                 temp_points += TABLEAU_EMPTY_POINTS;
                 card.setPoints(temp_points);
                 // return card;
-            } else if (move.get(move.size() - 1).getSuit() == card.getSuit()) {//This will be a move to foundation
-                temp_points += FOUNDATION_POINTS;
-            } else if (move.get(move.size() - 1).getValue() > 0 && move.get(move.size() - 1).getValue() < 14) {//Any other card in the tableau
+            }/* else */
+            if (move.get(move.size() - 1).getSuit() == card.getSuit()) {//This will be a move to foundation
+                //Checking if we have empty piles in foundations
+                boolean emptyPiles = false;
+                int lowestCardVal = 15;
+                for(ArrayList<Card> pile : state.foundations){
+                    if(pile.isEmpty()) emptyPiles = true;
+                    else if(!pile.isEmpty()){
+                        if(pile.get(pile.size()-1).getValue() < lowestCardVal) lowestCardVal = pile.get(pile.size()-1).getValue();
+                    }
+                }
+                //Ensuring we don't just endlessly adds cards to one foundation pile, and none to the other
+                //TODO: If there is nothing else you can do, this should still be suggested.
+                if(move.get(move.size() - 1).getValue() < MAX_HIGHERVAL_FOUNDATION){
+                    temp_points += FOUNDATION_POINTS;
+                }
+                else if(!emptyPiles && move.get(move.size() - 1).getValue() < lowestCardVal + MAX_HIGHERVAL_FOUNDATION){
+                    temp_points += FOUNDATION_POINTS;
+                }
+
+            }/* else */
+            if (move.get(move.size() - 1).getValue() > 0 && move.get(move.size() - 1).getValue() < 14 && move.get(move.size()-1).isRed() != card.isRed()) {//Any other card in the tableau
                 if(column.get(column.size()-1).equals(card) || column.get(column.indexOf(card)-1).getSuit() == Suit.UNKNOWN){
                     temp_points += TABLEAU_POINTS;
                 }
@@ -131,7 +150,8 @@ public class PointCalculator {
         return bl_points;
     }
 
-    int lowerCardsInPile(Card card, ArrayList<Card> knownCards) {
+    //TODO: Make a better version of this, you fool!
+   /* int lowerCardsInPile(Card card, ArrayList<Card> knownCards) {
         int bestHeuristic = 0;
         boolean pointGiven = false;
 
@@ -143,7 +163,7 @@ public class PointCalculator {
         }
 
         return bestHeuristic;
-    }
+    }*/
 
     int restOfTableau(Card card, State state) {
         int bestHeuristic = 0;
@@ -170,11 +190,11 @@ public class PointCalculator {
     }
 
 
-    public Card getBestMove(ArrayList<Card> column, Card card) {
-        return checkMoves(column, card);
+    public Card getBestMove(ArrayList<Card> column, Card card, State state) {
+        return checkMoves(column, card, state);
     }
 
-    public Card getBestMoveWaste(Card card, ArrayList<Card> knownCards, State state) {
-        return checkMovesWaste(card, knownCards, state);
+    public Card getBestMoveWaste(Card card,/* ArrayList<Card> knownCards,*/ State state) {
+        return checkMovesWaste(card,/* knownCards, */state);
     }
 }
