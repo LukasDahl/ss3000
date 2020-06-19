@@ -15,7 +15,7 @@ public class PointCalculator {
     private final int KING = 13;
     private final int BASELINE = 2;
     private final int ONELOWER = 1; //Hvis der er et kort der har værdi 1 lavere end det kort vi tjekker
-    private final int MOVABLEPILE = 5; //Hvis et træk resulterer i at en bunke kan rykkes over, så der frigøres ukendte kort.
+    private final int MOVABLEPILE = 8; //Hvis et træk resulterer i at en bunke kan rykkes over, så der frigøres ukendte kort.
     private final int MAX_HIGHERVAL_FOUNDATION = 3;
 
 
@@ -48,11 +48,12 @@ public class PointCalculator {
         //Add the list of moves to the supplied card
         card.addMove(moves);
 
-
         //points that are assigned to the card in moves, is copied to the moving card
         if (card.getPoints() == 0) {
             card.setPoints(moves.get(0).getPoints());
         }
+
+        System.out.println(card.toMovesString());
 
 
         //Return the supplied card with the single best move
@@ -72,14 +73,15 @@ public class PointCalculator {
                 card.setPoints(temp_points);
                 // return card;
             }/* else */
-            if (move.get(move.size() - 1).getSuit() == card.getSuit()) {//This will be a move to foundation
+
+            else if (move.get(move.size() - 1).getSuit() == card.getSuit()) {//This will be a move to foundation
                 //Checking if we have empty piles in foundations
 
                 temp_points += checkFoundations(move, state.foundations);
 
 
             }/* else */
-            if (move.get(move.size() - 1).getValue() > 0 && move.get(move.size() - 1).getValue() < 14 && move.get(move.size() - 1).isRed() != card.isRed()) {//Any other card in the tableau
+            else if (move.get(move.size() - 1).getValue() > 0 && move.get(move.size() - 1).getValue() < 14 && move.get(move.size() - 1).isRed() != card.isRed()) {//Any other card in the tableau
 
 
                 if (column.get(0).equals(card) || column.get(column.indexOf(card) - 1).getSuit() == Suit.UNKNOWN) {
@@ -105,7 +107,7 @@ public class PointCalculator {
                 move.get(move.size() - 1).setPoints(temp_points);
             }
         }
-        int highestPoint = 0;
+        int highestPoint = -1;
         Card newCard = new Card();
         for (ArrayList<Card> list : card.getMoves()) {
             if (list.isEmpty()) {

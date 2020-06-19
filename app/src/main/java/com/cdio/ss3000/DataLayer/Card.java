@@ -187,7 +187,7 @@ public class Card implements Comparable{
             return str;
         }
 
-        Card destination = getMoves().get(0).get(getMoves().get(0).size() - 1);
+        Card destination = getMoves().get(getMoves().size() - 1).get(getMoves().get(getMoves().size() - 1   ).size() - 1);
 
         if (getValue() == 13){
             if (!(destination.getValue() == 12) || !(destination.getSuit() == getSuit())){
@@ -228,7 +228,7 @@ public class Card implements Comparable{
                 str += "spades";
                 break;
         }
-
+        str += " for " + points + " points.";
         return str;
     }
 

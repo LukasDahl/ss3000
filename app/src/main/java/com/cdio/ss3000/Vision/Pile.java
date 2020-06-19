@@ -15,6 +15,7 @@ public class Pile implements Comparable {
     List<Integer> cards;
     static boolean checkTop = true, flip = false;
     static int fAmount = 0;
+    static int stokX;
 
     public Pile(int x, int y, List<Integer> cards) {
         this.x = x;
@@ -156,6 +157,7 @@ public class Pile implements Comparable {
         for (int i = 0; i < pilesTop.size(); i++) {
             if (pilesTop.get(i).cards.size() == 0) {
                 stockPile = pilesTop.get(i);
+                stokX = stockPile.x;
             }
         }
 
@@ -187,19 +189,36 @@ public class Pile implements Comparable {
         } else {
 
             if(pilesTop.size() > fAmount){
-                int biggetsLength = 0;
-                for (Pile pile : pilesTop) {
-                    int lenth = 0;
+
+                if (pilesTop.size() == 2){
 
 
-                    for (Pile pile2 : pilesTop) {
-                        if (pile == pile2)
-                            continue;
-                        lenth = lenth + Math.abs(pile.x - pile2.x);
+                    int dist1, dist2;
+                    dist1 = Math.abs(pilesTop.get(0).x - stokX);
+                    dist2 = Math.abs(pilesTop.get(1).x - stokX);
+
+                    if (dist1 < dist2){
+                        wastePile = pilesTop.get(0);
+                    } else {
+                        wastePile = pilesTop.get(1);
                     }
 
-                    if (lenth > biggetsLength)
-                        wastePile = pile;
+                } else {
+
+                    int biggetsLength = 0;
+                    for (Pile pile : pilesTop) {
+                        int lenth = 0;
+
+
+                        for (Pile pile2 : pilesTop) {
+                            if (pile == pile2)
+                                continue;
+                            lenth = lenth + Math.abs(pile.x - pile2.x);
+                        }
+
+                        if (lenth > biggetsLength)
+                            wastePile = pile;
+                    }
                 }
                 waste.add(intToCard(wastePile.largestCard()));
             }

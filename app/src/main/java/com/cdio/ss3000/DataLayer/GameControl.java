@@ -97,23 +97,24 @@ public class GameControl {
     Each possible move is added to the specific card
      */
     public void checkPossibleMoves() {
-
-        int index;
-
         //Possible moves from tableau
         for (ArrayList<Card> cardList : state.tableau) {
             if (!cardList.isEmpty() && cardList.get(cardList.size() - 1).getSuit() != UNKNOWN) {
                 for (ArrayList<Card> otherCardListTableau : state.tableau) {
                     if (!otherCardListTableau.isEmpty() && !otherCardListTableau.equals(cardList)) {
-                        index = cardList.size() - 1;
-                        while (cardList.get(index).getSuit() != UNKNOWN) {
+                        for (int index = cardList.size() - 1; index >= 0 && cardList.get(index).getSuit() != UNKNOWN; index--) {
                             if (moveToTableauPossible(cardList.get(index), otherCardListTableau.get(otherCardListTableau.size() - 1))) {
                                 //cardList.get(cardList.size()-1).addMove(otherCardListTableau.get(otherCardListTableau.size()-1));
-                                cardList.get(index).addMove(otherCardListTableau);
-                            } else if (cardList.get(index).getSuit() == UNKNOWN) break;
-                            index -= 1;
-                            if (cardList.size() == 1) break;
-                            if (index < 0) break;
+                                ArrayList<Card> newMove = new ArrayList<>();
+                                for (Card card : otherCardListTableau) {
+                                    try {
+                                        newMove.add((Card) card.clone());
+                                    } catch (CloneNotSupportedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                cardList.get(index).addMove(newMove);
+                            }
                         }
                     }
                 }
@@ -129,7 +130,15 @@ public class GameControl {
                     if (!cardListFoundations.isEmpty()) {
                         if (moveToFoundationPossible(cardList.get(cardList.size() - 1), cardListFoundations.get(cardListFoundations.size() - 1))) {
                             //cardList.get(cardList.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
-                            cardList.get(cardList.size() - 1).addMove(cardListFoundations);
+                            ArrayList<Card> newMove = new ArrayList<>();
+                            for (Card card : cardListFoundations) {
+                                try {
+                                    newMove.add((Card) card.clone());
+                                } catch (CloneNotSupportedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            cardList.get(cardList.size() - 1).addMove(newMove);
                         }
                     }
                 }
@@ -138,17 +147,26 @@ public class GameControl {
                     if (otherCardlistTableau.isEmpty()) {
                         if (moveToEmptySpaceTableauPossible(cardList.get(cardList.size() - 1))) {
                             // cardList.get(cardList.size()-1).addMove(emptyStackTableau);
-                            cardList.get(cardList.size() - 1).addMove(otherCardlistTableau);
+                            ArrayList<Card> newMove = new ArrayList<>();
+                            for (Card card : otherCardlistTableau) {
+                                try {
+                                    newMove.add((Card) card.clone());
+                                } catch (CloneNotSupportedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            cardList.get(cardList.size() - 1).addMove(newMove);
                         }
                     }
 
                 }
 
                 for (ArrayList<Card> cardListFoundations : state.foundations) {
-                    if (!cardListFoundations.isEmpty()) {
+                    if (cardListFoundations.isEmpty()) {
                         if (moveToEmptyFoundationPossible(cardList.get(cardList.size() - 1))) {
                             //cardList.get(cardList.size()-1).addMove(emptyStackFoundation);
-                            cardList.get(cardList.size() - 1).addMove(cardListFoundations);
+                            ArrayList<Card> newMove = new ArrayList<>();
+                            cardList.get(cardList.size() - 1).addMove(newMove);
                         }
                     }
                 }
@@ -158,15 +176,31 @@ public class GameControl {
                     for (Card card : state.waste) {
                         if (moveToTableauPossible(card, cardList.get(cardList.size() - 1))) {
                             //state.waste.get(state.waste.size()-1).addMove(cardList.get(cardList.size()-1));
-                            card.addMove(cardList);
+                            ArrayList<Card> newMove = new ArrayList<>();
+                            for (Card cardFromMove : cardList) {
+                                try {
+                                    newMove.add((Card) cardFromMove.clone());
+                                } catch (CloneNotSupportedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            card.addMove(newMove);
                             card.setWaste(true);
                         }
 
                         if (moveToEmptySpaceTableauPossible(card)) {
                             for (ArrayList<Card> otherCardlistTableau : state.tableau) {
                                 if (otherCardlistTableau.isEmpty()) {
+                                    ArrayList<Card> newMove = new ArrayList<>();
+                                    for (Card cardFromMove : otherCardlistTableau) {
+                                        try {
+                                            newMove.add((Card) cardFromMove.clone());
+                                        } catch (CloneNotSupportedException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
                                     // cardList.get(cardList.size()-1).addMove(emptyStackTableau);
-                                    card.addMove(otherCardlistTableau);
+                                    card.addMove(newMove);
                                 }
                             }
 
@@ -180,7 +214,15 @@ public class GameControl {
                     for (Card card : state.stock) {
                         if (moveToTableauPossible(card, cardList.get(cardList.size() - 1))) {
                             //state.waste.get(state.waste.size()-1).addMove(cardList.get(cardList.size()-1));
-                            card.addMove(cardList);
+                            ArrayList<Card> newMove = new ArrayList<>();
+                            for (Card cardFromMove : cardList) {
+                                try {
+                                    newMove.add((Card) cardFromMove.clone());
+                                } catch (CloneNotSupportedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            card.addMove(newMove);
                             card.setWaste(true);
                         }
 
@@ -189,7 +231,15 @@ public class GameControl {
                             for (ArrayList<Card> otherCardlistTableau : state.tableau) {
                                 if (otherCardlistTableau.isEmpty()) {
                                     // cardList.get(cardList.size()-1).addMove(emptyStackTableau);
-                                    card.addMove(otherCardlistTableau);
+                                    ArrayList<Card> newMove = new ArrayList<>();
+                                    for (Card cardFromMove : otherCardlistTableau) {
+                                        try {
+                                            newMove.add((Card) cardFromMove.clone());
+                                        } catch (CloneNotSupportedException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    card.addMove(newMove);
                                 }
                             }
 
@@ -209,11 +259,28 @@ public class GameControl {
                     if (!cardListFoundations.isEmpty()) {
                         if (moveToFoundationPossible(card, cardListFoundations.get(cardListFoundations.size() - 1))) {
                             //state.waste.get(state.waste.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
-                            card.addMove(cardListFoundations);
+                            ArrayList<Card> newMove = new ArrayList<>();
+                            for (Card cardFromMove : cardListFoundations) {
+                                try {
+                                    newMove.add((Card) cardFromMove.clone());
+                                } catch (CloneNotSupportedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            card.addMove(newMove);
                         }
+                    } else {
                         if (moveToEmptyFoundationPossible(card)) {
                             //state.waste.get(state.waste.size()-1).addMove(emptyStackFoundation);
-                            card.addMove(cardListFoundations);
+                            ArrayList<Card> newMove = new ArrayList<>();
+                            for (Card cardFromMove : cardListFoundations) {
+                                try {
+                                    newMove.add((Card) cardFromMove.clone());
+                                } catch (CloneNotSupportedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            card.addMove(newMove);
                         }
                     }
 
@@ -229,11 +296,27 @@ public class GameControl {
                     if (!cardListFoundations.isEmpty()) {
                         if (moveToFoundationPossible(card, cardListFoundations.get(cardListFoundations.size() - 1))) {
                             //state.waste.get(state.waste.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
-                            card.addMove(cardListFoundations);
+                            ArrayList<Card> newMove = new ArrayList<>();
+                            for (Card cardFromMove : cardListFoundations) {
+                                try {
+                                    newMove.add((Card) cardFromMove.clone());
+                                } catch (CloneNotSupportedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            card.addMove(newMove);
                         }
                         if (moveToEmptyFoundationPossible(card)) {
                             //state.waste.get(state.waste.size()-1).addMove(emptyStackFoundation);
-                            card.addMove(cardListFoundations);
+                            ArrayList<Card> newMove = new ArrayList<>();
+                            for (Card cardFromMove : cardListFoundations) {
+                                try {
+                                    newMove.add((Card) cardFromMove.clone());
+                                } catch (CloneNotSupportedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            card.addMove(newMove);
                         }
                     }
 
@@ -250,13 +333,29 @@ public class GameControl {
                     if (!cardListTableau.isEmpty()) {
                         if (moveToTableauPossible(cardList.get(cardList.size() - 1), cardListTableau.get(cardListTableau.size() - 1))) {
                             //cardList.get(cardList.size()-1).addMove(cardListTableau.get(cardListTableau.size()-1));
-                            cardList.get(cardList.size() - 1).addMove(cardListTableau);
+                            ArrayList<Card> newMove = new ArrayList<>();
+                            for (Card cardFromMove : cardListTableau) {
+                                try {
+                                    newMove.add((Card) cardFromMove.clone());
+                                } catch (CloneNotSupportedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            cardList.get(cardList.size() - 1).addMove(newMove);
                         }
                         if (moveToEmptySpaceTableauPossible(cardList.get(cardList.size() - 1))) {
                             for (ArrayList<Card> otherCardlistTableau : state.tableau) {
                                 if (otherCardlistTableau.isEmpty()) {
                                     // cardList.get(cardList.size()-1).addMove(emptyStackTableau);
-                                    (cardList.get(cardList.size() - 1)).addMove(otherCardlistTableau);
+                                    ArrayList<Card> newMove = new ArrayList<>();
+                                    for (Card cardFromMove : otherCardlistTableau) {
+                                        try {
+                                            newMove.add((Card) cardFromMove.clone());
+                                        } catch (CloneNotSupportedException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    (cardList.get(cardList.size() - 1)).addMove(newMove);
                                 }
                             }
 
@@ -295,10 +394,13 @@ public class GameControl {
         ArrayList<Card> cardPointList = new ArrayList<>();
         Card _cardHighestValue = new Card();
         checkPossibleMoves();
-        for (ArrayList<Card> cards : state.tableau) {
-            for (Card card : cards) {
-                if (!card.getMoves().isEmpty())
-                    cardPointList.add(pointCalculator.getBestMove(cards, card, state));
+
+        for (ArrayList<Card> tableauColumn : state.tableau) {
+            for (Card card : tableauColumn) {
+                if (!card.getMoves().isEmpty()) {
+                    Card cardWithBestMove = pointCalculator.getBestMove(tableauColumn, card, state);
+                    cardPointList.add(cardWithBestMove);
+                }
             }
         }
         //TODO piles.knownCards --> state.waste
@@ -315,7 +417,9 @@ public class GameControl {
 
         }
 
+        System.out.println("---------------\nCard point list\n---------------");
         for (Card card : cardPointList) {
+            System.out.println(card.toMovesString());
             if (card.getPoints() > _cardHighestValue.getPoints())
                 _cardHighestValue = card;
         }

@@ -360,6 +360,7 @@ public class ComputerVision {
             gc.updateState(Pile.pileListToState(pilesTop, pilesBottom));
             Card bestMove = gc.run();
             String bestMoveString = bestMove.toMovesString();
+            System.out.println("----------\nACTUAL MOVE\n----------");
             System.out.println(bestMoveString);
             ((TextView)((CameraActivity)context).findViewById(R.id.move_text)).setText(bestMoveString);
 
