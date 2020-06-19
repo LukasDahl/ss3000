@@ -59,7 +59,7 @@ public class PointCalculator {
         return card;
     }
 
-    private Card    checkCards(ArrayList<Card> column, Card card, State state) {
+    private Card checkCards(ArrayList<Card> column, Card card, State state) {
         boolean hasFoundItem = false;
         int bonus = addBaseLinePoints(column, card);//Add the baseline points
         for (ArrayList<Card> move : card.getMoves()) {
@@ -74,30 +74,28 @@ public class PointCalculator {
             }/* else */
             if (move.get(move.size() - 1).getSuit() == card.getSuit()) {//This will be a move to foundation
                 //Checking if we have empty piles in foundations
-                boolean emptyPiles = false;
-                int lowestCardVal = 15;
-                for(ArrayList<Card> pile : state.foundations){
-                    if(pile.isEmpty()) emptyPiles = true;
-                    else if(!pile.isEmpty()){
-                        if(pile.get(pile.size()-1).getValue() < lowestCardVal) lowestCardVal = pile.get(pile.size()-1).getValue();
-                    }
-                }
-                //Ensuring we don't just endlessly adds cards to one foundation pile, and none to the other
-                //TODO: If there is nothing else you can do, this should still be suggested.
-                if(move.get(move.size() - 1).getValue() < MAX_HIGHERVAL_FOUNDATION){
-                    temp_points += FOUNDATION_POINTS;
-                }
-                else if(!emptyPiles && move.get(move.size() - 1).getValue() < lowestCardVal + MAX_HIGHERVAL_FOUNDATION){
-                    temp_points += FOUNDATION_POINTS;
-                }
+
+                temp_points += checkFoundations(move, state.foundations);
+
 
             }/* else */
-            if (move.get(move.size() - 1).getValue() > 0 && move.get(move.size() - 1).getValue() < 14 && move.get(move.size()-1).isRed() != card.isRed()) {//Any other card in the tableau
-                if(column.get(column.size()-1).equals(card) || column.get(column.indexOf(card)-1).getSuit() == Suit.UNKNOWN){
+            if (move.get(move.size() - 1).getValue() > 0 && move.get(move.size() - 1).getValue() < 14 && move.get(move.size() - 1).isRed() != card.isRed()) {//Any other card in the tableau
+
+
+                if (column.get(0).equals(card) || column.get(column.indexOf(card) - 1).getSuit() == Suit.UNKNOWN) {
                     temp_points += TABLEAU_POINTS;
                 }
+
                 //TODO: now there is never enough points to ever suggest splitting. Give points to splitting piles in special cases ***Moves have been added to all cards in waste pile and stock pile***
-                else temp_points += TABLEAU_SPLIT_POINTS;
+                else {
+                    for (ArrayList<Card> moveOfParent : column.get(column.indexOf(card) - 1).getMoves()) {
+
+                        if (moveOfParent.get(moveOfParent.size() - 1).getSuit() == column.get(column.indexOf(card) - 1).getSuit()){
+                            temp_points += checkFoundations(moveOfParent, state.foundations) - TABLEAU_SPLIT_POINTS;
+                            break;
+                        }
+                    }
+                }
 
                 //Add points for each underlying face down card
             }
@@ -116,9 +114,9 @@ public class PointCalculator {
                     newCard = card;
                 }
             } else {
-                if (highestPoint < list.get(list.size()-1).getPoints()) {
-                    highestPoint = list.get(list.size()-1).getPoints();
-                    newCard = list.get(list.size()-1);
+                if (highestPoint < list.get(list.size() - 1).getPoints()) {
+                    highestPoint = list.get(list.size() - 1).getPoints();
+                    newCard = list.get(list.size() - 1);
                 }
             }
         }
@@ -135,7 +133,8 @@ public class PointCalculator {
     }
 
     int addBaseLinePoints(ArrayList<Card> column, Card card) {
-        if (column.size() == 1 || column.get(column.indexOf(card)-1).getSuit() != Suit.UNKNOWN) return 0;
+        if (column.size() == 1 || column.get(column.indexOf(card) - 1).getSuit() != Suit.UNKNOWN)
+            return 0;
         //Save points and index of card
         int bl_points;
         int index = column.indexOf(card);
@@ -196,5 +195,26 @@ public class PointCalculator {
 
     public Card getBestMoveWaste(Card card,/* ArrayList<Card> knownCards,*/ State state) {
         return checkMovesWaste(card,/* knownCards, */state);
+    }
+
+    public int checkFoundations(ArrayList<Card> move, ArrayList<Card>[] foundations){
+        boolean emptyPiles = false;
+        int lowestCardVal = 15;
+        for (ArrayList<Card> pile : foundations) {
+            if (pile.isEmpty()) emptyPiles = true;
+            else {
+                if (pile.get(pile.size() - 1).getValue() < lowestCardVal)
+                    lowestCardVal = pile.get(pile.size() - 1).getValue();
+            }
+        }
+        //Ensuring we don't just endlessly adds cards to one foundation pile, and none to the other
+        //TODO: If there is nothing else you can do, this should still be suggested.
+        if (move.get(move.size() - 1).getValue() < MAX_HIGHERVAL_FOUNDATION) {
+            return FOUNDATION_POINTS;
+        } else if (!emptyPiles && move.get(move.size() - 1).getValue() < lowestCardVal + MAX_HIGHERVAL_FOUNDATION) {
+            return FOUNDATION_POINTS;
+        }
+        else
+            return 0;
     }
 }

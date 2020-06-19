@@ -83,16 +83,12 @@ public class GameControl {
 
     //Checks if card is a King
     public boolean moveToEmptySpaceTableauPossible(Card movingCard) {
-        if (movingCard.getValue() == 13) {
-            return true;
-        } else return false;
+        return movingCard.getValue() == 13;
     }
 
     //Checks if card is an Ace
     public boolean moveToEmptyFoundationPossible(Card movingCard) {
-        if (movingCard.getValue() == 1) {
-            return true;
-        } else return false;
+        return movingCard.getValue() == 1;
     }
 
 
@@ -117,6 +113,7 @@ public class GameControl {
                             } else if (cardList.get(index).getSuit() == UNKNOWN) break;
                             index -= 1;
                             if (cardList.size() == 1) break;
+                            if (index < 0) break;
                         }
                     }
                 }
@@ -138,7 +135,7 @@ public class GameControl {
                 }
 
                 for (ArrayList<Card> otherCardlistTableau : state.tableau) {
-                    if (!otherCardlistTableau.isEmpty()) {
+                    if (otherCardlistTableau.isEmpty()) {
                         if (moveToEmptySpaceTableauPossible(cardList.get(cardList.size() - 1))) {
                             // cardList.get(cardList.size()-1).addMove(emptyStackTableau);
                             cardList.get(cardList.size() - 1).addMove(otherCardlistTableau);
@@ -158,17 +155,21 @@ public class GameControl {
 
                 //possible moves from waste pile
                 if (!state.waste.isEmpty()) {
-                    for(Card card : state.waste){
+                    for (Card card : state.waste) {
                         if (moveToTableauPossible(card, cardList.get(cardList.size() - 1))) {
                             //state.waste.get(state.waste.size()-1).addMove(cardList.get(cardList.size()-1));
                             card.addMove(cardList);
                             card.setWaste(true);
                         }
 
-
                         if (moveToEmptySpaceTableauPossible(card)) {
-                            card.addMove(cardList);
-                            card.setWaste(true);
+                            for (ArrayList<Card> otherCardlistTableau : state.tableau) {
+                                if (otherCardlistTableau.isEmpty()) {
+                                    // cardList.get(cardList.size()-1).addMove(emptyStackTableau);
+                                    card.addMove(otherCardlistTableau);
+                                }
+                            }
+
                         }
                     }
 
@@ -176,7 +177,7 @@ public class GameControl {
 
                 //possible moves from stock pile
                 if (!state.stock.isEmpty()) {
-                    for(Card card : state.stock){
+                    for (Card card : state.stock) {
                         if (moveToTableauPossible(card, cardList.get(cardList.size() - 1))) {
                             //state.waste.get(state.waste.size()-1).addMove(cardList.get(cardList.size()-1));
                             card.addMove(cardList);
@@ -185,8 +186,13 @@ public class GameControl {
 
 
                         if (moveToEmptySpaceTableauPossible(card)) {
-                            card.addMove(cardList);
-                            card.setWaste(true);
+                            for (ArrayList<Card> otherCardlistTableau : state.tableau) {
+                                if (otherCardlistTableau.isEmpty()) {
+                                    // cardList.get(cardList.size()-1).addMove(emptyStackTableau);
+                                    card.addMove(otherCardlistTableau);
+                                }
+                            }
+
                         }
                     }
 
@@ -198,7 +204,7 @@ public class GameControl {
 
         //possible moves from waste pile
         if (!state.waste.isEmpty()) {
-            for(Card card : state.waste){
+            for (Card card : state.waste) {
                 for (ArrayList<Card> cardListFoundations : state.foundations) {
                     if (!cardListFoundations.isEmpty()) {
                         if (moveToFoundationPossible(card, cardListFoundations.get(cardListFoundations.size() - 1))) {
@@ -218,7 +224,7 @@ public class GameControl {
 
         //possible moves from stock pile
         if (!state.stock.isEmpty()) {
-            for(Card card : state.stock){
+            for (Card card : state.stock) {
                 for (ArrayList<Card> cardListFoundations : state.foundations) {
                     if (!cardListFoundations.isEmpty()) {
                         if (moveToFoundationPossible(card, cardListFoundations.get(cardListFoundations.size() - 1))) {
@@ -246,10 +252,14 @@ public class GameControl {
                             //cardList.get(cardList.size()-1).addMove(cardListTableau.get(cardListTableau.size()-1));
                             cardList.get(cardList.size() - 1).addMove(cardListTableau);
                         }
-
                         if (moveToEmptySpaceTableauPossible(cardList.get(cardList.size() - 1))) {
-                            //cardList.get(cardList.size()-1).addMove(emptyStackTableau);
-                            cardList.get(cardList.size() - 1).addMove(cardListTableau);
+                            for (ArrayList<Card> otherCardlistTableau : state.tableau) {
+                                if (otherCardlistTableau.isEmpty()) {
+                                    // cardList.get(cardList.size()-1).addMove(emptyStackTableau);
+                                    (cardList.get(cardList.size() - 1)).addMove(otherCardlistTableau);
+                                }
+                            }
+
                         }
                     }
                 }
@@ -299,7 +309,7 @@ public class GameControl {
                 cardPointList.add(cards.get(cards.size() - 1));
         }
 
-        if(!state.waste.isEmpty() || !state.stock.isEmpty()){
+        if (!state.waste.isEmpty() || !state.stock.isEmpty()) {
             stockCard.setPoints(TURN_CARD_POINTS);
             cardPointList.add(stockCard);
 
