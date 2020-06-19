@@ -190,34 +190,14 @@ public class Pile implements Comparable {
 
             if(pilesTop.size() > fAmount){
 
-                if (pilesTop.size() == 2){
+                int smallestLength = Integer.MAX_VALUE;;
+                for (Pile pile : pilesTop) {
 
+                    int lenth = Math.abs(pile.x - stokX);
 
-                    int dist1, dist2;
-                    dist1 = Math.abs(pilesTop.get(0).x - stokX);
-                    dist2 = Math.abs(pilesTop.get(1).x - stokX);
-
-                    if (dist1 < dist2){
-                        wastePile = pilesTop.get(0);
-                    } else {
-                        wastePile = pilesTop.get(1);
-                    }
-
-                } else {
-
-                    int biggetsLength = 0;
-                    for (Pile pile : pilesTop) {
-                        int lenth = 0;
-
-
-                        for (Pile pile2 : pilesTop) {
-                            if (pile == pile2)
-                                continue;
-                            lenth = lenth + Math.abs(pile.x - pile2.x);
-                        }
-
-                        if (lenth > biggetsLength)
-                            wastePile = pile;
+                    if (lenth < smallestLength) {
+                        smallestLength = lenth;
+                        wastePile = pile;
                     }
                 }
                 waste.add(intToCard(wastePile.largestCard()));
