@@ -146,6 +146,7 @@ public class Card implements Comparable{
 
         if (getSuit() == Suit.STOCK){
             str = "Turn card from stock";
+            str += " for " + points + " points.";
             return str;
         }
 
@@ -184,6 +185,7 @@ public class Card implements Comparable{
 
         if (getMoves().isEmpty()){
             str += "Foundation";
+            str += " for " + points + " points.";
             return str;
         }
 
@@ -192,6 +194,7 @@ public class Card implements Comparable{
         if (getValue() == 13){
             if (!(destination.getValue() == 12) || !(destination.getSuit() == getSuit())){
                  str += "Left-most empty spot";
+                 str += " for " + points + " points.";
                  return str;
             }
         }

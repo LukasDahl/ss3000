@@ -13,7 +13,7 @@ public class PointCalculator {
     private final int FOUNDATION_POINTS = 10;
     private final int ACE = 1;
     private final int KING = 13;
-    private final int BASELINE = 2;
+    private final int UNKNOWN_PILE_SIZE_POINTS = 2;
     private final int ONELOWER = 1; //Hvis der er et kort der har værdi 1 lavere end det kort vi tjekker
     private final int MOVABLEPILE = 8; //Hvis et træk resulterer i at en bunke kan rykkes over, så der frigøres ukendte kort.
     private final int MAX_HIGHERVAL_FOUNDATION = 3;
@@ -62,26 +62,25 @@ public class PointCalculator {
 
     private Card checkCards(ArrayList<Card> column, Card card, State state) {
         boolean hasFoundItem = false;
-        int bonus = addBaseLinePoints(column, card);//Add the baseline points
+        int bonus = addUnknownPileSizePoints(column, card);//Add the unknown pile size points
         for (ArrayList<Card> move : card.getMoves()) {
             int temp_points = bonus;
             hasFoundItem = false;
             //Empty spot in Tableau
             if (move.isEmpty() && card.getValue() == KING) {
                 hasFoundItem = true;
-                temp_points += TABLEAU_EMPTY_POINTS;
+                if (column.indexOf(card) != 0 || (!state.waste.isEmpty() && state.waste.get(state.waste.size() - 1).compareTo(card) == 0)) {
+                    temp_points += TABLEAU_EMPTY_POINTS;
+                }
                 card.setPoints(temp_points);
                 // return card;
-            }/* else */
-
-            else if (move.get(move.size() - 1).getSuit() == card.getSuit()) {//This will be a move to foundation
+            }/* else */ else if (move.get(move.size() - 1).getSuit() == card.getSuit()) {//This will be a move to foundation
                 //Checking if we have empty piles in foundations
 
                 temp_points += checkFoundations(move, state.foundations);
 
 
-            }/* else */
-            else if (move.get(move.size() - 1).getValue() > 0 && move.get(move.size() - 1).getValue() < 14 && move.get(move.size() - 1).isRed() != card.isRed()) {//Any other card in the tableau
+            }/* else */ else if (move.get(move.size() - 1).getValue() > 0 && move.get(move.size() - 1).getValue() < 14 && move.get(move.size() - 1).isRed() != card.isRed()) {//Any other card in the tableau
 
 
                 if (column.get(0).equals(card) || column.get(column.indexOf(card) - 1).getSuit() == Suit.UNKNOWN) {
@@ -92,7 +91,7 @@ public class PointCalculator {
                 else {
                     for (ArrayList<Card> moveOfParent : column.get(column.indexOf(card) - 1).getMoves()) {
 
-                        if (moveOfParent.get(moveOfParent.size() - 1).getSuit() == column.get(column.indexOf(card) - 1).getSuit()){
+                        if (moveOfParent.get(moveOfParent.size() - 1).getSuit() == column.get(column.indexOf(card) - 1).getSuit()) {
                             temp_points += checkFoundations(moveOfParent, state.foundations) - TABLEAU_SPLIT_POINTS;
                             break;
                         }
@@ -134,7 +133,9 @@ public class PointCalculator {
         }
     }
 
-    int addBaseLinePoints(ArrayList<Card> column, Card card) {
+    int addUnknownPileSizePoints(ArrayList<Card> column, Card card) {
+        if (column.isEmpty() || column.indexOf(card) == 0)
+            return 0;
         if (column.size() == 1 || column.get(column.indexOf(card) - 1).getSuit() != Suit.UNKNOWN)
             return 0;
         //Save points and index of card
@@ -147,7 +148,7 @@ public class PointCalculator {
         }
         //Determine points based on size of sublist
         if (column.get(index - 1).getSuit() != Suit.UNKNOWN) return 0;
-        bl_points = sublist.size() * BASELINE;
+        bl_points = sublist.size() * UNKNOWN_PILE_SIZE_POINTS;
         return bl_points;
     }
 
@@ -199,7 +200,7 @@ public class PointCalculator {
         return checkMovesWaste(card,/* knownCards, */state);
     }
 
-    public int checkFoundations(ArrayList<Card> move, ArrayList<Card>[] foundations){
+    public int checkFoundations(ArrayList<Card> move, ArrayList<Card>[] foundations) {
         boolean emptyPiles = false;
         int lowestCardVal = 15;
         for (ArrayList<Card> pile : foundations) {
@@ -215,8 +216,7 @@ public class PointCalculator {
             return FOUNDATION_POINTS;
         } else if (!emptyPiles && move.get(move.size() - 1).getValue() < lowestCardVal + MAX_HIGHERVAL_FOUNDATION) {
             return FOUNDATION_POINTS;
-        }
-        else
+        } else
             return 0;
     }
 }
