@@ -15,6 +15,7 @@ public class Pile implements Comparable {
     List<Integer> cards;
     static boolean checkTop = true, flip = false;
     static int fAmount = 0;
+    static int stokX;
 
     public Pile(int x, int y, List<Integer> cards) {
         this.x = x;
@@ -156,6 +157,7 @@ public class Pile implements Comparable {
         for (int i = 0; i < pilesTop.size(); i++) {
             if (pilesTop.get(i).cards.size() == 0) {
                 stockPile = pilesTop.get(i);
+                stokX = stockPile.x;
             }
         }
 
@@ -187,19 +189,16 @@ public class Pile implements Comparable {
         } else {
 
             if(pilesTop.size() > fAmount){
-                int biggetsLength = 0;
+
+                int smallestLength = Integer.MAX_VALUE;;
                 for (Pile pile : pilesTop) {
-                    int lenth = 0;
 
+                    int lenth = Math.abs(pile.x - stokX);
 
-                    for (Pile pile2 : pilesTop) {
-                        if (pile == pile2)
-                            continue;
-                        lenth = lenth + Math.abs(pile.x - pile2.x);
-                    }
-
-                    if (lenth > biggetsLength)
+                    if (lenth < smallestLength) {
+                        smallestLength = lenth;
                         wastePile = pile;
+                    }
                 }
                 waste.add(intToCard(wastePile.largestCard()));
             }

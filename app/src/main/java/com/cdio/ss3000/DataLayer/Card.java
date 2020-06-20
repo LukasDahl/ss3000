@@ -12,6 +12,7 @@ public class Card implements Comparable{
     private ArrayList<ArrayList<Card>> moves = new ArrayList<>();
     private int points = 0;
 
+    //TODO: Rework isRed
     private boolean isPlacedInFoundation, isRed, isWaste;
 
     public Card(int value, Suit suit, boolean movable) {
@@ -145,6 +146,7 @@ public class Card implements Comparable{
 
         if (getSuit() == Suit.STOCK){
             str = "Turn card from stock";
+            str += " for " + points + " points.";
             return str;
         }
 
@@ -183,14 +185,16 @@ public class Card implements Comparable{
 
         if (getMoves().isEmpty()){
             str += "Foundation";
+            str += " for " + points + " points.";
             return str;
         }
 
-        Card destination = getMoves().get(0).get(getMoves().get(0).size() - 1);
+        Card destination = getMoves().get(getMoves().size() - 1).get(getMoves().get(getMoves().size() - 1   ).size() - 1);
 
         if (getValue() == 13){
             if (!(destination.getValue() == 12) || !(destination.getSuit() == getSuit())){
                  str += "Left-most empty spot";
+                 str += " for " + points + " points.";
                  return str;
             }
         }
@@ -227,7 +231,7 @@ public class Card implements Comparable{
                 str += "spades";
                 break;
         }
-
+        str += " for " + points + " points.";
         return str;
     }
 
