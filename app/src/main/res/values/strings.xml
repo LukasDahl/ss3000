@@ -10,8 +10,8 @@
     <string name="won">Congratulations!\n You solved the Solitaire!</string>
     <string name="lost">Unfortunately you didn\'t solve the Solitaire!</string>
     <string name="help">How to Play</string>
-    <string name="scorePlacefiller">Score \nTime: \nMoves: </string>
-    <string name="placefiller">1234\n420 seconds\n20</string>
+    <string name="scorePlacefiller">Moves: </string>
+    <string name="placefiller">125</string>
     <string name="howtoplay">To play solitaire, try to get all of the cards into 4 foundation piles, 1 pile per suit, in ascending order from ace to king. Once you finish all 4 foundation piles, you win!
         \nTo set up the game, first place 1 card face up and 6 cards face down to the right. Repeat until every column has a face-up card at the bottom. Your final set up should look like this.
     </string>

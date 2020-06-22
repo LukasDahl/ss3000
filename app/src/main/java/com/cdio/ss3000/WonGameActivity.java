@@ -2,7 +2,9 @@ package com.cdio.ss3000;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.CycleInterpolator;
@@ -10,11 +12,20 @@ import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class WonGameActivity extends AppCompatActivity implements View.OnClickListener {
     EditText enterName;
+    TextView finalScore;
     Button save, mainMenu, newGame;
+    SharedPreferences prefName, prefScore;
+
+    String currentName;
+    int currentScore;
+
+    String[] hsNameList = new String[10];
+    int[] hsScoreList = new int[10];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +35,8 @@ public class WonGameActivity extends AppCompatActivity implements View.OnClickLi
         enterName = findViewById(R.id.enterNameET);
         enterName.setHint("Your Name:");
 
+        finalScore = findViewById(R.id.finalScore);
+
         save = findViewById(R.id.saveBtn);
         save.setOnClickListener(this);
 
@@ -32,6 +45,17 @@ public class WonGameActivity extends AppCompatActivity implements View.OnClickLi
 
         newGame = findViewById(R.id.newGameBtn);
         newGame.setOnClickListener(this);
+
+        prefName = getSharedPreferences("highscoreName", Context.MODE_PRIVATE);
+        prefScore = getSharedPreferences("highscoreScore", Context.MODE_PRIVATE);
+
+        for (int i = 0; i < 10; i++){
+            hsNameList[i] = prefName.getString(""+i, "N/A");
+            hsScoreList[i] = prefScore.getInt(""+i, 0);
+        }
+
+        SharedPreferences.Editor nameEditor = prefName.edit();
+        SharedPreferences.Editor scoreEditor = prefScore.edit();
 
     }
 
@@ -48,6 +72,9 @@ public class WonGameActivity extends AppCompatActivity implements View.OnClickLi
               //Gem data her
 
                 save.setEnabled(false);
+
+                currentName = enterName.getText().toString();
+                currentScore = Integer.parseInt(finalScore.getText().toString());
 
                 //gemmer keyboardet når gem knap trykkes
                 enterName.onEditorAction(EditorInfo.IME_ACTION_DONE);

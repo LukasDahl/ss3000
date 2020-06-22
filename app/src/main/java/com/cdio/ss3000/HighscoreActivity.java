@@ -11,10 +11,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
 public class HighscoreActivity extends AppCompatActivity {
 
   String[] hsNameList = new String[10];
   int[] hsScoreList = new int[10];
+  ArrayList<Highscore> scores;
+  private SharedPreferences sharedPreferences;
+  Gson gson;
+
 
   SharedPreferences prefName, prefScore;
 
@@ -24,37 +35,16 @@ public class HighscoreActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_highscore);
-
+    gson = new Gson();
     recyclerView = findViewById(R.id.recyclerView);
-
+    sharedPreferences = getSharedPreferences("scores", MODE_PRIVATE);
     prefName = getSharedPreferences("highscoreName", Context.MODE_PRIVATE);
     prefScore = getSharedPreferences("highscoreScore", Context.MODE_PRIVATE);
 
-    for (int i = 0; i < 10; i++){
-      hsNameList[i] = prefName.getString(""+i, "Null");
-      hsScoreList[i] = prefScore.getInt(""+i, 0);
-    }
-
-    SharedPreferences.Editor nameEditor = prefName.edit();
-    SharedPreferences.Editor scoreEditor = prefScore.edit();
-
-    nameEditor.putString("1", "Egon Olsen");
-    nameEditor.putString("2", "Benny");
-    nameEditor.putString("3", "Kaj");
-    nameEditor.putString("4", "Andrea");
-    nameEditor.commit();
-    scoreEditor.putInt("1", 2);
-    scoreEditor.putInt("2", 15);
-    scoreEditor.putInt("3", 500);
-    scoreEditor.putInt("4", 123);
-    scoreEditor.commit();
-
+    String json = sharedPreferences.getString("scores", "");
+    Type listOfScoresType = new TypeToken<ArrayList<Highscore>>(){}.getType();
+    scores = gson.fromJson(json, listOfScoresType);
     recyclerView.setAdapter(adapter);
-    System.out.println("" + hsNameList[0]);
-    System.out.println("" + hsNameList[1]);
-    System.out.println("" + hsNameList[2]);
-    System.out.println("" + hsNameList[3]);
-    System.out.println("" + hsNameList[4]);
   }
 
   RecyclerView.Adapter adapter = new RecyclerView.Adapter() {
@@ -72,13 +62,13 @@ public class HighscoreActivity extends AppCompatActivity {
       TextView hsScore = holder.itemView.findViewById(R.id.hsScore);
 
       hsNumber.setText("" + (position+1) + ".");
-      hsName.setText(" " + hsNameList[position]);
-      hsScore.setText(" " + hsScoreList[position]);
+      hsName.setText(" " + scores.get(position).getName());
+      hsScore.setText(" " + scores.get(position).getScore());
     }
 
     @Override
     public int getItemCount() {
-      return hsNameList.length;
+      return scores.size();
     }
   };
 }
