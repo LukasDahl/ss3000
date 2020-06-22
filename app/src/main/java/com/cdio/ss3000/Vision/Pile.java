@@ -209,6 +209,8 @@ public class Pile implements Comparable {
 
                 foundations[i2].add(intToCard(pile.largestCard()));
                 i2++;
+                if (i2 > fAmount)
+                    fAmount = i2;
             }
 
         }
@@ -219,8 +221,8 @@ public class Pile implements Comparable {
             try {
                 tableau[i].add(intToCard(pilesBottom.get(i).largestCard()));
                 tableau[i].add(intToCard(pilesBottom.get(i).smallestCard()));
-            } catch (IndexOutOfBoundsException e){
-                continue;
+            } catch (IndexOutOfBoundsException ignored){
+
             }
         }
 
