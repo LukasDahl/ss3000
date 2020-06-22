@@ -55,6 +55,8 @@ public class ComputerVision {
     // Bitmap to be analyzed
     Bitmap inputPic;
 
+    int tuning = -25;
+
     // Colors for boxes and text
     final static int TEXT_R = 138;
     final static int TEXT_G = 43;
@@ -86,6 +88,7 @@ public class ComputerVision {
 
     // Singleton
     private static ComputerVision instance = null;
+
     public static ComputerVision getInstance(Context context) {
         if (instance == null) {
             instance = new ComputerVision();
@@ -362,8 +365,7 @@ public class ComputerVision {
             String bestMoveString = bestMove.toMovesString();
             System.out.println("----------\nACTUAL MOVE\n----------");
             System.out.println(bestMoveString);
-            ((TextView)((CameraActivity)context).findViewById(R.id.move_text)).setText(bestMoveString);
-
+            ((TextView) ((CameraActivity) context).findViewById(R.id.move_text)).setText(bestMoveString);
 
 
         }
@@ -468,7 +470,7 @@ public class ComputerVision {
     // Process image to find bounding boxes of cards
     public Mat prepareBoard(Mat image) {
 
-        int tuning = -25, meanVal;
+        int meanVal;
 
         // Convert to grayscale
         Mat gray = new Mat();
@@ -482,19 +484,18 @@ public class ComputerVision {
         // Calculate a threshold and threshold the image
         while (true) {
             Imgproc.adaptiveThreshold(blur, threshold, 200, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 101, tuning);
-            if (true)
-                break;
             System.out.println("THRESHOLD: " + threshold.get(0, 0)[0] + " " + Core.mean(threshold));
             meanVal = (int) Core.mean(threshold).val[0];
-            if (meanVal < 30) {
-                tuning = tuning + 2;
-            } else if (meanVal > 50) {
-                tuning = tuning - 2;
+            if (meanVal < 25) {
+                tuning = tuning + 5;
+            } else if (meanVal > 40) {
+                tuning = tuning - 1;
             } else {
                 break;
             }
         }
-        //showMat(threshold);
+        showMat(threshold);
+
         return threshold;
     }
 
@@ -553,6 +554,7 @@ public class ComputerVision {
         //// SHOW ON SCREEN - FOR DEBUGGING
         Bitmap bm = Bitmap.createBitmap(img.cols(), img.rows(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(img, bm);
+        int x = 0;
 //        ImageView im = ((CameraActivity) context).findViewById(R.id.mats);
 //        im.setImageBitmap(bm);
 //        im.setVisibility(View.VISIBLE);

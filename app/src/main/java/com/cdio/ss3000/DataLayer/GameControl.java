@@ -101,32 +101,25 @@ public class GameControl {
         for (ArrayList<Card> cardList : state.tableau) {
             if (!cardList.isEmpty() && cardList.get(cardList.size() - 1).getSuit() != UNKNOWN) {
                 for (ArrayList<Card> otherCardListTableau : state.tableau) {
-                    if (!otherCardListTableau.isEmpty() && !otherCardListTableau.equals(cardList)) {
+                    if (!otherCardListTableau.equals(cardList)) {
                         for (int index = cardList.size() - 1; index >= 0 && cardList.get(index).getSuit() != UNKNOWN; index--) {
-                            if (moveToTableauPossible(cardList.get(index), otherCardListTableau.get(otherCardListTableau.size() - 1))) {
-                                //cardList.get(cardList.size()-1).addMove(otherCardListTableau.get(otherCardListTableau.size()-1));
-                                ArrayList<Card> newMove = new ArrayList<>();
-                                for (Card card : otherCardListTableau) {
-                                    try {
-                                        newMove.add((Card) card.clone());
-                                    } catch (CloneNotSupportedException e) {
-                                        e.printStackTrace();
+                            if (!otherCardListTableau.isEmpty()) {
+                                if (moveToTableauPossible(cardList.get(index), otherCardListTableau.get(otherCardListTableau.size() - 1))) {
+                                    //cardList.get(cardList.size()-1).addMove(otherCardListTableau.get(otherCardListTableau.size()-1));
+                                    ArrayList<Card> newMove = new ArrayList<>();
+                                    for (Card card : otherCardListTableau) {
+                                        try {
+                                            newMove.add((Card) card.clone());
+                                        } catch (CloneNotSupportedException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
+                                    cardList.get(index).addMove(newMove);
                                 }
-                                cardList.get(index).addMove(newMove);
-                            }
-
-                            if (moveToEmptySpaceTableauPossible(cardList.get(index))) {
+                            } else if (moveToEmptySpaceTableauPossible(cardList.get(index))) {
                                 // cardList.get(cardList.size()-1).addMove(emptyStackTableau);
                                 ArrayList<Card> newMove = new ArrayList<>();
-                                for (Card card : otherCardListTableau) {
-                                    try {
-                                        newMove.add((Card) card.clone());
-                                    } catch (CloneNotSupportedException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                cardList.get(cardList.size() - 1).addMove(newMove);
+                                cardList.get(index).addMove(newMove);
                             }
 
 
