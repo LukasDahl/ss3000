@@ -115,6 +115,21 @@ public class GameControl {
                                 }
                                 cardList.get(index).addMove(newMove);
                             }
+
+                            if (moveToEmptySpaceTableauPossible(cardList.get(index))) {
+                                // cardList.get(cardList.size()-1).addMove(emptyStackTableau);
+                                ArrayList<Card> newMove = new ArrayList<>();
+                                for (Card card : otherCardListTableau) {
+                                    try {
+                                        newMove.add((Card) card.clone());
+                                    } catch (CloneNotSupportedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                cardList.get(cardList.size() - 1).addMove(newMove);
+                            }
+
+
                         }
                     }
                 }
@@ -141,24 +156,6 @@ public class GameControl {
                             cardList.get(cardList.size() - 1).addMove(newMove);
                         }
                     }
-                }
-
-                for (ArrayList<Card> otherCardlistTableau : state.tableau) {
-                    if (otherCardlistTableau.isEmpty()) {
-                        if (moveToEmptySpaceTableauPossible(cardList.get(cardList.size() - 1))) {
-                            // cardList.get(cardList.size()-1).addMove(emptyStackTableau);
-                            ArrayList<Card> newMove = new ArrayList<>();
-                            for (Card card : otherCardlistTableau) {
-                                try {
-                                    newMove.add((Card) card.clone());
-                                } catch (CloneNotSupportedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            cardList.get(cardList.size() - 1).addMove(newMove);
-                        }
-                    }
-
                 }
 
                 for (ArrayList<Card> cardListFoundations : state.foundations) {
@@ -366,12 +363,6 @@ public class GameControl {
         }
     }
 
-/*
-    public void suggestMove(){
-        ArrayList<Card> bestMoveCards;
-        for()
-    }
-*/
 
     public void updateState(State newState) {
         System.out.println(newState);
