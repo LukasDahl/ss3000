@@ -11,8 +11,8 @@ public class StateTracker {
     private State board;
     private ArrayList<Card>[] foundation;
     private ArrayList<Card>[] tableau;
-    private ArrayList<Card> deck;
-    private ArrayList<Card> discard;
+    private ArrayList<Card> stock;
+    private ArrayList<Card> waste;
 
     public StateTracker() {
         initState();
@@ -20,18 +20,18 @@ public class StateTracker {
 
     private void initState() {
         resetBoard();
-        board = new State(foundation, tableau, deck, discard);
+        board = new State(foundation, tableau, stock, waste);
     }
 
     private void resetBoard() {
         //Init required fields
         foundation = new ArrayList[4];
         tableau = new ArrayList[7];
-        discard = new ArrayList<>();
+        waste = new ArrayList<>();
         //Create the deck of cards
-        deck = new ArrayList<>();
+        stock = new ArrayList<>();
         for (int i = 0; i < 52; i++) {
-            deck.add(new Card());
+            stock.add(new Card());
         }
 
         //Fill the board with cards
@@ -39,8 +39,8 @@ public class StateTracker {
         for (int i = 0; i < 7; i++) {
             ArrayList<Card> temp_list = new ArrayList<>();
             for (int j = 0; j < k; j++) {
-                temp_list.add(deck.get(0));
-                deck.remove(0);
+                temp_list.add(stock.get(0));
+                stock.remove(0);
             }
             tableau[i] = temp_list;
             //System.out.println("Deck contains: " + deck.size() + " cards"); //Debugging info only
@@ -98,8 +98,8 @@ public class StateTracker {
                 }
             }
 
-            if (!discard.isEmpty() && discard.get(discard.size() - 1).compareTo(lastMove) == 0){
-                tableau[x].add(discard.remove(discard.size() - 1));
+            if (!waste.isEmpty() && waste.get(waste.size() - 1).compareTo(lastMove) == 0){
+                tableau[x].add(waste.remove(waste.size() - 1));
                 return;
             }
 
@@ -133,37 +133,35 @@ public class StateTracker {
         }
         // Flip stock card
         if (lastMove.getSuit() == Suit.STOCK) {
-            if (deck.isEmpty() && discard.isEmpty())
+            if (stock.isEmpty() && waste.isEmpty())
                 return;
 
-            if (deck.isEmpty()) {
+            if (stock.isEmpty()) {
                 while (true) {
                     try {
-                        deck.add(discard.remove(discard.size() - 1));
+                        stock.add(waste.remove(waste.size() - 1));
                     } catch (IndexOutOfBoundsException e) {
                         break;
                     }
                 }
-                discard.add(deck.remove(deck.size() - 1));
-                return;
             }
 
-            discard.add(deck.remove(deck.size() - 1));
+            waste.add(stock.remove(stock.size() - 1));
 
-            if (discard.get(discard.size() - 1).getSuit() == Suit.UNKNOWN) {
+            if (waste.get(waste.size() - 1).getSuit() == Suit.UNKNOWN) {
                 Card newWasteCard = inputState.waste.get(0);
-                discard.get(discard.size() - 1).setSuit(newWasteCard.getSuit());
-                discard.get(discard.size() - 1).setValue(newWasteCard.getValue());
+                waste.get(waste.size() - 1).setSuit(newWasteCard.getSuit());
+                waste.get(waste.size() - 1).setValue(newWasteCard.getValue());
             }
-
+            System.out.println("Stock: " + stock.size());
             return;
         }
 
         // Ace to foundation from waste
-        if (!discard.isEmpty()) {
-            if (lastMove.getMoves().isEmpty() && lastMove.compareTo(discard.get(discard.size() - 1)) == 0) {
+        if (!waste.isEmpty()) {
+            if (lastMove.getMoves().isEmpty() && lastMove.compareTo(waste.get(waste.size() - 1)) == 0) {
                 System.arraycopy(inputState.foundations, 0, foundation, 0, 4);
-                discard.remove(discard.size() - 1);
+                waste.remove(waste.size() - 1);
                 return;
             }
         }
@@ -192,17 +190,16 @@ public class StateTracker {
         }
 
         // Waste card to foundation
-        if (!discard.isEmpty()) {
-            if (lastMove.compareTo(discard.get(discard.size() - 1)) == 0 &&
+        if (!waste.isEmpty()) {
+            if (lastMove.compareTo(waste.get(waste.size() - 1)) == 0 &&
                     lastMove.getMoves().get(0).get(0).getSuit() == lastMove.getSuit()) {
                 System.arraycopy(inputState.foundations, 0, foundation, 0, 4);
-                discard.remove(discard.size() - 1);
-                board.waste = discard;
+                waste.remove(waste.size() - 1);
                 return;
             }
 
             // Waste card to card
-            if (lastMove.compareTo(discard.get(discard.size() - 1)) == 0 &&
+            if (lastMove.compareTo(waste.get(waste.size() - 1)) == 0 &&
                     lastMove.getMoves().get(0).get(0).isRed() != lastMove.isRed()) {
                 int x = 0;
                 outerloop:
@@ -214,7 +211,7 @@ public class StateTracker {
                         }
                     }
                 }
-                tableau[x].add(discard.remove(discard.size() - 1));
+                tableau[x].add(waste.remove(waste.size() - 1));
                 return;
             }
         }
@@ -305,7 +302,12 @@ public class StateTracker {
     }
 
     public State getBoard() {
-        return board;
+        try {
+            return (State)board.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private ArrayList<Card>[] getTempTableau(ArrayList<Card>[] inputTableau) {

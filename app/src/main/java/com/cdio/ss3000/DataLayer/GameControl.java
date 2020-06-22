@@ -365,13 +365,6 @@ public class GameControl {
 
     public Card run() {
 
-        try {
-            state = (State) state.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-
-
         System.out.println("In run()");
         System.out.println(state.toString());
 

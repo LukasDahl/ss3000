@@ -482,7 +482,7 @@ public class ComputerVision {
         Mat threshold = new Mat();
 
         // Calculate a threshold and threshold the image
-        while (true) {
+        for (int i = 0; i < 15; i++) {
             Imgproc.adaptiveThreshold(blur, threshold, 200, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 101, tuning);
             System.out.println("THRESHOLD: " + threshold.get(0, 0)[0] + " " + Core.mean(threshold));
             meanVal = (int) Core.mean(threshold).val[0];
