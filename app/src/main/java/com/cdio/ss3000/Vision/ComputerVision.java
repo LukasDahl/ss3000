@@ -51,7 +51,7 @@ public class ComputerVision {
 
     // Scaling the input
     double SCALE;
-    final static double SCALE_WIDTH = 32*36;
+    final static double SCALE_WIDTH = 32 * 40;
 
     // Bitmap to be analyzed
     Bitmap inputPic;
@@ -135,134 +135,141 @@ public class ComputerVision {
             Mat imgorig = new Mat();
             Utils.bitmapToMat(inputPic, imgorig);
 
-            // Scale the image for the network
-            SCALE = SCALE_WIDTH / imgorig.width();
-            Imgproc.resize(imgorig, imgorig, new Size(imgorig.width() * SCALE, imgorig.height() * SCALE));
 
-            // Convert the color for openCV as that wants BGR not RGB
-            Imgproc.cvtColor(imgorig, imgorig, Imgproc.COLOR_RGB2BGR);
-            Mat img;
-            Mat imgOriginal = imgorig.clone();
-            // Convert back to display on screen or in debugger
-            Imgproc.cvtColor(imgorig, imgorig, Imgproc.COLOR_BGR2RGB);
-
-            // Find bounding boxes of piles
-            detectPiles(prepareBoard(imgOriginal));
-
-            if (contours.size() == 0)
-                return;
-
-            List<Pile> piles = new ArrayList<>();
-            List<Pile> pilesTop = new ArrayList<>();
-            List<Pile> pilesBottom = new ArrayList<>();
-
-            Rect rect;
-            MatOfPoint contour;
-
-            // For each contour detected:
-            for (int index = 0; index < contours.size(); index++) {
-
-                contour = contours.get(index);
-                rect = Imgproc.boundingRect(contour);
+            for (int xx2 = 0; xx2 < 10; xx2++) {
+                double newScale = SCALE_WIDTH - (32*xx2);
+                double niceniceconf = 0.0;
 
 
-                // Don't show too small contours. There would be errors all over the picture.
-                if (Imgproc.contourArea(contour) < CARD_MIN_AREA)
-                    continue;
+
+                // Scale the image for the network
+                SCALE = newScale / imgorig.width();
+                Imgproc.resize(imgorig, imgorig, new Size(imgorig.width() * SCALE, imgorig.height() * SCALE));
+
+                // Convert the color for openCV as that wants BGR not RGB
+                Imgproc.cvtColor(imgorig, imgorig, Imgproc.COLOR_RGB2BGR);
+                Mat img;
+                Mat imgOriginal = imgorig.clone();
+                // Convert back to display on screen or in debugger
+                Imgproc.cvtColor(imgorig, imgorig, Imgproc.COLOR_BGR2RGB);
+
+                // Find bounding boxes of piles
+                detectPiles(prepareBoard(imgOriginal));
+
+                if (contours.size() == 0)
+                    return;
+
+                List<Pile> piles = new ArrayList<>();
+                List<Pile> pilesTop = new ArrayList<>();
+                List<Pile> pilesBottom = new ArrayList<>();
+
+                Rect rect;
+                MatOfPoint contour;
+
+                // For each contour detected:
+                for (int index = 0; index < contours.size(); index++) {
+
+                    contour = contours.get(index);
+                    rect = Imgproc.boundingRect(contour);
 
 
-                // --------- START DEBUG ---------
-                // Show a red rectangle around bad contours
-                if (contourIsCard.get(index) != 1) {
-                    System.out.println(rect.width);
-                    Imgproc.rectangle(
-                            imgorig,
-                            new Point(rect.x, rect.y),
-                            new Point(rect.x + rect.width, rect.y + rect.height),
-                            new Scalar(255, 0, 0));
-                    Imgproc.putText(
-                            imgorig,
-                            contourIsCard.get(index).toString(),
-                            new Point(rect.x + rect.width, rect.y),
-                            Core.FONT_HERSHEY_TRIPLEX,
-                            2,
-                            new Scalar(255, 0, 0)
-                    );
-                }
-                // Show a green rectangle around good contours
-                else {
-                    Imgproc.rectangle(
-                            imgorig,
-                            new Point(rect.x, rect.y),
-                            new Point(rect.x + rect.width, rect.y + rect.height),
-                            new Scalar(0, 255, 0));
-                }
+                    // Don't show too small contours. There would be errors all over the picture.
+                    if (Imgproc.contourArea(contour) < CARD_MIN_AREA)
+                        continue;
 
-                // ---------- END DEBUG ----------
 
-                // Skip detection if contour is not a card
-                if (contourIsCard.get(index) != 1 || rect.height < rect.width || Imgproc.contourArea(contour) < CARD_MIN_AREA)
-                    continue;
+                    // --------- START DEBUG ---------
+                    // Show a red rectangle around bad contours
+                    if (contourIsCard.get(index) != 1) {
+                        System.out.println(rect.width);
+                        Imgproc.rectangle(
+                                imgorig,
+                                new Point(rect.x, rect.y),
+                                new Point(rect.x + rect.width, rect.y + rect.height),
+                                new Scalar(255, 0, 0));
+                        Imgproc.putText(
+                                imgorig,
+                                contourIsCard.get(index).toString(),
+                                new Point(rect.x + rect.width, rect.y),
+                                Core.FONT_HERSHEY_TRIPLEX,
+                                2,
+                                new Scalar(255, 0, 0)
+                        );
+                    }
+                    // Show a green rectangle around good contours
+                    else {
+                        Imgproc.rectangle(
+                                imgorig,
+                                new Point(rect.x, rect.y),
+                                new Point(rect.x + rect.width, rect.y + rect.height),
+                                new Scalar(0, 255, 0));
+                    }
 
-                // Process pile to detect on it
-                img = convertToSquare(imgOriginal, rect);
+                    // ---------- END DEBUG ----------
 
-                Imgproc.cvtColor(img, img, Imgproc.COLOR_BGR2RGB);
+                    // Skip detection if contour is not a card
+                    if (contourIsCard.get(index) != 1 || rect.height < rect.width || Imgproc.contourArea(contour) < CARD_MIN_AREA)
+                        continue;
 
-                // Get blob from image
-                Mat blob = Dnn.blobFromImage(img,
-                        1.0 / 255.0,
-                        new Size(416, 416),
-                        new Scalar(0, 0, 0),
-                        false,
-                        false);
+                    // Process pile to detect on it
+                    img = convertToSquare(imgOriginal, rect);
 
-                // Run detection
-                net.setInput(blob);
-                List<Mat> outs = new ArrayList<>();
-                net.forward(outs);
+                    Imgproc.cvtColor(img, img, Imgproc.COLOR_BGR2RGB);
 
-                int cols = img.cols();
-                int rows = img.rows();
-                List<Rect> detectedRects = new ArrayList<>();
-                List<Integer> classIds = new ArrayList<>();
-                List<Double> confidences = new ArrayList<>();
-                //System.out.println("BLOBS: " + outs.size());
+                    // Get blob from image
+                    Mat blob = Dnn.blobFromImage(img,
+                            1.0 / 255.0,
+                            new Size(416, 416),
+                            new Scalar(0, 0, 0),
+                            false,
+                            false);
 
-                // Loop through submats
-                for (Mat out : outs) {
+                    // Run detection
+                    net.setInput(blob);
+                    List<Mat> outs = new ArrayList<>();
+                    net.forward(outs);
 
-                    //System.out.println("DETECTIONS: " + out.rows());
-                    // Loop through rows of submat (detections)
-                    for (int i = 0; i < out.rows(); i++) {
-                        Mat row = out.row(i);
+                    int cols = img.cols();
+                    int rows = img.rows();
+                    List<Rect> detectedRects = new ArrayList<>();
+                    List<Integer> classIds = new ArrayList<>();
+                    List<Double> confidences = new ArrayList<>();
+                    //System.out.println("BLOBS: " + outs.size());
 
-                        // Find most confident item
-                        Mat scores = row.colRange(5, out.cols());
-                        Core.MinMaxLocResult mm = Core.minMaxLoc(scores);
-                        double confidence = mm.maxVal;
-                        Point classIdPoint = mm.maxLoc;
+                    // Loop through submats
+                    for (Mat out : outs) {
 
-                        // Thresholding confidence
-                        if (confidence > CONFIDENCE) {
+                        //System.out.println("DETECTIONS: " + out.rows());
+                        // Loop through rows of submat (detections)
+                        for (int i = 0; i < out.rows(); i++) {
+                            Mat row = out.row(i);
 
-                            // Find location of detection
-                            int centerX = (int) (row.get(0, 0)[0] * cols);
-                            int centerY = (int) (row.get(0, 1)[0] * rows);
-                            int width = (int) (row.get(0, 2)[0] * cols);
-                            int height = (int) (row.get(0, 3)[0] * rows);
-                            int left = centerX - (width / 2);
-                            int top = centerY - (height / 2);
-                            int right = left + width;
-                            int bottom = top + height;
+                            // Find most confident item
+                            Mat scores = row.colRange(5, out.cols());
+                            Core.MinMaxLocResult mm = Core.minMaxLoc(scores);
+                            double confidence = mm.maxVal;
+                            Point classIdPoint = mm.maxLoc;
 
-                            Rect detectionRect = new Rect(left, top, width, height);
-                            detectedRects.add(detectionRect);
-                            classIds.add((int) classIdPoint.x);
-                            confidences.add(confidence);
-                            System.out.println(classNames[(int)classIdPoint.x] + " " + confidence);
+                            // Thresholding confidence
+                            if (confidence > CONFIDENCE) {
 
-                            // Draw rectangle on sub-image for debugging
+                                // Find location of detection
+                                int centerX = (int) (row.get(0, 0)[0] * cols);
+                                int centerY = (int) (row.get(0, 1)[0] * rows);
+                                int width = (int) (row.get(0, 2)[0] * cols);
+                                int height = (int) (row.get(0, 3)[0] * rows);
+                                int left = centerX - (width / 2);
+                                int top = centerY - (height / 2);
+                                int right = left + width;
+                                int bottom = top + height;
+
+                                Rect detectionRect = new Rect(left, top, width, height);
+                                detectedRects.add(detectionRect);
+                                classIds.add((int) classIdPoint.x);
+                                confidences.add(confidence);
+                                System.out.println(classNames[(int) classIdPoint.x] + " " + confidence);
+
+                                // Draw rectangle on sub-image for debugging
 //                            Imgproc.rectangle(
 //                                    img,
 //                                    new Point(left, top),
@@ -270,23 +277,23 @@ public class ComputerVision {
 //                                    new Scalar(TEXT_R, TEXT_G, TEXT_B)
 //                            );
 
-                            // Draw rectangle on original image
-                            int origX1 = (int) ((double) (left - l)) + rect.x;
-                            int origX2 = (int) ((double) (right - l)) + rect.x;
-                            int origY1 = (int) ((double) (top - t)) + rect.y;
-                            int origY2 = (int) ((double) (bottom - t)) + rect.y;
+                                // Draw rectangle on original image
+                                int origX1 = (int) ((double) (left - l)) + rect.x;
+                                int origX2 = (int) ((double) (right - l)) + rect.x;
+                                int origY1 = (int) ((double) (top - t)) + rect.y;
+                                int origY2 = (int) ((double) (bottom - t)) + rect.y;
 
-                            Imgproc.rectangle(
-                                    imgorig,
-                                    new Point(origX1, origY1),
-                                    new Point(origX2, origY2),
-                                    new Scalar(TEXT_R, TEXT_G, TEXT_B)
-                            );
+                                Imgproc.rectangle(
+                                        imgorig,
+                                        new Point(origX1, origY1),
+                                        new Point(origX2, origY2),
+                                        new Scalar(TEXT_R, TEXT_G, TEXT_B)
+                                );
 
-                            String conf = (confidence + "").substring(0, 5);
-                            String label = classNames[(int) classIdPoint.x] + " " + conf;
+                                String conf = (confidence + "").substring(0, 5);
+                                String label = classNames[(int) classIdPoint.x] + " " + conf;
 
-                            // Draw text on sub-image for debugging
+                                // Draw text on sub-image for debugging
 //                            Imgproc.putText(
 //                                    img,
 //                                    label,
@@ -297,91 +304,100 @@ public class ComputerVision {
 //
 //                            );
 
-                            // Draw text on original image
-                            Imgproc.putText(
-                                    imgorig,
-                                    label,
-                                    new Point(origX2, origY2),
-                                    Core.FONT_HERSHEY_TRIPLEX,
-                                    0.5,
-                                    new Scalar(TEXT_R, TEXT_G, TEXT_B)
+                                // Draw text on original image
+                                Imgproc.putText(
+                                        imgorig,
+                                        label,
+                                        new Point(origX2, origY2),
+                                        Core.FONT_HERSHEY_TRIPLEX,
+                                        0.5,
+                                        new Scalar(TEXT_R, TEXT_G, TEXT_B)
 
-                            );
+                                );
 
+                            }
                         }
                     }
-                }
 
-                // Remove detections that are too close to each other
-                // Prefers the most confident
-                for (int i = 0; i < detectedRects.size(); i++) {
-                    Rect r = detectedRects.get(i);
-                    for (int j = 0; j < detectedRects.size(); j++) {
-                        Rect r2 = detectedRects.get(j);
-                        if (r == r2) {
-                            continue;
-                        }
+                    // Remove detections that are too close to each other
+                    // Prefers the most confident
+                    for (int i = 0; i < detectedRects.size(); i++) {
+                        Rect r = detectedRects.get(i);
+                        for (int j = 0; j < detectedRects.size(); j++) {
+                            Rect r2 = detectedRects.get(j);
+                            if (r == r2) {
+                                continue;
+                            }
 
-                        int distX = Math.abs(r.x - r2.x);
-                        int distY = Math.abs(r.y - r2.y);
-                        if (MIN_DISTANCE > distX && MIN_DISTANCE > distY) {
-                            if (confidences.get(i) > confidences.get(j)) {
-                                classIds.set(j, null);
-                            } else classIds.set(i, null);
+                            int distX = Math.abs(r.x - r2.x);
+                            int distY = Math.abs(r.y - r2.y);
+                            if (MIN_DISTANCE > distX && MIN_DISTANCE > distY) {
+                                if (confidences.get(i) > confidences.get(j)) {
+                                    classIds.set(j, null);
+                                } else classIds.set(i, null);
+                            }
                         }
                     }
-                }
-                for (int i = 0; i < detectedRects.size(); i++) {
-                    if (classIds.get(i) == null) {
-                        classIds.remove(i);
-                        confidences.remove(i);
-                        detectedRects.remove(i);
-                        i--;
+                    for (int i = 0; i < detectedRects.size(); i++) {
+                        if (classIds.get(i) == null) {
+                            classIds.remove(i);
+                            confidences.remove(i);
+                            detectedRects.remove(i);
+                            i--;
+                        }
                     }
+
+
+                    //System.out.println("CLASSIDS: " + classIds);
+
+                    // Add newly found cards to a pile
+                    piles.add(new Pile(rect.x, rect.y, classIds));
+
+                    // For debugging
+                    //showMat(img);
+
+                    for(double conf: confidences) {
+                        niceniceconf = niceniceconf + conf;
+                    }
+
                 }
-
-
-                //System.out.println("CLASSIDS: " + classIds);
-
-                // Add newly found cards to a pile
-                piles.add(new Pile(rect.x, rect.y, classIds));
 
                 // For debugging
-                //showMat(img);
+                //showMat(imgorig);
+
+
+                System.out.println(niceniceconf + " " + newScale);
+
+
+
+                // Find top and bottom piles
+                Pile.splitPiles(piles, pilesTop, pilesBottom);
+
+                // Sort the piles by x coordinate
+                Collections.sort(pilesBottom);
+                Collections.sort(pilesTop);
+
+                // Convert piles to state object
+                Status status = gc.updateState(Pile.pileListToState(pilesTop, pilesBottom));
+                if (status != Status.INPROGRESS) {
+                    if (status == Status.INVALID) {
+                        ((TextView) ((CameraActivity) context).findViewById(R.id.move_text)).setText("Wrong move or bad picture. Try again.");
+                        return;
+                    } else {
+                        ((TextView) ((CameraActivity) context).findViewById(R.id.move_text)).setText("GAME OVER");
+                        ((CameraActivity) context).gameOver(status == Status.WON, moves);
+                        return;
+                    }
+                }
+                Card bestMove = gc.run();
+                String bestMoveString = bestMove.toMovesString();
+                System.out.println("----------\nACTUAL MOVE\n----------");
+                System.out.println(bestMoveString);
+                ((TextView) ((CameraActivity) context).findViewById(R.id.move_text)).setText(bestMoveString);
+                moves++;
+
 
             }
-
-            // For debugging
-            //showMat(imgorig);
-
-            // Find top and bottom piles
-            Pile.splitPiles(piles, pilesTop, pilesBottom);
-
-            // Sort the piles by x coordinate
-            Collections.sort(pilesBottom);
-            Collections.sort(pilesTop);
-
-            // Convert piles to state object
-            Status status = gc.updateState(Pile.pileListToState(pilesTop, pilesBottom));
-            if (status != Status.INPROGRESS){
-                if (status == Status.INVALID) {
-                    ((TextView) ((CameraActivity) context).findViewById(R.id.move_text)).setText("Wrong move or bad picture. Try again.");
-                    return;
-                }
-                else{
-                    ((TextView) ((CameraActivity) context).findViewById(R.id.move_text)).setText("GAME OVER");
-                    ((CameraActivity) context).gameOver(status == Status.WON, moves);
-                    return;
-                }
-            }
-            Card bestMove = gc.run();
-            String bestMoveString = bestMove.toMovesString();
-            System.out.println("----------\nACTUAL MOVE\n----------");
-            System.out.println(bestMoveString);
-            ((TextView) ((CameraActivity) context).findViewById(R.id.move_text)).setText(bestMoveString);
-            moves++;
-
-
         }
     };
 
