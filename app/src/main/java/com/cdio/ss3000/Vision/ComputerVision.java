@@ -51,7 +51,7 @@ public class ComputerVision {
 
     // Scaling the input
     double SCALE;
-    final static double SCALE_WIDTH = 1280;
+    final static double SCALE_WIDTH = 32*36;
 
     // Bitmap to be analyzed
     Bitmap inputPic;
@@ -260,7 +260,7 @@ public class ComputerVision {
                             detectedRects.add(detectionRect);
                             classIds.add((int) classIdPoint.x);
                             confidences.add(confidence);
-
+                            System.out.println(classNames[(int)classIdPoint.x] + " " + confidence);
 
                             // Draw rectangle on sub-image for debugging
 //                            Imgproc.rectangle(
@@ -364,9 +364,15 @@ public class ComputerVision {
             // Convert piles to state object
             Status status = gc.updateState(Pile.pileListToState(pilesTop, pilesBottom));
             if (status != Status.INPROGRESS){
-                ((TextView) ((CameraActivity) context).findViewById(R.id.move_text)).setText("GAME OVER");
-                ((CameraActivity) context).gameOver(status == Status.WON, moves);
-                return;
+                if (status == Status.INVALID) {
+                    ((TextView) ((CameraActivity) context).findViewById(R.id.move_text)).setText("Wrong move or bad picture. Try again.");
+                    return;
+                }
+                else{
+                    ((TextView) ((CameraActivity) context).findViewById(R.id.move_text)).setText("GAME OVER");
+                    ((CameraActivity) context).gameOver(status == Status.WON, moves);
+                    return;
+                }
             }
             Card bestMove = gc.run();
             String bestMoveString = bestMove.toMovesString();

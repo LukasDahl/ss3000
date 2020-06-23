@@ -359,7 +359,10 @@ public class GameControl {
 
     public Status updateState(State newState) {
         System.out.println(newState);
-        stateTracker.updateState(newState, lastMove);
+        boolean status = stateTracker.updateState(newState, lastMove);
+        if (!status){
+            return Status.INVALID;
+        }
         state = stateTracker.getBoard();
         return stateTracker.gameOver();
     }

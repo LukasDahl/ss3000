@@ -14,11 +14,11 @@ public class StateTracker {
     private ArrayList<Card> stock;
     private ArrayList<Card> waste;
 
-    public Status gameOver(){
+    public Status gameOver() {
         boolean won = true;
         boolean lost;
-        for (ArrayList<Card> foundationPile: foundation){
-            if (foundationPile.isEmpty() || foundationPile.get(foundationPile.size() - 1).getValue() != 13){
+        for (ArrayList<Card> foundationPile : foundation) {
+            if (foundationPile.isEmpty() || foundationPile.get(foundationPile.size() - 1).getValue() != 13) {
                 won = false;
             }
         }
@@ -26,10 +26,7 @@ public class StateTracker {
             return Status.WON;
 
 
-
         // TODO: CHECK FOR LOSS
-
-
 
 
         return Status.INPROGRESS;
@@ -72,8 +69,14 @@ public class StateTracker {
         }
     }
 
-    public void updateState(State inputState, Card lastMove) {
-        ArrayList<Card>[] tempTableau;
+    public boolean updateState(State inputState, Card lastMove) {
+        ArrayList<Card>[] tempTableau = new ArrayList[0];
+        State tempState = null;
+        try {
+            tempState = (State) board.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
 
         // Initial setup
         if (lastMove == null) {
@@ -93,10 +96,10 @@ public class StateTracker {
                     waste.add(card);
                     i++;
                 }
-                waste.get(waste.size()-1).setValue(0);
-                waste.get(waste.size()-1).setSuit(Suit.UNKNOWN);
-                stock.add(waste.remove(waste.size()-1));
-                return;
+                waste.get(waste.size() - 1).setValue(0);
+                waste.get(waste.size() - 1).setSuit(Suit.UNKNOWN);
+                stock.add(waste.remove(waste.size() - 1));
+                return true;
             }
             //First time run -> Cards are all unknown
             for (int i = 0; i < 7; i++) {
@@ -107,24 +110,54 @@ public class StateTracker {
                     //"Turns" the card so it is now face-up.
                     tableau[i].get(tableau[i].size() - 1).setSuit(smallest.getSuit());//Set suit
                     tableau[i].get(tableau[i].size() - 1).setValue(smallest.getValue());//Set value
+                } else {
+                    board = tempState;
+                    tableau = board.tableau;
+                    foundation = board.foundations;
+                    stock = board.stock;
+                    waste = board.waste;
+                    return false;
+
                 }
             }
-            return;
+            return true;
         }
 
 
         // King cases
         if (lastMove.getValue() == 13) {
             Card destination = lastMove.getMoves().get(0).get(lastMove.getMoves().get(0).size() - 1);
-            if (destination.getSuit() == lastMove.getSuit() && destination.getValue() == 12) {
-                for (int i = 0; i < foundation.length; i++) {
-                    if (!foundation[i].isEmpty()) {
-                        if (destination.compareTo(foundation[i].get(foundation[i].size() - 1)) == 0) {
 
-                            //TODO KING TO FOUNDATION
-                            return;
+
+            if (destination.getSuit() == lastMove.getSuit() && destination.getValue() == lastMove.getValue() - 1) {
+                System.arraycopy(inputState.foundations, 0, foundation, 0, 4);
+                for (int i = 0; i < 7; i++) {
+                    ArrayList<Card> tableauColumn = tableau[i];
+
+                    if (!tableauColumn.isEmpty()) {
+                        if (lastMove.compareTo(tableauColumn.get(tableauColumn.size() - 1)) == 0) {
+                            tableauColumn.remove(tableauColumn.size() - 1);
+                            tempTableau = getTempTableau(inputState.tableau);
+                            inputState.tableau = tempTableau;
+                            if (!tableauColumn.isEmpty()) {
+                                if (tableau[i].get(tableau[i].size() - 1).getSuit() == Suit.UNKNOWN) {
+                                    tableauColumn.get(tableauColumn.size() - 1).setValue(tempTableau[i].get(SMALLESTCARD).getValue());
+                                    tableauColumn.get(tableauColumn.size() - 1).setSuit(tempTableau[i].get(SMALLESTCARD).getSuit());
+                                }
+                            }
+                            break;
                         }
                     }
+                }
+                if (checkPlausability(inputState, tempState, board, lastMove))
+                    return true;
+                else {
+                    board = tempState;
+                    tableau = board.tableau;
+                    foundation = board.foundations;
+                    stock = board.stock;
+                    waste = board.waste;
+                    return false;
                 }
             }
 
@@ -139,7 +172,18 @@ public class StateTracker {
 
             if (!waste.isEmpty() && waste.get(waste.size() - 1).compareTo(lastMove) == 0) {
                 tableau[x].add(waste.remove(waste.size() - 1));
-                return;
+                tempTableau = getTempTableau(inputState.tableau);
+                inputState.tableau = tempTableau;
+                if (checkPlausability(inputState, tempState, board, lastMove))
+                    return true;
+                else {
+                    board = tempState;
+                    tableau = board.tableau;
+                    foundation = board.foundations;
+                    stock = board.stock;
+                    waste = board.waste;
+                    return false;
+                }
             }
 
 
@@ -154,10 +198,10 @@ public class StateTracker {
                                 break;
                             }
                         }
-
+                        tempTableau = getTempTableau(inputState.tableau);
+                        inputState.tableau = tempTableau;
                         if (!tableau[i].isEmpty()) {
                             if (tableau[i].get(tableau[i].size() - 1).getSuit() == Suit.UNKNOWN) {
-                                tempTableau = getTempTableau(inputState.tableau);
                                 tableau[i].get(tableau[i].size() - 1).setValue(tempTableau[i].get(SMALLESTCARD).getValue());
                                 tableau[i].get(tableau[i].size() - 1).setSuit(tempTableau[i].get(SMALLESTCARD).getSuit());
                             }
@@ -167,14 +211,34 @@ public class StateTracker {
 
                 }
             }
-            return;
+            if (checkPlausability(inputState, tempState, board, lastMove))
+                return true;
+            else {
+                board = tempState;
+                tableau = board.tableau;
+                foundation = board.foundations;
+                stock = board.stock;
+                waste = board.waste;
+                return false;
+            }
 
         }
         // Flip stock card
         if (lastMove.getSuit() == Suit.STOCK) {
-            if (stock.isEmpty() && waste.isEmpty())
-                return;
-
+            if (stock.isEmpty() && waste.isEmpty()) {
+                tempTableau = getTempTableau(inputState.tableau);
+                inputState.tableau = tempTableau;
+                if (checkPlausability(inputState, tempState, board, lastMove))
+                    return true;
+                else {
+                    board = tempState;
+                    tableau = board.tableau;
+                    foundation = board.foundations;
+                    stock = board.stock;
+                    waste = board.waste;
+                    return false;
+                }
+            }
             if (stock.isEmpty()) {
                 while (true) {
                     try {
@@ -193,7 +257,18 @@ public class StateTracker {
                 waste.get(waste.size() - 1).setValue(newWasteCard.getValue());
             }
             System.out.println("Stock: " + stock.size());
-            return;
+            tempTableau = getTempTableau(inputState.tableau);
+            inputState.tableau = tempTableau;
+            if (checkPlausability(inputState, tempState, board, lastMove))
+                return true;
+            else {
+                board = tempState;
+                tableau = board.tableau;
+                foundation = board.foundations;
+                stock = board.stock;
+                waste = board.waste;
+                return false;
+            }
         }
 
         // Ace to foundation from waste
@@ -201,7 +276,18 @@ public class StateTracker {
             if (lastMove.getMoves().isEmpty() && lastMove.compareTo(waste.get(waste.size() - 1)) == 0) {
                 System.arraycopy(inputState.foundations, 0, foundation, 0, 4);
                 waste.remove(waste.size() - 1);
-                return;
+                tempTableau = getTempTableau(inputState.tableau);
+                inputState.tableau = tempTableau;
+                if (checkPlausability(inputState, tempState, board, lastMove))
+                    return true;
+                else {
+                    board = tempState;
+                    tableau = board.tableau;
+                    foundation = board.foundations;
+                    stock = board.stock;
+                    waste = board.waste;
+                    return false;
+                }
             }
         }
 
@@ -214,9 +300,10 @@ public class StateTracker {
                 if (!tableauColumn.isEmpty()) {
                     if (lastMove.compareTo(tableauColumn.get(tableauColumn.size() - 1)) == 0) {
                         tableauColumn.remove(tableauColumn.size() - 1);
+                        tempTableau = getTempTableau(inputState.tableau);
+                        inputState.tableau = tempTableau;
                         if (!tableauColumn.isEmpty()) {
                             if (tableau[i].get(tableau[i].size() - 1).getSuit() == Suit.UNKNOWN) {
-                                tempTableau = getTempTableau(inputState.tableau);
                                 tableauColumn.get(tableauColumn.size() - 1).setValue(tempTableau[i].get(SMALLESTCARD).getValue());
                                 tableauColumn.get(tableauColumn.size() - 1).setSuit(tempTableau[i].get(SMALLESTCARD).getSuit());
                             }
@@ -225,7 +312,16 @@ public class StateTracker {
                     }
                 }
             }
-            return;
+            if (checkPlausability(inputState, tempState, board, lastMove))
+                return true;
+            else {
+                board = tempState;
+                tableau = board.tableau;
+                foundation = board.foundations;
+                stock = board.stock;
+                waste = board.waste;
+                return false;
+            }
         }
 
         // Waste card to foundation
@@ -234,7 +330,16 @@ public class StateTracker {
                     lastMove.getMoves().get(0).get(0).getSuit() == lastMove.getSuit()) {
                 System.arraycopy(inputState.foundations, 0, foundation, 0, 4);
                 waste.remove(waste.size() - 1);
-                return;
+                if (checkPlausability(inputState, tempState, board, lastMove))
+                    return true;
+                else {
+                    board = tempState;
+                    tableau = board.tableau;
+                    foundation = board.foundations;
+                    stock = board.stock;
+                    waste = board.waste;
+                    return false;
+                }
             }
 
             // Waste card to card
@@ -251,7 +356,18 @@ public class StateTracker {
                     }
                 }
                 tableau[x].add(waste.remove(waste.size() - 1));
-                return;
+                tempTableau = getTempTableau(inputState.tableau);
+                inputState.tableau = tempTableau;
+                if (checkPlausability(inputState, tempState, board, lastMove))
+                    return true;
+                else {
+                    board = tempState;
+                    tableau = board.tableau;
+                    foundation = board.foundations;
+                    stock = board.stock;
+                    waste = board.waste;
+                    return false;
+                }
             }
         }
 
@@ -264,9 +380,10 @@ public class StateTracker {
                 if (!tableauColumn.isEmpty()) {
                     if (lastMove.compareTo(tableauColumn.get(tableauColumn.size() - 1)) == 0) {
                         tableauColumn.remove(tableauColumn.size() - 1);
+                        tempTableau = getTempTableau(inputState.tableau);
+                        inputState.tableau = tempTableau;
                         if (!tableauColumn.isEmpty()) {
                             if (tableau[i].get(tableau[i].size() - 1).getSuit() == Suit.UNKNOWN) {
-                                tempTableau = getTempTableau(inputState.tableau);
                                 tableauColumn.get(tableauColumn.size() - 1).setValue(tempTableau[i].get(SMALLESTCARD).getValue());
                                 tableauColumn.get(tableauColumn.size() - 1).setSuit(tempTableau[i].get(SMALLESTCARD).getSuit());
                             }
@@ -275,7 +392,16 @@ public class StateTracker {
                     }
                 }
             }
-            return;
+            if (checkPlausability(inputState, tempState, board, lastMove))
+                return true;
+            else {
+                board = tempState;
+                tableau = board.tableau;
+                foundation = board.foundations;
+                stock = board.stock;
+                waste = board.waste;
+                return false;
+            }
         }
 
 
@@ -305,10 +431,10 @@ public class StateTracker {
                                 break;
                             }
                         }
-
+                        tempTableau = getTempTableau(inputState.tableau);
+                        inputState.tableau = tempTableau;
                         if (!tableau[i].isEmpty()) {
                             if (tableau[i].get(tableau[i].size() - 1).getSuit() == Suit.UNKNOWN) {
-                                tempTableau = getTempTableau(inputState.tableau);
                                 tableau[i].get(tableau[i].size() - 1).setValue(tempTableau[i].get(SMALLESTCARD).getValue());
                                 tableau[i].get(tableau[i].size() - 1).setSuit(tempTableau[i].get(SMALLESTCARD).getSuit());
                             }
@@ -318,11 +444,81 @@ public class StateTracker {
 
                 }
             }
-            return;
+            if (checkPlausability(inputState, tempState, board, lastMove))
+                return true;
+            else {
+                board = tempState;
+                tableau = board.tableau;
+                foundation = board.foundations;
+                stock = board.stock;
+                waste = board.waste;
+                return false;
+            }
 
         }
 
+        if (checkPlausability(inputState, tempState, board, lastMove))
+            return true;
+        else {
+            board = tempState;
+            tableau = board.tableau;
+            foundation = board.foundations;
+            stock = board.stock;
+            waste = board.waste;
+            return false;
+        }
 
+    }
+
+    public boolean checkPlausability(State inputState, State initialState, State expectedState, Card lastMove) {
+        //RUN TRHOUGH TABLEAU
+        outerloop:
+        for (int i = 0; i < 7; i++) {
+
+            for (Card card : initialState.tableau[i]) {
+                if (card.compareTo(lastMove) == 0) {
+                    continue outerloop;
+                }
+            }
+
+
+            for (Card card : expectedState.tableau[i]) {
+                if (card.getSuit() != Suit.UNKNOWN) {
+                    // card = LARGEST CARD WE CAN SEE
+                    // smallestCard = SMALLEST CARD WE CAN SEE
+                    Card smallestCard = expectedState.tableau[i].get(expectedState.tableau[i].size() - 1);
+
+                    if (smallestCard.compareTo(inputState.tableau[i].get(SMALLESTCARD)) != 0)
+                        return false;
+                    if (card.compareTo(inputState.tableau[i].get(LARGESTCARD)) != 0)
+                        return false;
+
+                    continue outerloop;
+                }
+            }
+
+        }
+
+        if (!initialState.waste.isEmpty() && initialState.waste.get(initialState.waste.size() - 1).compareTo(lastMove) == 0) {
+            if (!expectedState.waste.isEmpty()) {
+                if (inputState.waste.isEmpty()) {
+                    return false;
+                }
+                if (expectedState.waste.get(expectedState.waste.size() - 1).compareTo(inputState.waste.get(0)) != 0) {
+                    return false;
+                }
+            }
+        }
+
+        if (lastMove.getSuit() == Suit.STOCK) {
+            if (!initialState.waste.isEmpty()) {
+                if (initialState.waste.get(initialState.waste.size() - 1).compareTo(inputState.waste.get(0)) == 0) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     public void showTopCard() {
