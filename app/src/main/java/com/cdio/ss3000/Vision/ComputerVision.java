@@ -51,7 +51,7 @@ public class ComputerVision {
 
     // Scaling the input
     double SCALE;
-    final static double SCALE_WIDTH = 32 * 40;
+    final static double SCALE_WIDTH = 1080;
 
     // Bitmap to be analyzed
     Bitmap inputPic;
@@ -69,6 +69,7 @@ public class ComputerVision {
     double CONFIDENCE = 0.2;
 
     int BOXSIZE = 430;
+    double BOXSCALE = 3.2;
 
     int MIN_DISTANCE = 15;
 
@@ -134,17 +135,17 @@ public class ComputerVision {
             // Get image and make it a Mat
             Mat imgorig = new Mat();
             Utils.bitmapToMat(inputPic, imgorig);
+            Mat imgorig2 = imgorig.clone();
 
-
-            for (int xx2 = 0; xx2 < 10; xx2++) {
-                double newScale = SCALE_WIDTH - (32*xx2);
+            for (int xx2 = 0; xx2 < 100; xx2++) {
+                double newScale = SCALE_WIDTH;
                 double niceniceconf = 0.0;
-
+                BOXSCALE += 0.01;
 
 
                 // Scale the image for the network
                 SCALE = newScale / imgorig.width();
-                Imgproc.resize(imgorig, imgorig, new Size(imgorig.width() * SCALE, imgorig.height() * SCALE));
+                Imgproc.resize(imgorig2, imgorig, new Size(imgorig.width() * SCALE, imgorig.height() * SCALE));
 
                 // Convert the color for openCV as that wants BGR not RGB
                 Imgproc.cvtColor(imgorig, imgorig, Imgproc.COLOR_RGB2BGR);
@@ -366,7 +367,7 @@ public class ComputerVision {
                 //showMat(imgorig);
 
 
-                System.out.println(niceniceconf + " " + newScale);
+                System.out.println("NICE " + niceniceconf + " " + BOXSCALE);
 
 
 
@@ -382,7 +383,7 @@ public class ComputerVision {
                 if (status != Status.INPROGRESS) {
                     if (status == Status.INVALID) {
                         ((TextView) ((CameraActivity) context).findViewById(R.id.move_text)).setText("Wrong move or bad picture. Try again.");
-                        return;
+                        //return;
                     } else {
                         ((TextView) ((CameraActivity) context).findViewById(R.id.move_text)).setText("GAME OVER");
                         ((CameraActivity) context).gameOver(status == Status.WON, moves);
@@ -404,6 +405,7 @@ public class ComputerVision {
     // Converts a pile to a square image so detections can be made in it
     private Mat convertToSquare(Mat imgOriginal, Rect rect) {
 
+        BOXSIZE = (int)((double)BOXSCALE*rect.width);
         // Crop and resize
         Mat img = imgOriginal.submat(rect);
         img = img.clone();
