@@ -65,7 +65,6 @@ public class StateTracker {
                     //"Turns" the card so it is now face-up.
                     tableau[i].get(tableau[i].size() - 1).setSuit(smallest.getSuit());//Set suit
                     tableau[i].get(tableau[i].size() - 1).setValue(smallest.getValue());//Set value
-                    tableau[i].get(tableau[i].size() - 1).setMovable(true);//Set movable
                 }
             }
             return;

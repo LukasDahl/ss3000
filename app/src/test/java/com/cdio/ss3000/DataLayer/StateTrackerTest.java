@@ -41,8 +41,6 @@ public class StateTrackerTest {
         stateTracker.updateState(newState,null);//Update the state
 
         ArrayList<Card> cardList2 = new ArrayList<>();//Create second cardlist to be added on top of previous cards
-        //Set previous top card to no longer be movable
-        card.setMovable(false);
         //Add card to inputState to simulate being the face-up card furthest "back"
         cardList2.add(card);
         //Add new card to be the next front face-up card

@@ -17,7 +17,7 @@ public class GameControl {
     private Piles piles;
     private StateTracker stateTracker;
     private Card lastMove = null;
-    private Card stockCard = new Card(1, STOCK, true);
+    private Card stockCard = new Card(1, STOCK);
     private final int TURN_CARD_POINTS = 2;
     //  private Card emptyStackTableau = new Card(-1, UNKNOWN, false);
     // private Card emptyStackFoundation = new Card(-2, UNKNOWN, false);
