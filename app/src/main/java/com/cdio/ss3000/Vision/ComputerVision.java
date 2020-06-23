@@ -51,7 +51,7 @@ public class ComputerVision {
 
     // Scaling the input
     double SCALE;
-    final static double SCALE_WIDTH = 32*36;
+    final static double SCALE_WIDTH = 1080;
 
     // Bitmap to be analyzed
     Bitmap inputPic;
@@ -69,6 +69,7 @@ public class ComputerVision {
     double CONFIDENCE = 0.2;
 
     int BOXSIZE = 430;
+    double BOXSCALE = 3.4;
 
     int MIN_DISTANCE = 15;
 
@@ -191,6 +192,8 @@ public class ComputerVision {
                 }
                 // Show a green rectangle around good contours
                 else {
+                    double size = Imgproc.contourArea(contour);
+                    System.out.println("PILE DIMENSIONS: X: " + rect.x + " Y: " + rect.y + " W: " + rect.width + " H: " + rect.height + " AREA: " + size);
                     Imgproc.rectangle(
                             imgorig,
                             new Point(rect.x, rect.y),
@@ -387,7 +390,7 @@ public class ComputerVision {
 
     // Converts a pile to a square image so detections can be made in it
     private Mat convertToSquare(Mat imgOriginal, Rect rect) {
-
+        BOXSIZE =(int)((double)rect.width * BOXSCALE);
         // Crop and resize
         Mat img = imgOriginal.submat(rect);
         img = img.clone();
@@ -474,8 +477,10 @@ public class ComputerVision {
                 contourIsCard.add(-3);  // Nested contour
             else if (contour.width() > (contour.height() * 0.8))
                 contourIsCard.add(-4);  // Wrong proportions
-            else
+            else {
                 contourIsCard.add(1);   // Actual pile
+            }
+
 
         }
     }
