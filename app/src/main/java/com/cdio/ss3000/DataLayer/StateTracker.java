@@ -16,7 +16,7 @@ public class StateTracker {
 
     public Status gameOver(){
         boolean won = true;
-        boolean lost;
+        boolean lost = true;
         for (ArrayList<Card> foundationPile: foundation){
             if (foundationPile.isEmpty() || foundationPile.get(foundationPile.size() - 1).getValue() != 13){
                 won = false;
@@ -25,7 +25,15 @@ public class StateTracker {
         if (won)
             return Status.WON;
 
+        for(Card wasteCard : waste){
+            if(!wasteCard.getMoves().isEmpty()) lost = false;
 
+        }
+        for(Card stockCard : stock){
+            if(!stockCard.getMoves().isEmpty()) lost = false;
+        }
+        if(lost)
+            return Status.LOST;
 
         // TODO: CHECK FOR LOSS
 

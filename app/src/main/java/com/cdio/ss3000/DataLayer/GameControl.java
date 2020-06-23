@@ -18,6 +18,8 @@ public class GameControl {
     private StateTracker stateTracker;
     private Card lastMove = null;
     private Card stockCard = new Card(1, STOCK);
+    private Card wonCard = new Card(-1, STOCK);
+    private Card lostCard = new Card(-2, STOCK);
     private final int TURN_CARD_POINTS = 2;
     //  private Card emptyStackTableau = new Card(-1, UNKNOWN, false);
     // private Card emptyStackFoundation = new Card(-2, UNKNOWN, false);
@@ -389,11 +391,18 @@ public class GameControl {
                 cardPointList.add(cards.get(cards.size() - 1));
         }
 
-        if (!state.waste.isEmpty() || !state.stock.isEmpty()) {
-            stockCard.setPoints(TURN_CARD_POINTS);
-            cardPointList.add(stockCard);
+        if(cardPointList.isEmpty() && stateTracker.gameOver() == Status.INPROGRESS){
+           // if (!state.waste.isEmpty() || !state.stock.isEmpty()) {
+                stockCard.setPoints(TURN_CARD_POINTS);
+                cardPointList.add(stockCard);
 
+        }else if(cardPointList.isEmpty() && stateTracker.gameOver() == Status.WON){
+            return wonCard;
+
+        }else if(cardPointList.isEmpty() && stateTracker.gameOver() == Status.LOST){
+            return lostCard;
         }
+
 
         System.out.println("---------------\nCard point list\n---------------");
         for (Card card : cardPointList) {
@@ -401,8 +410,8 @@ public class GameControl {
             if (card.getPoints() > _cardHighestValue.getPoints())
                 _cardHighestValue = card;
         }
-/*        if (cardPointList.isEmpty())
-            _cardHighestValue = new Card(1, STOCK, true);*/
+       /* if (cardPointList.isEmpty())
+            stateTracker.gameOver();*/
 
         if (_cardHighestValue.getSuit() == UNKNOWN)
             _cardHighestValue = stockCard;

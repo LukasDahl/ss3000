@@ -22,6 +22,33 @@ public class PointCalculator {
     private Card checkMovesWaste(Card card,/* ArrayList<Card> knownCards, */State state) {
         ArrayList<Card> tempList = new ArrayList<>();
         tempList.add(card);
+        int freeTableauPiles = 0;
+
+        //If card is king, check if there is an opposite color king which would be a better move.
+        //If the alternative king is better, the current king will get points set to -1 so it doesn't get chosen as a move.
+        if(card.getValue() == KING && restOfTableau(card, state) == 0){
+            for(ArrayList<Card> tableauPile : state.tableau){
+                if(tableauPile.isEmpty()){
+                    freeTableauPiles++;
+                }
+            }
+            if(freeTableauPiles < 2){
+                for(Card mCard : state.stock){
+                    if(mCard.getSuit() != Suit.UNKNOWN && mCard.getValue() == 13 && mCard.isRed() != card.isRed() && restOfTableau(mCard, state) > 0){
+                        card.clearMoves();
+                        card.setPoints(-1);
+                        return card;
+                    }
+                }
+                for(Card mCard : state.waste){
+                    if(mCard.getSuit() != Suit.UNKNOWN && mCard.getValue() == 13 && mCard.isRed() != card.isRed() && restOfTableau(mCard, state) > 0){
+                        card.clearMoves();
+                        card.setPoints(-1);
+                        return card;
+                    }
+                }
+            }
+        }
 
         Card bestCard = checkMoves(tempList, card, state);
         bestCard.setPoints(bestCard.getPoints() + restOfTableau(card, state));
@@ -70,7 +97,7 @@ public class PointCalculator {
             if (move.isEmpty() && card.getValue() == KING) {
                 hasFoundItem = true;
                 if (column.indexOf(card) != 0 || (!state.waste.isEmpty() && state.waste.get(state.waste.size() - 1).compareTo(card) == 0)) {
-                    temp_points += TABLEAU_EMPTY_POINTS;
+                        temp_points += TABLEAU_EMPTY_POINTS;
                 }
                 card.setPoints(temp_points);
                 // return card;
