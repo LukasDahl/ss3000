@@ -235,7 +235,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    public void gameOver(boolean won){
+    public void gameOver(boolean won, int moves){
 
         if (won){
             Intent i = new Intent(this, WonGameActivity.class);

@@ -77,6 +77,7 @@ public class ComputerVision {
 
     int l = 0;
     int t = 0;
+    int moves = 0;
 
     GameControl gc;
 
@@ -364,7 +365,7 @@ public class ComputerVision {
             Status status = gc.updateState(Pile.pileListToState(pilesTop, pilesBottom));
             if (status != Status.INPROGRESS){
                 ((TextView) ((CameraActivity) context).findViewById(R.id.move_text)).setText("GAME OVER");
-                ((CameraActivity) context).gameOver(status == Status.WON);
+                ((CameraActivity) context).gameOver(status == Status.WON, moves);
                 return;
             }
             Card bestMove = gc.run();
@@ -372,6 +373,7 @@ public class ComputerVision {
             System.out.println("----------\nACTUAL MOVE\n----------");
             System.out.println(bestMoveString);
             ((TextView) ((CameraActivity) context).findViewById(R.id.move_text)).setText(bestMoveString);
+            moves++;
 
 
         }
