@@ -357,10 +357,11 @@ public class GameControl {
     }
 
 
-    public void updateState(State newState) {
+    public Status updateState(State newState) {
         System.out.println(newState);
         stateTracker.updateState(newState, lastMove);
         state = stateTracker.getBoard();
+        return stateTracker.gameOver();
     }
 
     public Card run() {

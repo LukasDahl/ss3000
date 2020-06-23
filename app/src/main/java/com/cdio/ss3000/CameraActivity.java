@@ -235,6 +235,19 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    public void gameOver(boolean won){
+
+        if (won){
+            Intent i = new Intent(this, WonGameActivity.class);
+            startActivity(i);
+        }
+        else{
+            Intent i = new Intent(this, LostGameActivity.class);
+            startActivity(i);
+        }
+
+    }
+
 
     private static class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
         private static SurfaceHolder mHolder;

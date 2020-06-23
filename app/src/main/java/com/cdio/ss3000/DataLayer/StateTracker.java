@@ -14,6 +14,27 @@ public class StateTracker {
     private ArrayList<Card> stock;
     private ArrayList<Card> waste;
 
+    public Status gameOver(){
+        boolean won = true;
+        boolean lost;
+        for (ArrayList<Card> foundationPile: foundation){
+            if (foundationPile.isEmpty() || foundationPile.get(foundationPile.size() - 1).getValue() != 13){
+                won = false;
+            }
+        }
+        if (won)
+            return Status.WON;
+
+
+
+        // TODO: CHECK FOR LOSS
+
+
+
+
+        return Status.INPROGRESS;
+    }
+
     public StateTracker() {
         initState();
     }
@@ -56,6 +77,27 @@ public class StateTracker {
 
         // Initial setup
         if (lastMove == null) {
+
+            //DEBUG TODO: REMOVE THIS
+            if (false) {
+                for (int i = 0; i < 7; i++) {
+                    tableau[i].get(tableau[i].size() - 1).setSuit(Suit.HEARTS);//Set suit
+                    tableau[i].get(tableau[i].size() - 1).setValue(5);//Set value
+
+                }
+                int i = 2;
+                while (!stock.isEmpty()) {
+                    Card card = stock.remove(stock.size() - 1);
+                    card.setSuit(Suit.HEARTS);
+                    card.setValue(i);
+                    waste.add(card);
+                    i++;
+                }
+                waste.get(waste.size()-1).setValue(0);
+                waste.get(waste.size()-1).setSuit(Suit.UNKNOWN);
+                stock.add(waste.remove(waste.size()-1));
+                return;
+            }
             //First time run -> Cards are all unknown
             for (int i = 0; i < 7; i++) {
                 Card smallest = inputState.tableau[i].get(SMALLESTCARD);
@@ -87,8 +129,6 @@ public class StateTracker {
             }
 
 
-
-
             int x = 0;
             for (int i = 0; i < inputState.tableau.length; i++) {
                 if (!inputState.tableau[i].isEmpty() && inputState.tableau[i].get(LARGESTCARD).compareTo(lastMove) == 0) {
@@ -97,7 +137,7 @@ public class StateTracker {
                 }
             }
 
-            if (!waste.isEmpty() && waste.get(waste.size() - 1).compareTo(lastMove) == 0){
+            if (!waste.isEmpty() && waste.get(waste.size() - 1).compareTo(lastMove) == 0) {
                 tableau[x].add(waste.remove(waste.size() - 1));
                 return;
             }
@@ -302,7 +342,7 @@ public class StateTracker {
 
     public State getBoard() {
         try {
-            return (State)board.clone();
+            return (State) board.clone();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }

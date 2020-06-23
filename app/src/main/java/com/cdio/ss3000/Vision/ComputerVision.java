@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.cdio.ss3000.CameraActivity;
 import com.cdio.ss3000.DataLayer.Card;
 import com.cdio.ss3000.DataLayer.GameControl;
+import com.cdio.ss3000.DataLayer.Status;
 import com.cdio.ss3000.R;
 
 import java.io.File;
@@ -360,7 +361,12 @@ public class ComputerVision {
             Collections.sort(pilesTop);
 
             // Convert piles to state object
-            gc.updateState(Pile.pileListToState(pilesTop, pilesBottom));
+            Status status = gc.updateState(Pile.pileListToState(pilesTop, pilesBottom));
+            if (status != Status.INPROGRESS){
+                ((TextView) ((CameraActivity) context).findViewById(R.id.move_text)).setText("GAME OVER");
+                ((CameraActivity) context).gameOver(status == Status.WON);
+                return;
+            }
             Card bestMove = gc.run();
             String bestMoveString = bestMove.toMovesString();
             System.out.println("----------\nACTUAL MOVE\n----------");
