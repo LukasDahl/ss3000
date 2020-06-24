@@ -330,6 +330,8 @@ public class StateTracker {
                     lastMove.getMoves().get(0).get(0).getSuit() == lastMove.getSuit()) {
                 System.arraycopy(inputState.foundations, 0, foundation, 0, 4);
                 waste.remove(waste.size() - 1);
+                tempTableau = getTempTableau(inputState.tableau);
+                inputState.tableau = tempTableau;
                 if (checkPlausability(inputState, tempState, board, lastMove))
                     return true;
                 else {
