@@ -30,7 +30,7 @@ public class StateTracker {
 
         }
         for(Card stockCard : stock){
-            if(!stockCard.getMoves().isEmpty()) lost = false;
+            if(!stockCard.getMoves().isEmpty() || stockCard.getSuit() == Suit.UNKNOWN) lost = false;
         }
         if(lost)
             return Status.LOST;
