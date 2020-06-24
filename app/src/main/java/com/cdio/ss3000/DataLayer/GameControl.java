@@ -366,42 +366,6 @@ public class GameControl {
 
                             return getCard(cardPointList, _cardHighestValue);
                         }
-
-
-
-
-
-
-
-
-                            //cardList.get(cardList.size()-1).addMove(cardListTableau.get(cardListTableau.size()-1));
-                           /* ArrayList<Card> newMove = new ArrayList<>();
-                            for (Card cardFromMove : cardListTableau) {
-                                try {
-                                    newMove.add((Card) cardFromMove.clone());
-                                } catch (CloneNotSupportedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            cardList.get(cardList.size() - 1).addMove(newMove);*/
-                        //}
-                        /*if (moveToEmptySpaceTableauPossible(cardList.get(cardList.size() - 1))) {
-                            for (ArrayList<Card> otherCardlistTableau : state.tableau) {
-                                if (otherCardlistTableau.isEmpty()) {
-                                    // cardList.get(cardList.size()-1).addMove(emptyStackTableau);
-                                    ArrayList<Card> newMove = new ArrayList<>();
-                                    for (Card cardFromMove : otherCardlistTableau) {
-                                        try {
-                                            newMove.add((Card) cardFromMove.clone());
-                                        } catch (CloneNotSupportedException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                    (cardList.get(cardList.size() - 1)).addMove(newMove);
-                                }
-                            }
-
-                        }*/
                     }
                 }
             }
@@ -451,6 +415,13 @@ public class GameControl {
             return wonCard;
 
         }else if(cardPointList.isEmpty() && stateTracker.gameOver() == Status.LOST){
+            try {
+                if (checkPossibleMovesFoundation() == null)
+                    return lostCard;
+                else return checkPossibleMovesFoundation();
+            }catch (CloneNotSupportedException e){
+                e.printStackTrace();
+            }
             return lostCard;
         }
 
