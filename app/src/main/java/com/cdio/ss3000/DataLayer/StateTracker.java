@@ -17,7 +17,8 @@ public class StateTracker {
     public Status gameOver() {
         boolean won = true;
         boolean lost = true;
-        for (ArrayList<Card> foundationPile : foundation) {
+        State state = (State)board.clone();
+        for (ArrayList<Card> foundationPile : state.foundations) {
             if (foundationPile.isEmpty() || foundationPile.get(foundationPile.size() - 1).getValue() != 13) {
                 won = false;
             }
@@ -25,11 +26,11 @@ public class StateTracker {
         if (won)
             return Status.WON;
 
-        for (Card wasteCard : waste) {
+        for (Card wasteCard : state.waste) {
             if (!wasteCard.getMoves().isEmpty()) lost = false;
 
         }
-        for (Card stockCard : stock) {
+        for (Card stockCard :state.stock) {
             if (!stockCard.getMoves().isEmpty() || stockCard.getSuit() == Suit.UNKNOWN)
                 lost = false;
         }

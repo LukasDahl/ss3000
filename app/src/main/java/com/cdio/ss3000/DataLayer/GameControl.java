@@ -388,24 +388,14 @@ public class GameControl {
                 cardPointList.add(cards.get(cards.size() - 1));
         }
 
-        if (cardPointList.isEmpty() && stateTracker.gameOver() == Status.INPROGRESS) {
-            // if (!state.waste.isEmpty() || !state.stock.isEmpty()) {
-            stockCard.setPoints(TURN_CARD_POINTS);
-            cardPointList.add(stockCard);
-
-        } else if (cardPointList.isEmpty() && stateTracker.gameOver() == Status.WON) {
-            return wonCard;
-
-        } else if (cardPointList.isEmpty() && stateTracker.gameOver() == Status.LOST) {
-
-                if (checkPossibleMovesFoundation() == null)
-                    return lostCard;
-                else return checkPossibleMovesFoundation();
-
-        }
-
         Card bestCard = getCard(cardPointList, _cardHighestValue);
 
+        if (bestCard.getSuit() == UNKNOWN) {
+            bestCard = stockCard;
+            stockCard.setPoints(TURN_CARD_POINTS);
+        }
+
+        lastMove = bestCard;
 
         if (bestCard.getSuit() == STOCK && stateTracker.gameOver()
                 == Status.WON)
@@ -414,7 +404,6 @@ public class GameControl {
 
                 if (checkPossibleMovesFoundation() == null)
                     return lostCard;
-                else return checkPossibleMovesFoundation();
 
         }
         return bestCard;
@@ -431,10 +420,7 @@ public class GameControl {
        /* if (cardPointList.isEmpty())
             stateTracker.gameOver();*/
 
-        if (_cardHighestValue.getSuit() == UNKNOWN)
-            _cardHighestValue = stockCard;
 
-        lastMove = _cardHighestValue;
         return _cardHighestValue;
     }
 
