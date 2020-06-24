@@ -2,6 +2,7 @@ package com.cdio.ss3000;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
@@ -21,10 +22,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import com.cdio.ss3000.Vision.ComputerVision;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 // Most of this is based or copied from: https://www.youtube.com/watch?v=u4hfZXorDAQ
@@ -238,6 +241,20 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     public void gameOver(boolean won, int moves){
 
         if (won){
+            ArrayList<Highscore> scores;
+            SharedPreferences sharedPreferences;
+            Gson gson;
+            scores = new ArrayList<>();
+            scores.add(new Highscore("TestNavn", moves));
+
+            gson = new Gson();
+
+            String json = gson.toJson(scores);
+
+            sharedPreferences = getSharedPreferences("scores", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("scores", json);
+            editor.commit();
             Intent i = new Intent(this, WonGameActivity.class);
             startActivity(i);
         }

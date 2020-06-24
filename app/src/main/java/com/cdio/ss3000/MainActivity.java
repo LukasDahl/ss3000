@@ -27,26 +27,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int MY_CAMERA_REQUEST_CODE = 100;
     private static final int MY_WRITE_REQUEST_CODE = 101;
 
-    ArrayList<Highscore> scores;
-    private SharedPreferences sharedPreferences;
-    Gson gson;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        scores = new ArrayList<>();
-        scores.add(new Highscore("Goat", 100));
 
-        gson = new Gson();
-
-        String json = gson.toJson(scores);
-
-        sharedPreferences = getSharedPreferences("scores", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("scores", json);
-        editor.commit();
 
 
         if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
