@@ -445,7 +445,7 @@ public class ComputerVision {
         this.l = l;
 
         // Add the calculated white border
-        Core.copyMakeBorder(img, img, t, b, l, r, Core.BORDER_CONSTANT, new Scalar(255, 255, 255));
+        Core.copyMakeBorder(img, img, t, b, l, r, Core.BORDER_CONSTANT, new Scalar(64, 0, 0));
 
         return img;
     }
