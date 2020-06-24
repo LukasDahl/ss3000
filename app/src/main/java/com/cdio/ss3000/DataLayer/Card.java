@@ -100,7 +100,7 @@ public class Card implements Comparable{
 
     @NonNull
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    protected Object clone() {
         Card newCard = new Card(this.value, this.suit);
         return newCard;
     }

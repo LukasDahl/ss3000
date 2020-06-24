@@ -44,7 +44,7 @@ public class State {
 
     @NonNull
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public Object clone() {
         ArrayList<Card>[] foundations = new ArrayList[4];
         foundations[0] = new ArrayList<>();
         foundations[1] = new ArrayList<>();

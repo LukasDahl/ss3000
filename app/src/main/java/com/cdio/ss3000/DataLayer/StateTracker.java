@@ -82,11 +82,9 @@ public class StateTracker {
     public boolean updateState(State inputState, Card lastMove) {
         ArrayList<Card>[] tempTableau = new ArrayList[0];
         State tempState = null;
-        try {
+
             tempState = (State) board.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
+
 
         // Initial setup
         if (lastMove == null) {
@@ -423,26 +421,6 @@ public class StateTracker {
                 }
             }
 
-
-            /*//System.arraycopy(inputState.foundations, 0, foundation, 0, 4);
-            for (int i = 0; i < 7; i++) {
-                ArrayList<Card> tableauColumn = tableau[i];
-
-                if (!tableauColumn.isEmpty()) {
-                    if (lastMove.compareTo(tableauColumn.get(tableauColumn.size() - 1)) == 0) {
-                        tableauColumn.remove(tableauColumn.size() - 1);
-                        tempTableau = getTempTableau(inputState.tableau);
-                        inputState.tableau = tempTableau;
-                        if (!tableauColumn.isEmpty()) {
-                            if (tableau[i].get(tableau[i].size() - 1).getSuit() == Suit.UNKNOWN) {
-                                tableauColumn.get(tableauColumn.size() - 1).setValue(tempTableau[i].get(SMALLESTCARD).getValue());
-                                tableauColumn.get(tableauColumn.size() - 1).setSuit(tempTableau[i].get(SMALLESTCARD).getSuit());
-                            }
-                        }
-                        break;
-                    }
-                }
-            }*/
             if (checkPlausability(inputState, tempState, board, lastMove))
                 return true;
             else {
@@ -507,7 +485,8 @@ public class StateTracker {
             }
 
         }
-
+        tempTableau = getTempTableau(inputState.tableau);
+        inputState.tableau = tempTableau;
         if (checkPlausability(inputState, tempState, board, lastMove))
             return true;
         else {
@@ -600,12 +579,7 @@ public class StateTracker {
     }
 
     public State getBoard() {
-        try {
-            return (State) board.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return (State) board.clone();
     }
 
     private ArrayList<Card>[] getTempTableau(ArrayList<Card>[] inputTableau) {

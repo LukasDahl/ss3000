@@ -110,11 +110,9 @@ public class GameControl {
                                     //cardList.get(cardList.size()-1).addMove(otherCardListTableau.get(otherCardListTableau.size()-1));
                                     ArrayList<Card> newMove = new ArrayList<>();
                                     for (Card card : otherCardListTableau) {
-                                        try {
-                                            newMove.add((Card) card.clone());
-                                        } catch (CloneNotSupportedException e) {
-                                            e.printStackTrace();
-                                        }
+
+                                        newMove.add((Card) card.clone());
+
                                     }
                                     cardList.get(index).addMove(newMove);
                                 }
@@ -142,11 +140,9 @@ public class GameControl {
                             //cardList.get(cardList.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
                             ArrayList<Card> newMove = new ArrayList<>();
                             for (Card card : cardListFoundations) {
-                                try {
-                                    newMove.add((Card) card.clone());
-                                } catch (CloneNotSupportedException e) {
-                                    e.printStackTrace();
-                                }
+
+                                newMove.add((Card) card.clone());
+
                             }
                             cardList.get(cardList.size() - 1).addMove(newMove);
                         }
@@ -170,11 +166,9 @@ public class GameControl {
                             //state.waste.get(state.waste.size()-1).addMove(cardList.get(cardList.size()-1));
                             ArrayList<Card> newMove = new ArrayList<>();
                             for (Card cardFromMove : cardList) {
-                                try {
-                                    newMove.add((Card) cardFromMove.clone());
-                                } catch (CloneNotSupportedException e) {
-                                    e.printStackTrace();
-                                }
+
+                                newMove.add((Card) cardFromMove.clone());
+
                             }
                             card.addMove(newMove);
                             card.setWaste(true);
@@ -185,11 +179,9 @@ public class GameControl {
                                 if (otherCardlistTableau.isEmpty()) {
                                     ArrayList<Card> newMove = new ArrayList<>();
                                     for (Card cardFromMove : otherCardlistTableau) {
-                                        try {
-                                            newMove.add((Card) cardFromMove.clone());
-                                        } catch (CloneNotSupportedException e) {
-                                            e.printStackTrace();
-                                        }
+
+                                        newMove.add((Card) cardFromMove.clone());
+
                                     }
                                     // cardList.get(cardList.size()-1).addMove(emptyStackTableau);
                                     card.addMove(newMove);
@@ -208,11 +200,9 @@ public class GameControl {
                             //state.waste.get(state.waste.size()-1).addMove(cardList.get(cardList.size()-1));
                             ArrayList<Card> newMove = new ArrayList<>();
                             for (Card cardFromMove : cardList) {
-                                try {
-                                    newMove.add((Card) cardFromMove.clone());
-                                } catch (CloneNotSupportedException e) {
-                                    e.printStackTrace();
-                                }
+
+                                newMove.add((Card) cardFromMove.clone());
+
                             }
                             card.addMove(newMove);
                             card.setWaste(true);
@@ -225,11 +215,8 @@ public class GameControl {
                                     // cardList.get(cardList.size()-1).addMove(emptyStackTableau);
                                     ArrayList<Card> newMove = new ArrayList<>();
                                     for (Card cardFromMove : otherCardlistTableau) {
-                                        try {
-                                            newMove.add((Card) cardFromMove.clone());
-                                        } catch (CloneNotSupportedException e) {
-                                            e.printStackTrace();
-                                        }
+                                        newMove.add((Card) cardFromMove.clone());
+
                                     }
                                     card.addMove(newMove);
                                 }
@@ -253,11 +240,9 @@ public class GameControl {
                             //state.waste.get(state.waste.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
                             ArrayList<Card> newMove = new ArrayList<>();
                             for (Card cardFromMove : cardListFoundations) {
-                                try {
-                                    newMove.add((Card) cardFromMove.clone());
-                                } catch (CloneNotSupportedException e) {
-                                    e.printStackTrace();
-                                }
+
+                                newMove.add((Card) cardFromMove.clone());
+
                             }
                             card.addMove(newMove);
                         }
@@ -266,11 +251,9 @@ public class GameControl {
                             //state.waste.get(state.waste.size()-1).addMove(emptyStackFoundation);
                             ArrayList<Card> newMove = new ArrayList<>();
                             for (Card cardFromMove : cardListFoundations) {
-                                try {
-                                    newMove.add((Card) cardFromMove.clone());
-                                } catch (CloneNotSupportedException e) {
-                                    e.printStackTrace();
-                                }
+
+                                newMove.add((Card) cardFromMove.clone());
+
                             }
                             card.addMove(newMove);
                         }
@@ -290,11 +273,9 @@ public class GameControl {
                             //state.waste.get(state.waste.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
                             ArrayList<Card> newMove = new ArrayList<>();
                             for (Card cardFromMove : cardListFoundations) {
-                                try {
+
                                     newMove.add((Card) cardFromMove.clone());
-                                } catch (CloneNotSupportedException e) {
-                                    e.printStackTrace();
-                                }
+
                             }
                             card.addMove(newMove);
                         }
@@ -302,11 +283,9 @@ public class GameControl {
                             //state.waste.get(state.waste.size()-1).addMove(emptyStackFoundation);
                             ArrayList<Card> newMove = new ArrayList<>();
                             for (Card cardFromMove : cardListFoundations) {
-                                try {
+
                                     newMove.add((Card) cardFromMove.clone());
-                                } catch (CloneNotSupportedException e) {
-                                    e.printStackTrace();
-                                }
+
                             }
                             card.addMove(newMove);
                         }
@@ -319,7 +298,7 @@ public class GameControl {
 
     }
 
-    public Card checkPossibleMovesFoundation() throws CloneNotSupportedException {
+    public Card checkPossibleMovesFoundation()  {
         //Possible moves from foundations
         State mState;
         ArrayList<Card> cardPointList = new ArrayList<>();
@@ -418,14 +397,11 @@ public class GameControl {
             return wonCard;
 
         } else if (cardPointList.isEmpty() && stateTracker.gameOver() == Status.LOST) {
-            try {
+
                 if (checkPossibleMovesFoundation() == null)
                     return lostCard;
                 else return checkPossibleMovesFoundation();
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
-            return lostCard;
+
         }
 
         Card bestCard = getCard(cardPointList, _cardHighestValue);
@@ -435,13 +411,11 @@ public class GameControl {
                 == Status.WON)
             return wonCard;
         if (bestCard.getSuit() == STOCK && stateTracker.gameOver() == Status.LOST) {
-            try {
+
                 if (checkPossibleMovesFoundation() == null)
                     return lostCard;
                 else return checkPossibleMovesFoundation();
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
+
         }
         return bestCard;
 
