@@ -263,7 +263,7 @@ public class ComputerVision {
                             detectedRects.add(detectionRect);
                             classIds.add((int) classIdPoint.x);
                             confidences.add(confidence);
-                            System.out.println(classNames[(int)classIdPoint.x] + " " + confidence);
+                            System.out.println(classNames[(int) classIdPoint.x] + " " + confidence);
 
                             // Draw rectangle on sub-image for debugging
 //                            Imgproc.rectangle(
@@ -366,18 +366,18 @@ public class ComputerVision {
 
             // Convert piles to state object
             Status status = gc.updateState(Pile.pileListToState(pilesTop, pilesBottom));
-            if (status != Status.INPROGRESS){
-                if (status == Status.INVALID) {
-                    ((TextView) ((CameraActivity) context).findViewById(R.id.move_text)).setText("Wrong move or bad picture. Try again.");
-                    return;
-                }
-                else{
-                    ((TextView) ((CameraActivity) context).findViewById(R.id.move_text)).setText("GAME OVER");
-                    ((CameraActivity) context).gameOver(status == Status.WON, moves);
-                    return;
-                }
+
+            if (status == Status.INVALID) {
+                ((TextView) ((CameraActivity) context).findViewById(R.id.move_text)).setText("Wrong move or bad picture. Try again.");
+                return;
             }
+
             Card bestMove = gc.run();
+            if (bestMove.getValue() < 0) {
+                ((TextView) ((CameraActivity) context).findViewById(R.id.move_text)).setText("GAME OVER");
+                ((CameraActivity) context).gameOver(bestMove.getValue() == -1, moves);
+                return;
+            }
             String bestMoveString = bestMove.toMovesString();
             System.out.println("----------\nACTUAL MOVE\n----------");
             System.out.println(bestMoveString);
@@ -390,7 +390,7 @@ public class ComputerVision {
 
     // Converts a pile to a square image so detections can be made in it
     private Mat convertToSquare(Mat imgOriginal, Rect rect) {
-        BOXSIZE =(int)((double)rect.width * BOXSCALE);
+        BOXSIZE = (int) ((double) rect.width * BOXSCALE);
         // Crop and resize
         Mat img = imgOriginal.submat(rect);
         img = img.clone();

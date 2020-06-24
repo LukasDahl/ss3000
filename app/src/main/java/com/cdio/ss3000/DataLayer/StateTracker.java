@@ -17,27 +17,26 @@ public class StateTracker {
     public Status gameOver() {
         boolean won = true;
         boolean lost = true;
-        for (ArrayList<Card> foundationPile: foundation){
-            if (foundationPile.isEmpty() || foundationPile.get(foundationPile.size() - 1).getValue() != 13){
+        for (ArrayList<Card> foundationPile : foundation) {
+            if (foundationPile.isEmpty() || foundationPile.get(foundationPile.size() - 1).getValue() != 13) {
                 won = false;
             }
         }
         if (won)
             return Status.WON;
 
-        for(Card wasteCard : waste){
-            if(!wasteCard.getMoves().isEmpty()) lost = false;
+        for (Card wasteCard : waste) {
+            if (!wasteCard.getMoves().isEmpty()) lost = false;
 
         }
-        for(Card stockCard : stock){
-            if(!stockCard.getMoves().isEmpty() || stockCard.getSuit() == Suit.UNKNOWN) lost = false;
+        for (Card stockCard : stock) {
+            if (!stockCard.getMoves().isEmpty() || stockCard.getSuit() == Suit.UNKNOWN)
+                lost = false;
         }
-        if(lost)
+        if (lost)
             return Status.LOST;
 
         // TODO: CHECK FOR LOSS
-
-
 
 
         return Status.INPROGRESS;
@@ -141,23 +140,34 @@ public class StateTracker {
 
 
             if (destination.getSuit() == lastMove.getSuit() && destination.getValue() == lastMove.getValue() - 1) {
-                System.arraycopy(inputState.foundations, 0, foundation, 0, 4);
-                for (int i = 0; i < 7; i++) {
-                    ArrayList<Card> tableauColumn = tableau[i];
+                int x = 0;
+                outerloop:
+                for (int i = 0; i < foundation.length; i++) {
+                    for (Card card : foundation[i]) {
+                        if (card.compareTo(lastMove.getMoves().get(0).get(0)) == 0) {
+                            x = i;
+                            break outerloop;
+                        }
+                    }
+                }
 
-                    if (!tableauColumn.isEmpty()) {
-                        if (lastMove.compareTo(tableauColumn.get(tableauColumn.size() - 1)) == 0) {
-                            tableauColumn.remove(tableauColumn.size() - 1);
+                outerloop:
+                for (int i = 0; i < tableau.length; i++) {
+                    for (int j = 0; j < tableau[i].size(); j++) {
+                        Card card = tableau[i].get(j);
+                        if (card.compareTo(lastMove) == 0) {
+                            foundation[x].add(tableau[i].remove(j));
                             tempTableau = getTempTableau(inputState.tableau);
                             inputState.tableau = tempTableau;
-                            if (!tableauColumn.isEmpty()) {
+                            if (!tableau[i].isEmpty()) {
                                 if (tableau[i].get(tableau[i].size() - 1).getSuit() == Suit.UNKNOWN) {
-                                    tableauColumn.get(tableauColumn.size() - 1).setValue(tempTableau[i].get(SMALLESTCARD).getValue());
-                                    tableauColumn.get(tableauColumn.size() - 1).setSuit(tempTableau[i].get(SMALLESTCARD).getSuit());
+                                    tableau[i].get(tableau[i].size() - 1).setValue(tempTableau[i].get(SMALLESTCARD).getValue());
+                                    tableau[i].get(tableau[i].size() - 1).setSuit(tempTableau[i].get(SMALLESTCARD).getSuit());
                                 }
                             }
-                            break;
+                            break outerloop;
                         }
+
                     }
                 }
                 if (checkPlausability(inputState, tempState, board, lastMove))
@@ -285,8 +295,7 @@ public class StateTracker {
         // Ace to foundation from waste
         if (!waste.isEmpty()) {
             if (lastMove.getMoves().isEmpty() && lastMove.compareTo(waste.get(waste.size() - 1)) == 0) {
-                System.arraycopy(inputState.foundations, 0, foundation, 0, 4);
-                waste.remove(waste.size() - 1);
+                foundation[lastMove.getSuit().ordinal() - 1].add(waste.remove(waste.size() - 1));
                 tempTableau = getTempTableau(inputState.tableau);
                 inputState.tableau = tempTableau;
                 if (checkPlausability(inputState, tempState, board, lastMove))
@@ -304,13 +313,11 @@ public class StateTracker {
 
         // Ace to foundation
         if (lastMove.getMoves().isEmpty()) {
-            System.arraycopy(inputState.foundations, 0, foundation, 0, 4);
             for (int i = 0; i < 7; i++) {
                 ArrayList<Card> tableauColumn = tableau[i];
-
                 if (!tableauColumn.isEmpty()) {
                     if (lastMove.compareTo(tableauColumn.get(tableauColumn.size() - 1)) == 0) {
-                        tableauColumn.remove(tableauColumn.size() - 1);
+                        foundation[lastMove.getSuit().ordinal() - 1].add(tableauColumn.remove(tableauColumn.size() - 1));
                         tempTableau = getTempTableau(inputState.tableau);
                         inputState.tableau = tempTableau;
                         if (!tableauColumn.isEmpty()) {
@@ -339,8 +346,7 @@ public class StateTracker {
         if (!waste.isEmpty()) {
             if (lastMove.compareTo(waste.get(waste.size() - 1)) == 0 &&
                     lastMove.getMoves().get(0).get(0).getSuit() == lastMove.getSuit()) {
-                System.arraycopy(inputState.foundations, 0, foundation, 0, 4);
-                waste.remove(waste.size() - 1);
+                foundation[lastMove.getSuit().ordinal() - 1].add(waste.remove(waste.size() - 1));
                 tempTableau = getTempTableau(inputState.tableau);
                 inputState.tableau = tempTableau;
                 if (checkPlausability(inputState, tempState, board, lastMove))
@@ -386,7 +392,39 @@ public class StateTracker {
 
         // Card to foundation
         if (lastMove.getMoves().get(0).get(0).getSuit() == lastMove.getSuit()) {
-            System.arraycopy(inputState.foundations, 0, foundation, 0, 4);
+            int x = 0;
+            outerloop:
+            for (int i = 0; i < foundation.length; i++) {
+                for (Card card : foundation[i]) {
+                    if (card.compareTo(lastMove.getMoves().get(0).get(0)) == 0) {
+                        x = i;
+                        break outerloop;
+                    }
+                }
+            }
+
+            outerloop:
+            for (int i = 0; i < tableau.length; i++) {
+                for (int j = 0; j < tableau[i].size(); j++) {
+                    Card card = tableau[i].get(j);
+                    if (card.compareTo(lastMove) == 0) {
+                        foundation[x].add(tableau[i].remove(j));
+                        tempTableau = getTempTableau(inputState.tableau);
+                        inputState.tableau = tempTableau;
+                        if (!tableau[i].isEmpty()) {
+                            if (tableau[i].get(tableau[i].size() - 1).getSuit() == Suit.UNKNOWN) {
+                                tableau[i].get(tableau[i].size() - 1).setValue(tempTableau[i].get(SMALLESTCARD).getValue());
+                                tableau[i].get(tableau[i].size() - 1).setSuit(tempTableau[i].get(SMALLESTCARD).getSuit());
+                            }
+                        }
+                        break outerloop;
+                    }
+
+                }
+            }
+
+
+            /*//System.arraycopy(inputState.foundations, 0, foundation, 0, 4);
             for (int i = 0; i < 7; i++) {
                 ArrayList<Card> tableauColumn = tableau[i];
 
@@ -404,7 +442,7 @@ public class StateTracker {
                         break;
                     }
                 }
-            }
+            }*/
             if (checkPlausability(inputState, tempState, board, lastMove))
                 return true;
             else {
@@ -484,6 +522,18 @@ public class StateTracker {
     }
 
     public boolean checkPlausability(State inputState, State initialState, State expectedState, Card lastMove) {
+        boolean allKnown = true;
+        outerloop:
+        for (int i = 0; i < 7; i++) {
+
+            for (Card card : initialState.tableau[i]) {
+                if (card.getSuit() == Suit.UNKNOWN) {
+                    allKnown = false;
+                }
+            }
+        }
+        if (allKnown)
+            return true;
         //RUN TRHOUGH TABLEAU
         outerloop:
         for (int i = 0; i < 7; i++) {
