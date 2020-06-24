@@ -218,7 +218,6 @@ public class StateTracker {
                             } catch (IndexOutOfBoundsException e) {
                                 break;
                             }
-                            break;
                         }
                         tempTableau = getTempTableau(inputState.tableau);
                         inputState.tableau = tempTableau;
