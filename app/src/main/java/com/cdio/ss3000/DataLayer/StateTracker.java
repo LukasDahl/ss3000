@@ -207,7 +207,7 @@ public class StateTracker {
                 }
             }
 
-
+            outerloop:
             for (int i = 0; i < tableau.length; i++) {
                 for (int j = 0; j < tableau[i].size(); j++) {
                     Card card = tableau[i].get(j);
@@ -218,6 +218,7 @@ public class StateTracker {
                             } catch (IndexOutOfBoundsException e) {
                                 break;
                             }
+                            break;
                         }
                         tempTableau = getTempTableau(inputState.tableau);
                         inputState.tableau = tempTableau;
@@ -227,7 +228,7 @@ public class StateTracker {
                                 tableau[i].get(tableau[i].size() - 1).setSuit(tempTableau[i].get(SMALLESTCARD).getSuit());
                             }
                         }
-                        break;
+                        break outerloop;
                     }
 
                 }

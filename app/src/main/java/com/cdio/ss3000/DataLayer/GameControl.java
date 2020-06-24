@@ -431,7 +431,8 @@ public class GameControl {
         Card bestCard = getCard(cardPointList, _cardHighestValue);
 
 
-        if (bestCard.getSuit() == STOCK && stateTracker.gameOver() == Status.WON)
+        if (bestCard.getSuit() == STOCK && stateTracker.gameOver()
+                == Status.WON)
             return wonCard;
         if (bestCard.getSuit() == STOCK && stateTracker.gameOver() == Status.LOST) {
             try {
