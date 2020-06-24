@@ -16,17 +16,28 @@ public class StateTracker {
 
     public Status gameOver() {
         boolean won = true;
-        boolean lost;
-        for (ArrayList<Card> foundationPile : foundation) {
-            if (foundationPile.isEmpty() || foundationPile.get(foundationPile.size() - 1).getValue() != 13) {
+        boolean lost = true;
+        for (ArrayList<Card> foundationPile: foundation){
+            if (foundationPile.isEmpty() || foundationPile.get(foundationPile.size() - 1).getValue() != 13){
                 won = false;
             }
         }
         if (won)
             return Status.WON;
 
+        for(Card wasteCard : waste){
+            if(!wasteCard.getMoves().isEmpty()) lost = false;
+
+        }
+        for(Card stockCard : stock){
+            if(!stockCard.getMoves().isEmpty() || stockCard.getSuit() == Suit.UNKNOWN) lost = false;
+        }
+        if(lost)
+            return Status.LOST;
 
         // TODO: CHECK FOR LOSS
+
+
 
 
         return Status.INPROGRESS;
