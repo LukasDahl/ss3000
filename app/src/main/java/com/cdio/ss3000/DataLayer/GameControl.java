@@ -310,12 +310,17 @@ public class GameControl {
 
     public Status updateState(State newState) {
         System.out.println(newState);
-        boolean status = stateTracker.updateState(newState, lastMove);
-        if (!status) {
+        try {
+            boolean status = stateTracker.updateState(newState, lastMove);
+            if (!status) {
+                return Status.INVALID;
+            }
+            state = stateTracker.getBoard();
+            return Status.INPROGRESS;
+        }
+        catch (IndexOutOfBoundsException e){
             return Status.INVALID;
         }
-        state = stateTracker.getBoard();
-        return Status.INPROGRESS;
     }
 
     //when the state has been updated by the computer vision, the game is run from here, until next move.

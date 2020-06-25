@@ -80,7 +80,7 @@ public class StateTracker {
         }
     }
 
-    public boolean updateState(State inputState, Card lastMove) {
+    public boolean updateState(State inputState, Card lastMove) throws IndexOutOfBoundsException {
         ArrayList<Card>[] tempTableau = new ArrayList[0];
         State tempState = null;
 
