@@ -316,7 +316,8 @@ public class GameControl {
                             for (ArrayList<Card> tableauColumn : mState.tableau) {
                                 for (Card card : tableauColumn) {
                                     if (!card.getMoves().isEmpty()) {
-                                        for (ArrayList<Card> moves : card.getMoves()) {
+                                        for (int k = 0; k < card.getMoves().size(); k++) {
+                                            ArrayList<Card> moves = card.getMoves().get(k);
                                             for (Card move : moves) {
                                                 if (move.getSuit() == card.getSuit()) break;
                                                 Card cardWithBestMove = pointCalculator.getBestMove(tableauColumn, card, mState);
@@ -365,8 +366,8 @@ public class GameControl {
 
     public Card run() {
 
-        System.out.println("In run()");
-        System.out.println(state.toString());
+       // System.out.println("In run()");
+       // System.out.println(state.toString());
 
         ArrayList<Card> cardPointList = new ArrayList<>();
         ArrayList<Card> foundationPointList = new ArrayList<>();

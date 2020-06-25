@@ -29,7 +29,7 @@ public class StateTrackerTest {
 
         //Create list of cards to be added (Heart 5)
         ArrayList<Card> cardList = new ArrayList<>();
-        Card card = new Card(5, Suit.HEARTS, true);
+        Card card = new Card(5, Suit.HEARTS);
         cardList.add(card);
         cardList.add(card);
         //Add heart of 5 to end of all columns
@@ -44,7 +44,7 @@ public class StateTrackerTest {
         //Add card to inputState to simulate being the face-up card furthest "back"
         cardList2.add(card);
         //Add new card to be the next front face-up card
-        cardList2.add(new Card(4, Suit.CLUBS, true));
+        cardList2.add(new Card(4, Suit.CLUBS));
         //Save the card list to the tableau slot 1
         newState.tableau[1] = cardList2;
         //Create new state from new set of tableau fields
@@ -64,7 +64,7 @@ public class StateTrackerTest {
         StateTracker stateTracker = new StateTracker();
         ArrayList<Card>[] foundation = new ArrayList[4];
         //Double aces for the highest/lowest card of the tableau
-        Card ace_heart = new Card(1, Suit.HEARTS, true);
+        Card ace_heart = new Card(1, Suit.HEARTS);
         ArrayList<Card> cardlist = new ArrayList<>();
         cardlist.add(ace_heart);
         cardlist.add(ace_heart);
@@ -73,10 +73,10 @@ public class StateTrackerTest {
         ArrayList<Card> addToFoundation2 = new ArrayList<>(); //The second foundation slot
         ArrayList<Card> addToFoundation3 = new ArrayList<>(); //The third foundation slot
         ArrayList<Card> addToFoundation4 = new ArrayList<>(); //The fourth foundation slot
-        addToFoundation1.add(new Card(1, Suit.HEARTS, true)); //Add Ace of hearts to foundation
-        addToFoundation2.add(new Card(3, Suit.DIAMONDS, true)); //Add 3 of diamonds to foundation
-        addToFoundation3.add(new Card(5, Suit.SPADES, true)); //Add 5 of Spades to foundation
-        addToFoundation4.add(new Card(7, Suit.CLUBS, true)); //Add 7 of Clubs to foundation
+        addToFoundation1.add(new Card(1, Suit.HEARTS)); //Add Ace of hearts to foundation
+        addToFoundation2.add(new Card(3, Suit.DIAMONDS)); //Add 3 of diamonds to foundation
+        addToFoundation3.add(new Card(5, Suit.SPADES)); //Add 5 of Spades to foundation
+        addToFoundation4.add(new Card(7, Suit.CLUBS)); //Add 7 of Clubs to foundation
 
         //Add local foundations to foundation of new state
         foundation[0] = addToFoundation1;

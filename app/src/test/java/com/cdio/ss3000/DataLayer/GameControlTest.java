@@ -12,10 +12,10 @@ public class GameControlTest {
     ArrayList<Card> waste = new ArrayList<>(), stock= new ArrayList<>();
     State state = new State(foundations, tableau, stock, waste);
     GameControl gameControl;
-    Card hearts2 = new Card(2, Suit.HEARTS, true);
-    Card hearts3 = new Card(3, Suit.HEARTS, true);
-    Card clubs4 = new Card(4, Suit.CLUBS, true);
-    Card spade13 = new Card(13, Suit.SPADES, true);
+    Card hearts2 = new Card(2, Suit.HEARTS);
+    Card hearts3 = new Card(3, Suit.HEARTS);
+    Card clubs4 = new Card(4, Suit.CLUBS);
+    Card spade13 = new Card(13, Suit.SPADES);
     @Test
     public void checkPossibleMovesTest() {
         for (int i = 0; i < foundations.length; i++) {
@@ -28,7 +28,7 @@ public class GameControlTest {
         state.tableau[4].add(clubs4);
         state.foundations[1].add(hearts2);
         gameControl = new GameControl(state);
-        gameControl.checkPossibleMoves();
+        gameControl.checkPossibleMoves(null);
         assertEquals(true, hearts3.equals(state.tableau[2].get(state.tableau[2].size()-1)));
         //assertEquals(2,hearts3.getMoves().size());
         assertEquals(2, state.tableau[2].get(state.tableau[2].size()-1).getMoves().size());
@@ -73,7 +73,7 @@ public class GameControlTest {
         }
         state.tableau[2].add(spade13);
         gameControl = new GameControl(state);
-        gameControl.checkPossibleMoves();
+        gameControl.checkPossibleMoves(null);
         assertEquals(6, state.tableau[2].get(state.tableau[2].size()-1).getMoves().size());
     }
 
@@ -85,11 +85,11 @@ public class GameControlTest {
         for (int i = 0; i < foundations.length; i++) {
             foundations[i] = new ArrayList<>();
         }
-        Card hearts14 = new Card(14,Suit.HEARTS, true);
+        Card hearts14 = new Card(14,Suit.HEARTS);
         state.tableau[2].add(hearts14);
         state.tableau[5].add(spade13);
         gameControl = new GameControl(state);
-        gameControl.checkPossibleMoves();
+        gameControl.checkPossibleMoves(null);
         assertEquals(1, state.tableau[2].get(state.tableau[2].size()-1).getMoves().size());
 
     }
@@ -105,7 +105,7 @@ public class GameControlTest {
             tableau[i].add(new Card());
         }
         gameControl = new GameControl(state);
-        gameControl.checkPossibleMoves();
+        gameControl.checkPossibleMoves(null);
         assertEquals(0, state.tableau[0].get(state.tableau[0].size()-1).getMoves().size());
         assertEquals(0, state.tableau[1].get(state.tableau[1].size()-1).getMoves().size());
         assertEquals(0, state.tableau[2].get(state.tableau[2].size()-1).getMoves().size());

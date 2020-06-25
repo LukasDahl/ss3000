@@ -276,7 +276,7 @@ public class StateTracker {
                 waste.get(waste.size() - 1).setSuit(newWasteCard.getSuit());
                 waste.get(waste.size() - 1).setValue(newWasteCard.getValue());
             }
-            System.out.println("Stock: " + stock.size());
+            //System.out.println("Stock: " + stock.size());
             tempTableau = getTempTableau(inputState.tableau);
             inputState.tableau = tempTableau;
             if (checkPlausability(inputState, tempState, board, lastMove))
