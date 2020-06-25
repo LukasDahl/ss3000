@@ -241,21 +241,8 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     public void gameOver(boolean won, int moves){
 
         if (won){
-            ArrayList<Highscore> scores;
-            SharedPreferences sharedPreferences;
-            Gson gson;
-            scores = new ArrayList<>();
-            scores.add(new Highscore("TestNavn", moves));
-
-            gson = new Gson();
-
-            String json = gson.toJson(scores);
-
-            sharedPreferences = getSharedPreferences("scores", MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("scores", json);
-            editor.commit();
             Intent i = new Intent(this, WonGameActivity.class);
+            i.putExtra("moves", moves);
             startActivity(i);
         }
         else{

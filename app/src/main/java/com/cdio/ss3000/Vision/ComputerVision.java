@@ -100,6 +100,12 @@ public class ComputerVision {
         return instance;
     }
 
+    public static ComputerVision newInstance(Context context) {
+        instance = new ComputerVision();
+        instance.setContext(context);
+        return instance;
+    }
+
     private ComputerVision() {
         OpenCVLoader.initDebug();
         gc = new GameControl(null);

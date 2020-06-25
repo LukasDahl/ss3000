@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cdio.ss3000.Vision.ComputerVision;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button start, help, highscore, blackjack;
@@ -27,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        ComputerVision.newInstance(this);
 
 
         if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {

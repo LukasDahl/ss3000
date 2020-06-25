@@ -15,6 +15,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+
 public class WonGameActivity extends AppCompatActivity implements View.OnClickListener {
     EditText enterName;
     TextView finalScore;
@@ -74,7 +80,24 @@ public class WonGameActivity extends AppCompatActivity implements View.OnClickLi
                 save.setEnabled(false);
 
                 currentName = enterName.getText().toString();
-                currentScore = Integer.parseInt(finalScore.getText().toString());
+                currentScore = getIntent().getExtras().getInt("moves");
+
+                ArrayList<Highscore> scores;
+                SharedPreferences sharedPreferences;
+                Gson gson = new Gson();
+
+                sharedPreferences = getSharedPreferences("scores", MODE_PRIVATE);
+
+                String json = sharedPreferences.getString("scores", "");
+                Type listOfScoresType = new TypeToken<ArrayList<Highscore>>(){}.getType();
+                scores = gson.fromJson(json, listOfScoresType);
+                scores.add(new Highscore(currentName, currentScore));
+
+                json = gson.toJson(scores);
+
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("scores", json);
+                editor.commit();
 
                 //gemmer keyboardet når gem knap trykkes
                 enterName.onEditorAction(EditorInfo.IME_ACTION_DONE);
