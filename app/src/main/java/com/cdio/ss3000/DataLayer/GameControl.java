@@ -1,28 +1,19 @@
 package com.cdio.ss3000.DataLayer;
 
-import android.graphics.Point;
-
 import java.util.ArrayList;
 
 import static com.cdio.ss3000.DataLayer.Suit.*;
 
 public class GameControl {
 
-    /*
-    private ArrayList<Card>[] foundations = new ArrayList[4], tableau = new ArrayList[7];
-    private ArrayList<Card> stock, waste;
-     */
     private State state;
     private PointCalculator pointCalculator;
-    private Piles piles;
     private StateTracker stateTracker;
     private Card lastMove = null;
     private Card stockCard = new Card(1, STOCK);
     private Card wonCard = new Card(-1, STOCK);
     private Card lostCard = new Card(-2, STOCK);
     private final int TURN_CARD_POINTS = 2;
-    //  private Card emptyStackTableau = new Card(-1, UNKNOWN, false);
-    // private Card emptyStackFoundation = new Card(-2, UNKNOWN, false);
 
     public GameControl(State state) {
         this.state = state;
@@ -30,40 +21,25 @@ public class GameControl {
         pointCalculator = new PointCalculator();
     }
 
-    public State getState() {
-
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
-
     //Checks if a card can be placed on another specific card
     public boolean moveToTableauPossible(Card movingCard, Card receivingCardTableau) {
         if (movingCard.getSuit() == HEARTS || movingCard.getSuit() == DIAMONDS) {
             if (receivingCardTableau.getSuit() == SPADES || receivingCardTableau.getSuit() == CLUBS) {
                 if (movingCard.getValue() == receivingCardTableau.getValue() - 1) {
-                    //movingCard.setMovable(true);
                     return true;
                 }
             } else {
-                //movingCard.setMovable(false);
                 return false;
             }
-            //return(receivingCardTableau.getSuit() == SPADES || receivingCardTableau.getSuit() == CLUBS);
 
         } else if (movingCard.getSuit() == SPADES || movingCard.getSuit() == CLUBS) {
             if (receivingCardTableau.getSuit() == HEARTS || receivingCardTableau.getSuit() == DIAMONDS) {
                 if (movingCard.getValue() == receivingCardTableau.getValue() - 1) {
-                    // movingCard.setMovable(true);
                     return true;
                 }
             } else {
-                //movingCard.setMovable(false);
                 return false;
             }
-            //return (receivingCardTableau.getSuit() == HEARTS || movingCard.getSuit() == DIAMONDS);
         }
         return false;
     }
@@ -72,15 +48,12 @@ public class GameControl {
     public boolean moveToFoundationPossible(Card movingCard, Card receivingCardFoundations) {
         if (movingCard.getSuit() == receivingCardFoundations.getSuit()) {
             if (movingCard.getValue() == receivingCardFoundations.getValue() + 1) {
-                //movingCard.setMovable(true);
                 return true;
             } else return false;
         } else {
-            //movingCard.setMovable(false);
             return false;
         }
 
-        //return (movingCard.getSuit() == receivingCardFoundations.getSuit());
     }
 
     //Checks if card is a King
@@ -93,11 +66,6 @@ public class GameControl {
         return movingCard.getValue() == 1;
     }
 
-
-    /*
-    This finds all possible moves
-    Each possible move is added to the specific card
-     */
     public void checkPossibleMoves(State state) {
         //Possible moves from tableau
         for (ArrayList<Card> cardList : state.tableau) {
@@ -107,7 +75,6 @@ public class GameControl {
                         for (int index = cardList.size() - 1; index >= 0 && cardList.get(index).getSuit() != UNKNOWN; index--) {
                             if (!otherCardListTableau.isEmpty()) {
                                 if (moveToTableauPossible(cardList.get(index), otherCardListTableau.get(otherCardListTableau.size() - 1))) {
-                                    //cardList.get(cardList.size()-1).addMove(otherCardListTableau.get(otherCardListTableau.size()-1));
                                     ArrayList<Card> newMove = new ArrayList<>();
                                     for (Card card : otherCardListTableau) {
 
@@ -117,7 +84,6 @@ public class GameControl {
                                     cardList.get(index).addMove(newMove);
                                 }
                             } else if (moveToEmptySpaceTableauPossible(cardList.get(index))) {
-                                // cardList.get(cardList.size()-1).addMove(emptyStackTableau);
                                 ArrayList<Card> newMove = new ArrayList<>();
                                 cardList.get(index).addMove(newMove);
                             }
@@ -126,18 +92,10 @@ public class GameControl {
                         }
                     }
                 }
-                    /*
-                       if(moveToTableauPossible(cardList.get(cardList.size()-1), otherCardListTableau.get(cardList.size()-1))){
-                           //cardList.get(cardList.size()-1).addMove(otherCardListTableau.get(otherCardListTableau.size()-1));
-                           cardList.get(cardList.size()-1).addMove(otherCardListTableau);
-                       }
-
-                     */
 
                 for (ArrayList<Card> cardListFoundations : state.foundations) {
                     if (!cardListFoundations.isEmpty()) {
                         if (moveToFoundationPossible(cardList.get(cardList.size() - 1), cardListFoundations.get(cardListFoundations.size() - 1))) {
-                            //cardList.get(cardList.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
                             ArrayList<Card> newMove = new ArrayList<>();
                             for (Card card : cardListFoundations) {
 
@@ -152,7 +110,6 @@ public class GameControl {
                 for (ArrayList<Card> cardListFoundations : state.foundations) {
                     if (cardListFoundations.isEmpty()) {
                         if (moveToEmptyFoundationPossible(cardList.get(cardList.size() - 1))) {
-                            //cardList.get(cardList.size()-1).addMove(emptyStackFoundation);
                             ArrayList<Card> newMove = new ArrayList<>();
                             cardList.get(cardList.size() - 1).addMove(newMove);
                         }
@@ -163,7 +120,6 @@ public class GameControl {
                 if (!state.waste.isEmpty()) {
                     for (Card card : state.waste) {
                         if (moveToTableauPossible(card, cardList.get(cardList.size() - 1))) {
-                            //state.waste.get(state.waste.size()-1).addMove(cardList.get(cardList.size()-1));
                             ArrayList<Card> newMove = new ArrayList<>();
                             for (Card cardFromMove : cardList) {
 
@@ -183,7 +139,6 @@ public class GameControl {
                                         newMove.add((Card) cardFromMove.clone());
 
                                     }
-                                    // cardList.get(cardList.size()-1).addMove(emptyStackTableau);
                                     card.addMove(newMove);
                                 }
                             }
@@ -197,7 +152,6 @@ public class GameControl {
                 if (!state.stock.isEmpty()) {
                     for (Card card : state.stock) {
                         if (moveToTableauPossible(card, cardList.get(cardList.size() - 1))) {
-                            //state.waste.get(state.waste.size()-1).addMove(cardList.get(cardList.size()-1));
                             ArrayList<Card> newMove = new ArrayList<>();
                             for (Card cardFromMove : cardList) {
 
@@ -212,7 +166,6 @@ public class GameControl {
                         if (moveToEmptySpaceTableauPossible(card)) {
                             for (ArrayList<Card> otherCardlistTableau : state.tableau) {
                                 if (otherCardlistTableau.isEmpty()) {
-                                    // cardList.get(cardList.size()-1).addMove(emptyStackTableau);
                                     ArrayList<Card> newMove = new ArrayList<>();
                                     for (Card cardFromMove : otherCardlistTableau) {
                                         newMove.add((Card) cardFromMove.clone());
@@ -237,7 +190,6 @@ public class GameControl {
                 for (ArrayList<Card> cardListFoundations : state.foundations) {
                     if (!cardListFoundations.isEmpty()) {
                         if (moveToFoundationPossible(card, cardListFoundations.get(cardListFoundations.size() - 1))) {
-                            //state.waste.get(state.waste.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
                             ArrayList<Card> newMove = new ArrayList<>();
                             for (Card cardFromMove : cardListFoundations) {
 
@@ -248,7 +200,6 @@ public class GameControl {
                         }
                     } else {
                         if (moveToEmptyFoundationPossible(card)) {
-                            //state.waste.get(state.waste.size()-1).addMove(emptyStackFoundation);
                             ArrayList<Card> newMove = new ArrayList<>();
                             for (Card cardFromMove : cardListFoundations) {
 
@@ -270,7 +221,6 @@ public class GameControl {
                 for (ArrayList<Card> cardListFoundations : state.foundations) {
                     if (!cardListFoundations.isEmpty()) {
                         if (moveToFoundationPossible(card, cardListFoundations.get(cardListFoundations.size() - 1))) {
-                            //state.waste.get(state.waste.size()-1).addMove(cardListFoundations.get(cardListFoundations.size()-1));
                             ArrayList<Card> newMove = new ArrayList<>();
                             for (Card cardFromMove : cardListFoundations) {
 
@@ -280,7 +230,6 @@ public class GameControl {
                             card.addMove(newMove);
                         }
                         if (moveToEmptyFoundationPossible(card)) {
-                            //state.waste.get(state.waste.size()-1).addMove(emptyStackFoundation);
                             ArrayList<Card> newMove = new ArrayList<>();
                             for (Card cardFromMove : cardListFoundations) {
 
@@ -298,12 +247,15 @@ public class GameControl {
 
     }
 
+    //Possible moves from foundations. This is only used if we have no other plausible moves, in order to "save" the win.
     public Card checkPossibleMovesFoundation()  {
-        //Possible moves from foundations
         State mState;
         ArrayList<Card> cardPointList = new ArrayList<>();
         Card _cardHighestValue = new Card();
 
+        //Creates an intermediary state for each top card in the foundation, if they can be moved to the tableau
+        //Then it calculates if there are any possible moves in the new state, except for moving the card back into the foundation
+        //If there are possible moves, they are compared and the best card is chosen to move down into the tableau
         for (int i = 0; i < state.foundations.length; i++) {
             if (!state.foundations[i].isEmpty()) {
                 for (int j = 0; j < state.tableau.length; j++) {
@@ -328,6 +280,7 @@ public class GameControl {
                                     }
                                 }
                             }
+                            //Checks for possible moves for any card in the waste pile
                             if (!mState.waste.isEmpty()) {
                                 for (Card mCard : mState.waste) {
                                     if (!mCard.getMoves().isEmpty()) {
@@ -335,6 +288,7 @@ public class GameControl {
                                     }
                                 }
                             }
+                            //Checks for possible moves for any card in the stock pile
                             if (!mState.stock.isEmpty()) {
                                 for (Card mCard : mState.stock) {
                                     if (!mCard.getMoves().isEmpty()) {
@@ -364,13 +318,10 @@ public class GameControl {
         return Status.INPROGRESS;
     }
 
+    //when the state has been updated by the computer vision, the game is run from here, until next move.
     public Card run() {
 
-       // System.out.println("In run()");
-       // System.out.println(state.toString());
-
         ArrayList<Card> cardPointList = new ArrayList<>();
-        ArrayList<Card> foundationPointList = new ArrayList<>();
         Card _cardHighestValue = new Card();
         checkPossibleMoves(state);
 
@@ -411,6 +362,7 @@ public class GameControl {
 
     }
 
+    //Calculates the card with the highest point score, and suggests that.
     private Card getCard(ArrayList<Card> cardPointList, Card _cardHighestValue) {
         System.out.println("---------------\nCard point list\n---------------");
         for (Card card : cardPointList) {
@@ -418,9 +370,6 @@ public class GameControl {
             if (card.getPoints() > _cardHighestValue.getPoints())
                 _cardHighestValue = card;
         }
-       /* if (cardPointList.isEmpty())
-            stateTracker.gameOver();*/
-
 
         return _cardHighestValue;
     }

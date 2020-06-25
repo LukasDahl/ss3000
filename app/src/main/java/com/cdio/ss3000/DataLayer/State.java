@@ -3,8 +3,6 @@ package com.cdio.ss3000.DataLayer;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 public class State {
     public ArrayList<Card>[] foundations = new ArrayList[4], tableau = new ArrayList[7];
@@ -18,29 +16,6 @@ public class State {
         this.waste = waste;
     }
 
-    public LinkedList<Card> getMovableCardsTableau(){
-            LinkedList<Card> movableCardsTableau = null;
-
-        for(ArrayList<Card> tab : tableau){
-            movableCardsTableau.add(tab.get(tab.size()-1));
-        }
-
-       return movableCardsTableau;
-    }
-
-    public Card getMovableCardWaste(){
-        return waste.get(waste.size()-1);
-    }
-
-    public LinkedList<Card> getMovableCardsFoundations(){
-        LinkedList<Card> movableCardsFoundations = null;
-
-        for(ArrayList<Card> found : foundations){
-            movableCardsFoundations.add(found.get(found.size()-1));
-        }
-
-        return movableCardsFoundations;
-    }
 
     @NonNull
     @Override
