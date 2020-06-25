@@ -23,7 +23,7 @@ TextView scoreValues;
         newGame.setOnClickListener(this);
 
         scoreValues = findViewById(R.id.valuesTV);
-        scoreValues.setText("1234\n420 seconds\n20");
+        scoreValues.setText(String.format("%d", getIntent().getExtras().getInt("moves")));
     }
 
     @Override

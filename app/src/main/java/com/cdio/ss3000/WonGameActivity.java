@@ -25,7 +25,6 @@ public class WonGameActivity extends AppCompatActivity implements View.OnClickLi
     EditText enterName;
     TextView finalScore;
     Button save, mainMenu, newGame;
-    SharedPreferences prefName, prefScore;
 
     String currentName;
     int currentScore;
@@ -52,16 +51,8 @@ public class WonGameActivity extends AppCompatActivity implements View.OnClickLi
         newGame = findViewById(R.id.newGameBtn);
         newGame.setOnClickListener(this);
 
-        prefName = getSharedPreferences("highscoreName", Context.MODE_PRIVATE);
-        prefScore = getSharedPreferences("highscoreScore", Context.MODE_PRIVATE);
+        finalScore.setText(String.format("%d", getIntent().getExtras().getInt("moves")));
 
-        for (int i = 0; i < 10; i++){
-            hsNameList[i] = prefName.getString(""+i, "N/A");
-            hsScoreList[i] = prefScore.getInt(""+i, 0);
-        }
-
-        SharedPreferences.Editor nameEditor = prefName.edit();
-        SharedPreferences.Editor scoreEditor = prefScore.edit();
 
     }
 

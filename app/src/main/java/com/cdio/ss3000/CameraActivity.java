@@ -239,16 +239,15 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     public void gameOver(boolean won, int moves){
-
+        Intent i;
         if (won){
-            Intent i = new Intent(this, WonGameActivity.class);
-            i.putExtra("moves", moves);
-            startActivity(i);
+            i = new Intent(this, WonGameActivity.class);
         }
         else{
-            Intent i = new Intent(this, LostGameActivity.class);
-            startActivity(i);
+            i = new Intent(this, LostGameActivity.class);
         }
+        i.putExtra("moves", moves);
+        startActivity(i);
 
     }
 
