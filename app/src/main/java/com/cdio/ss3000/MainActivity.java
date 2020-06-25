@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
@@ -14,13 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    Button start, help, highscore;
+    Button start, help, highscore, blackjack;
     TextView header, group;
     ImageView king, play, questionMark, dtu;
 
@@ -53,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         header = findViewById(R.id.headerTv);
         group = findViewById(R.id.groupNameTv);
+
+        blackjack = findViewById(R.id.blackJBtn);
+        blackjack.setOnClickListener(this);
 
         king = findViewById(R.id.kingIv);
         play = findViewById(R.id.playIv);
@@ -106,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else if (v == highscore){
             Intent i = new Intent(this, HighscoreActivity.class);
             this.startActivity(i);
+        }else if(v==blackjack){
+            Toast.makeText(this, "Not ready yet... stick to solitaire", Toast.LENGTH_SHORT).show();
         }
     }
 }
